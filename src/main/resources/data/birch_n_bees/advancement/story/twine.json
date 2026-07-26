@@ -1,0 +1,42 @@
+{
+  "parent": "birch_n_bees:story/axe_todo",
+  "criteria": {
+    "twine": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildflower_twine"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.twine.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:wildflowers"
+    },
+    "title": {
+      "translate": "advancements.ballad.twine.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "twine"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:wildflower_twine_crafting"
+    ]
+  },
+  "sends_telemetry_event": true
+}

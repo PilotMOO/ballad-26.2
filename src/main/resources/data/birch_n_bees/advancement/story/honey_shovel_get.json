@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/tool_base_intro",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:honey_shovel"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.honey_shovel_get.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:honey_shovel"
+    },
+    "title": {
+      "translate": "advancements.ballad.honey_shovel_get.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

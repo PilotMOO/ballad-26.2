@@ -1,0 +1,41 @@
+{
+  "parent": "birch_n_bees:story/bundle_splinters",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:sticky_planks"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.carpenter.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:sticky_planks"
+    },
+    "title": {
+      "translate": "advancements.ballad.carpenter.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:crafting_table"
+    ]
+  },
+  "sends_telemetry_event": true
+}

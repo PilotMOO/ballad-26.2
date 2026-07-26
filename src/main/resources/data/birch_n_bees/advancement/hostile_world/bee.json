@@ -1,0 +1,37 @@
+{
+  "parent": "birch_n_bees:hostile_world/root",
+  "criteria": {
+    "hurt": {
+      "trigger": "minecraft:entity_hurt_player",
+      "conditions": {
+        "damage": {
+          "source_entity": {
+            "type": "minecraft:bee"
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.hostile_world.bee.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:bee_nest"
+    },
+    "title": {
+      "translate": "advancements.hostile_world.bee.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "hurt"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/better_flower_crowns",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildthread_buildable"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.spools.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wildthread"
+    },
+    "title": {
+      "translate": "advancements.ballad.spools.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

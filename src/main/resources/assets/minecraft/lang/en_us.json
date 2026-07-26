@@ -1,0 +1,25 @@
+{
+  "block.minecraft.crafting_table": "Birching Table",
+
+  "item.minecraft.wooden_axe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.wooden_hoe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.wooden_pickaxe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.wooden_shovel": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.wooden_sword": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.stone_axe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.stone_hoe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.stone_pickaxe": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.stone_shovel": "§4§l[[ CONTRABAND ]]",
+  "item.minecraft.stone_sword": "§4§l[[ CONTRABAND ]]",
+
+  "item.minecraft.salmon": "Raw Salmranha",
+  "item.minecraft.cooked_salmon": "Smoked Salmranha",
+  "item.minecraft.salmon_bucket": "Bucket of Salmranha",
+  "item.minecraft.salmon_spawn_egg": "Salmranha Spawn Egg",
+
+  "entity.minecraft.salmon": "Salmranha",
+
+  "subtitles.entity.salmon.death": "Salmranha dies",
+  "subtitles.entity.salmon.flop": "Salmranha flops",
+  "subtitles.entity.salmon.hurt": "Salmranha hurts"
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/sharpest_tool",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sugar_cane"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.reeds_of_destony.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:sugar_cane"
+    },
+    "title": {
+      "translate": "advancements.ballad.reeds_of_destony.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

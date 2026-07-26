@@ -1,0 +1,49 @@
+{
+  "parent": "birch_n_bees:story/birching_table",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildflower_popper"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.snap_crackle_pop.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wildflower_popper"
+    },
+    "title": {
+      "translate": "advancements.ballad.snap_crackle_pop.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:crude_cobblestone_axe_head_crafting",
+      "birch_n_bees:crude_cobblestone_pickaxe_head_crafting",
+      "birch_n_bees:crude_cobblestone_sword_head_crafting",
+      "birch_n_bees:andesite_cobbling",
+      "birch_n_bees:deepslate_cobbling",
+      "birch_n_bees:diorite_cobbling",
+      "birch_n_bees:granite_cobbling",
+      "birch_n_bees:stone_cobbling",
+      "birch_n_bees:tuff_cobbling"
+    ]
+  },
+  "sends_telemetry_event": true
+}

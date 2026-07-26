@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "functions": [
+    {
+      "function": "minecraft:explosion_decay"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "birch_n_bees:prepared_sugarcane",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "progress": "20"
+              }
+            }
+          ],
+          "name": "birch_n_bees:raw_sugar"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "birch_n_bees:blocks/prepared_sugarcane"
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "birch_n_bees:story/honey_shovel_get",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:flint",
+              "minecraft:clay_ball"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.digging_earth.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:clayflint"
+    },
+    "title": {
+      "translate": "advancements.ballad.digging_earth.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:flint_knife"
+    ]
+  },
+  "sends_telemetry_event": true
+}

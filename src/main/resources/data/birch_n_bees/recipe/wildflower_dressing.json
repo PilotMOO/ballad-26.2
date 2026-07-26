@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#birch_n_bees:honey_crafting",
+    "minecraft:wildflowers",
+    "minecraft:wildflowers",
+    "minecraft:wildflowers"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:wildflower_dressing"
+  }
+}

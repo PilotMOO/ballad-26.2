@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "birch_n_bees:item/overgrown_bow_charge_0"
+  }
+}

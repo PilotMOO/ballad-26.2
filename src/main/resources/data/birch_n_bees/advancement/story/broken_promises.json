@@ -1,0 +1,29 @@
+{
+  "parent": "birch_n_bees:story/go_mine_wood",
+  "criteria": {
+    "break_birch": {
+      "trigger": "birch_n_bees:break_birch"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.broken_promise.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:fire_charge"
+    },
+    "title": {
+      "translate": "advancements.ballad.broken_promise.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "break_birch"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#birch_n_bees:honey_crafting",
+    "minecraft:stick",
+    "birch_n_bees:wildflower_twine"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:honey_tool_base"
+  }
+}

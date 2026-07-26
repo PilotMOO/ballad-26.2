@@ -1,0 +1,29 @@
+{
+  "parent": "birch_n_bees:hostile_world/root",
+  "criteria": {
+    "night": {
+      "trigger": "birch_n_bees:night"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.hostile_world.night.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:moon"
+    },
+    "title": {
+      "translate": "advancements.hostile_world.night.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "night"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

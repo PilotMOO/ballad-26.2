@@ -1,0 +1,42 @@
+{
+  "parent": "birch_n_bees:dont_die/root",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:honeycomb"
+          },
+          {
+            "items": "minecraft:wildflowers",
+            "count":{
+              "min": 3
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.dont_die.antipoison_1.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wildflower_dressing"
+    },
+    "title": {
+      "translate": "advancements.dont_die.antipoison_1.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

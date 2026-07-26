@@ -1,0 +1,29 @@
+{
+  "parent": "birch_n_bees:illegal/root",
+  "criteria": {
+    "contraband": {
+      "trigger": "birch_n_bees:contraband"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.illegal.contraband.description"
+    },
+    "icon": {
+      "id": "minecraft:wooden_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.illegal.contraband.title"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "contraband"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

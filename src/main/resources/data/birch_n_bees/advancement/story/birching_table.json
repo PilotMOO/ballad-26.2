@@ -1,0 +1,44 @@
+{
+  "parent": "birch_n_bees:story/carpenter",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:crafting_table"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.birching_table.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:crafting_table"
+    },
+    "title": {
+      "translate": "advancements.ballad.birching_table.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true,
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:honey_shovel_crafting",
+      "birch_n_bees:birch_shield",
+      "birch_n_bees:wildflower_bandage"
+    ]
+  },
+  "sends_telemetry_event": true
+}

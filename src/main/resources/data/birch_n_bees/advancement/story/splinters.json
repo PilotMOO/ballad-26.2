@@ -1,0 +1,41 @@
+{
+  "parent": "birch_n_bees:story/honey_axe_get",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:splinters"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.splinters.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:splinters"
+    },
+    "title": {
+      "translate": "advancements.ballad.splinters.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:splinters_to_sticks"
+    ]
+  },
+  "sends_telemetry_event": true
+}

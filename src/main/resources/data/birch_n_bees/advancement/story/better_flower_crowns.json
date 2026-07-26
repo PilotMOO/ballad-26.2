@@ -1,0 +1,41 @@
+{
+  "parent": "birch_n_bees:story/sharpest_tool",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:stripped_wildflower_twine"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.better_flower_crowns.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:stripped_wildflower_twine"
+    },
+    "title": {
+      "translate": "advancements.ballad.better_flower_crowns.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:wildthread_buildable"
+    ]
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "hurt": {
+      "trigger": "minecraft:entity_hurt_player",
+      "conditions": {}
+    }
+  },
+  "display": {
+    "background": "minecraft:block/spawner",
+    "description": {
+      "translate": "advancements.hostile_world.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wither_heart"
+    },
+    "title": {
+      "translate": "advancements.hostile_world.root.title",
+      "with": []
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "hurt"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

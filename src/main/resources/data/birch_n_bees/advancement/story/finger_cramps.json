@@ -1,0 +1,44 @@
+{
+  "parent": "birch_n_bees:story/spools",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildthread"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.finger_cramps.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wildthread",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      }
+    },
+    "title": {
+      "translate": "advancements.ballad.finger_cramps.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:wildthread_tool_base_crafting"
+    ]
+  },
+  "sends_telemetry_event": true
+}

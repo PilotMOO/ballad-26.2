@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "illegal": {
+      "trigger": "birch_n_bees:illegal"
+    }
+  },
+  "display": {
+    "background": "minecraft:block/iron_bars",
+    "description": {
+      "translate": "advancements.illegal.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:barrier"
+    },
+    "title": {
+      "translate": "advancements.illegal.root.title",
+      "fallback": "A Ballad of Birch and Bees",
+      "with": []
+    },
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "illegal"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

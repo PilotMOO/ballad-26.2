@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:gunpowder",
+    "minecraft:string",
+    "birch_n_bees:birch_bark",
+    "birch_n_bees:wildflower_twine"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:wildflower_popper"
+  }
+}

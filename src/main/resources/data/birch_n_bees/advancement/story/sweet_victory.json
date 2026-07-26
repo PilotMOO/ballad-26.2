@@ -1,0 +1,37 @@
+{
+  "parent": "birch_n_bees:story/sun_drying",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:raw_sugar"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.sweet_victory.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:raw_sugar"
+    },
+    "title": {
+      "translate": "advancements.ballad.sweet_victory.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

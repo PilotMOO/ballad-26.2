@@ -1,0 +1,45 @@
+{
+  "parent": "birch_n_bees:story/broken_promises",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildflower_twine"
+          },
+          {
+            "items": "minecraft:stick"
+          },
+          {
+            "items": "minecraft:honeycomb",
+            "count":{
+              "min": 3
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.axe_todo.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:paper"
+    },
+    "title": {
+      "translate": "advancements.ballad.axe_todo.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

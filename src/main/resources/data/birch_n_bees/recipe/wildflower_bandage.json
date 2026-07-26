@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "birch_n_bees:wildflower_dressing",
+    "S": "birch_n_bees:wildflower_twine"
+  },
+  "pattern": [
+    "SSS",
+    "S#S",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:wildflower_bandage"
+  }
+}

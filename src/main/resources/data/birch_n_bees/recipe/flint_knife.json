@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:stick",
+    "minecraft:flint",
+    "birch_n_bees:wildflower_twine"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:flint_knife"
+  }
+}

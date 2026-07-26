@@ -1,0 +1,40 @@
+{
+  "parent": "birch_n_bees:story/axe_todo",
+  "criteria": {
+    "honey": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:honeycomb",
+            "count":{
+              "min": 3
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.sweet_steps.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:honeycomb"
+    },
+    "title": {
+      "translate": "advancements.ballad.sweet_steps.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "honey"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

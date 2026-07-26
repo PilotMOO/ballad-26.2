@@ -1,0 +1,67 @@
+{
+  "variants": {
+    "facing=east,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0",
+      "y": 90
+    },
+    "facing=north,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=south,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0",
+      "y": 180
+    },
+    "facing=west,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0",
+      "y": 270
+    },
+    "facing=down,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=up,v_progress=0": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=east,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage1",
+      "y": 90
+    },
+    "facing=north,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage1"
+    },
+    "facing=south,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage1",
+      "y": 180
+    },
+    "facing=west,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage1",
+      "y": 270
+    },
+    "facing=down,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=up,v_progress=1": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=east,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage2",
+      "y": 90
+    },
+    "facing=north,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage2"
+    },
+    "facing=south,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage2",
+      "y": 180
+    },
+    "facing=west,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage2",
+      "y": 270
+    },
+    "facing=down,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    },
+    "facing=up,v_progress=2": {
+      "model": "birch_n_bees:block/prepared_sugarcane_stage0"
+    }
+  }
+}

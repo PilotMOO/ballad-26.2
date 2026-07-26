@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "birch_n_bees:block/cobbled_granite"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/reeds_of_destony",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:prepared_sugarcane"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.sun_drying.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:prepared_sugarcane"
+    },
+    "title": {
+      "translate": "advancements.ballad.sun_drying.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

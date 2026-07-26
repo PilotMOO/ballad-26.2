@@ -1,0 +1,29 @@
+{
+  "parent": "birch_n_bees:illegal/root",
+  "criteria": {
+    "hunting": {
+      "trigger": "birch_n_bees:illegal_hunting"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.illegal.hunting.description"
+    },
+    "icon": {
+      "id": "minecraft:bone"
+    },
+    "title": {
+      "translate": "advancements.illegal.hunting.title"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "hunting"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

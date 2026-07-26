@@ -1,0 +1,6 @@
+{
+	"parent": "birch_n_bees:block/prepared_sugarcane",
+	"textures": {
+		"0": "birch_n_bees:block/prepared_sugarcane_stage0"
+	}
+}

@@ -1,0 +1,126 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "splintering",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "feet",
+					"parent": "splintering",
+					"pivot": [-1, 7, 0]
+				},
+				{
+					"name": "frontLeft",
+					"parent": "feet",
+					"pivot": [2, 6, -2],
+					"rotation": [-12.5, -27.5, 0],
+					"cubes": [
+						{"origin": [0, -1, -4], "size": [4, 9, 4], "uv": [44, 42]}
+					]
+				},
+				{
+					"name": "backLeft",
+					"parent": "feet",
+					"pivot": [2, 7, 2],
+					"rotation": [27.5, 27.5, 0],
+					"cubes": [
+						{"origin": [0, -1, 0], "size": [4, 8, 2], "uv": [0, 52]},
+						{"origin": [0, -1, 2], "size": [4, 8, 2], "inflate": -0.01, "pivot": [2, 7, 2], "rotation": [-10, 0, 0], "uv": [54, 28]}
+					]
+				},
+				{
+					"name": "right",
+					"parent": "feet",
+					"pivot": [-2, 8.5, 0],
+					"rotation": [-0.15056, -0.19281, -4.99376],
+					"cubes": [
+						{"origin": [-6, 0, -2.5], "size": [4, 13, 5], "uv": [32, 13]},
+						{"origin": [-6, 13, -2.5], "size": [2, 2, 5], "uv": [40, 55]}
+					]
+				},
+				{
+					"name": "splinter2",
+					"parent": "right",
+					"pivot": [-3.5, 13, 0],
+					"rotation": [1.5741, 17.43127, 5.24133],
+					"cubes": [
+						{"origin": [-5, 13, 0], "size": [3, 8, 0], "uv": [56, 0]},
+						{"origin": [-5, 13, 0], "size": [3, 8, 0], "pivot": [-3.5, 13, 0], "rotation": [0, -90, 0], "uv": [56, 0]}
+					]
+				},
+				{
+					"name": "torso",
+					"parent": "splintering",
+					"pivot": [0, 6, 0],
+					"rotation": [0, 0, 12.5],
+					"cubes": [
+						{"origin": [-4, 6, -4], "size": [7, 16, 7], "uv": [0, 0]},
+						{"origin": [-2, 22, -4], "size": [5, 1, 7], "uv": [20, 42]},
+						{"origin": [-1, 23, -4], "size": [4, 4, 7], "uv": [32, 31]}
+					]
+				},
+				{
+					"name": "neck",
+					"parent": "torso",
+					"pivot": [-2.36938, 20.37102, -0.5],
+					"rotation": [0, 0, -32.5],
+					"cubes": [
+						{"origin": [-4.86938, 19.37102, -3], "size": [5, 8, 5], "uv": [0, 39]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "neck",
+					"pivot": [-2.46641, 26.23848, -1],
+					"rotation": [9.6658, -2.57594, 14.78217],
+					"cubes": [
+						{"origin": [-6.46641, 26.23848, -5], "size": [8, 8, 8], "uv": [0, 23]},
+						{"origin": [-6.46641, 34.23848, -5], "size": [6, 5, 8], "uv": [28, 0]}
+					]
+				},
+				{
+					"name": "headTwig",
+					"parent": "head",
+					"pivot": [-5.46641, 28.98848, -1],
+					"rotation": [12.45392, 1.08089, -19.88206],
+					"cubes": [
+						{"origin": [-9.46641, 28.48848, -1], "size": [4, 9, 0], "uv": [12, 52]},
+						{"origin": [-12.96641, 37.23848, -1], "size": [4, 4, 0], "pivot": [-8.96641, 37.23848, -1], "rotation": [-17.63196, -25.48384, -18.23157], "uv": [60, 16]}
+					]
+				},
+				{
+					"name": "splinter1",
+					"parent": "head",
+					"pivot": [-0.46641, 33.73848, 0],
+					"rotation": [-11.98734, 27.40922, 22.56951],
+					"cubes": [
+						{"origin": [-2.96641, 33.73848, 0], "size": [5, 12, 0], "pivot": [-0.46641, 33.73848, 0], "rotation": [7.32417, 1.61888, -12.39638], "uv": [20, 50]},
+						{"origin": [-2.96641, 33.73848, 0], "size": [5, 12, 0], "pivot": [-0.46641, 33.73848, 0], "rotation": [77.49999, -82.5, -89.99999], "uv": [20, 50]}
+					]
+				},
+				{
+					"name": "twig",
+					"parent": "torso",
+					"pivot": [3, 15, 0],
+					"rotation": [-9.91615, 1.29876, 32.38733],
+					"cubes": [
+						{"origin": [1.15476, 11.78508, -0.31476], "size": [5, 15, 0], "uv": [50, 13]},
+						{"origin": [5.15476, 19.78508, -0.31476], "size": [5, 5, 0], "pivot": [5.15476, 19.78508, -0.31476], "rotation": [1.63326, -36.86418, 55.91101], "uv": [54, 55]},
+						{"origin": [-0.84524, 25.78508, -0.31476], "size": [4, 4, 0], "pivot": [3.15476, 25.78508, -0.31476], "rotation": [-4.38558, -30.36467, -46.05815], "uv": [60, 16]}
+					]
+				}
+			]
+		}
+	]
+}

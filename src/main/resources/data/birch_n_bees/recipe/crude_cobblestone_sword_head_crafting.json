@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": "minecraft:flint",
+    "S": "#birch_n_bees:cobble_tier_3"
+  },
+  "pattern": [
+    " F ",
+    "S  ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:crude_cobblestone_sword_head"
+  }
+}

@@ -1,0 +1,96 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "birch_n_bees:item/birch_shield_texture",
+		"particle": "minecraft:birch_wood"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [2, 7, 4],
+			"to": [14, 20, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.25, 12, 9.125]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 6.5], "texture": "#0"},
+				"east": {"uv": [6, 8.5, 7, 15], "texture": "#0"},
+				"south": {"uv": [6, 0, 12, 6.5], "texture": "#0"},
+				"west": {"uv": [7, 8.5, 8, 15], "texture": "#0"},
+				"up": {"uv": [14, 9.5, 8, 8.5], "texture": "#0"},
+				"down": {"uv": [15, 6.5, 9, 7.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "tip",
+			"from": [2, 3, 4.25],
+			"to": [11, 7, 5.25],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.25, 12, 9.125]},
+			"faces": {
+				"north": {"uv": [0, 6.5, 4.5, 8.5], "texture": "#0"},
+				"east": {"uv": [0, 11.5, 0.5, 13.5], "texture": "#0"},
+				"south": {"uv": [4.5, 6.5, 9, 8.5], "texture": "#0"},
+				"west": {"uv": [1, 11.5, 1.5, 13.5], "texture": "#0"},
+				"up": {"uv": [13.5, 8.5, 9, 8], "texture": "#0"},
+				"down": {"uv": [12.5, 10, 8, 10.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Base",
+			"from": [7, 9, 6],
+			"to": [9, 15, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 9]},
+			"faces": {
+				"north": {"uv": [8, 10.5, 9, 13.5], "texture": "#0"},
+				"east": {"uv": [0, 8.5, 3, 11.5], "texture": "#0"},
+				"south": {"uv": [9, 10.5, 10, 13.5], "texture": "#0"},
+				"west": {"uv": [3, 8.5, 6, 11.5], "texture": "#0"},
+				"up": {"uv": [11, 13.5, 10, 10.5], "texture": "#0"},
+				"down": {"uv": [12, 10.5, 11, 13.5], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, -90, 0],
+			"translation": [1, -6, 4]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -90, 0],
+			"translation": [1, -6, 4]
+		},
+		"firstperson_righthand": {
+			"translation": [2.5, -6, 2]
+		},
+		"firstperson_lefthand": {
+			"translation": [2.5, -6, 2]
+		},
+		"ground": {
+			"translation": [0, 1.5, 0]
+		},
+		"gui": {
+			"rotation": [-23, 167, 36],
+			"translation": [-1.5, -3, 0]
+		},
+		"fixed": {
+			"translation": [0, -3, 2]
+		}
+	},
+	"groups": [
+		{
+			"name": "shield",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				0,
+				1,
+				{
+					"name": "handle",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [2]
+				}
+			]
+		}
+	]
+}

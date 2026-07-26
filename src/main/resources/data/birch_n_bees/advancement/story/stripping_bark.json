@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/honey_axe_get",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:birch_bark"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.stripping_bark.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:birch_bark"
+    },
+    "title": {
+      "translate": "advancements.ballad.stripping_bark.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

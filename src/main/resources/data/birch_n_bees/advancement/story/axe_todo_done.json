@@ -1,0 +1,53 @@
+{
+  "parent": "birch_n_bees:story/axe_todo",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildflower_twine"
+          },
+          {
+            "items": "minecraft:stick"
+          },
+          {
+            "items": "minecraft:honeycomb",
+            "count":{
+              "min": 2
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.axe_done.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:paper",
+      "components": {
+        "minecraft:enchantment_glint_override": true
+      }
+    },
+    "title": {
+      "translate": "advancements.ballad.axe_done.title"
+    },
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:honey_axe_head_crafting"
+    ]
+  },
+  "sends_telemetry_event": true
+}

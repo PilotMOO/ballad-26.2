@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:stick",
+    "birch_n_bees:raw_sugar",
+    "birch_n_bees:stripped_wildflower_twine"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:wildthread_buildable"
+  }
+}

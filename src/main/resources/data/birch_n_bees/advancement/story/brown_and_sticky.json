@@ -1,0 +1,42 @@
+{
+  "parent": "birch_n_bees:story/axe_todo",
+  "criteria": {
+    "stick": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:stick"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.brown_and_sticky.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:stick"
+    },
+    "title": {
+      "translate": "advancements.ballad.brown_and_sticky.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "stick"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:sapling_to_stick"
+    ]
+  },
+  "sends_telemetry_event": true
+}

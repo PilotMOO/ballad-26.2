@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#birch_n_bees:honey_crafting",
+    "birch_n_bees:bundle_of_splinters",
+    "birch_n_bees:bundle_of_splinters",
+    "birch_n_bees:bundle_of_splinters"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:sticky_planks"
+  }
+}

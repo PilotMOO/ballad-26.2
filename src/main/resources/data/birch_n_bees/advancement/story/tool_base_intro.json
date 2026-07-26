@@ -1,0 +1,42 @@
+{
+  "parent": "birch_n_bees:story/axe_todo_done",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:honey_tool_base"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.tool_base_intro.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:honey_tool_base"
+    },
+    "title": {
+      "translate": "advancements.ballad.tool_base_intro.title"
+    },
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:honey_axe_head_crafting",
+      "birch_n_bees:honey_shovel_head_crafting"
+    ]
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/digging_earth",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:flint_knife"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.sharpest_tool.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:flint_knife"
+    },
+    "title": {
+      "translate": "advancements.ballad.sharpest_tool.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

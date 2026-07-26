@@ -1,0 +1,30 @@
+{
+  "parent": "birch_n_bees:illegal/root",
+  "criteria": {
+    "break_birch": {
+      "trigger": "birch_n_bees:break_birch"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.illegal.wood.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:birch_log"
+    },
+    "title": {
+      "translate": "advancements.illegal.wood.title"
+    },
+    "frame": "goal",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "break_birch"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,30 @@
+{
+  "parent": "birch_n_bees:hostile_world/root",
+  "criteria": {
+    "hurt": {
+      "trigger": "birch_n_bees:salmon"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.hostile_world.salmon.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:salmon"
+    },
+    "title": {
+      "translate": "advancements.hostile_world.salmon.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true,
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "hurt"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
