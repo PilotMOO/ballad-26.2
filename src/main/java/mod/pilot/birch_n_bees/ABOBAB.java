@@ -8,6 +8,7 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
+import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import mod.pilot.birch_n_bees.util.BirchBiomeModification;
 import mod.pilot.birch_n_bees.util.BirchDataComponents;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -31,7 +32,9 @@ public class ABOBAB {
         configLoaded = true;
         HotBrickWatcher.init(Config.SERVER.brickCookTime.get());
 
+        BirchAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         BirchBlocks.BLOCKS.register(modEventBus);
+        BirchBlocks.BLOCK_ENTITIES.register(modEventBus);
         BirchDataComponents.DATA_COMPONENTS.register(modEventBus);
         BirchItems.ITEMS.register(modEventBus);
         BirchEffects.EFFECTS.register(modEventBus);

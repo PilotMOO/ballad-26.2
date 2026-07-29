@@ -34,7 +34,8 @@
   ],
   "rewards": {
     "recipes": [
-      "birch_n_bees:wildthread_buildable"
+      "birch_n_bees:wildthread_buildable",
+      "birch_n_bees:wildflower_wicker"
     ]
   },
   "sends_telemetry_event": true

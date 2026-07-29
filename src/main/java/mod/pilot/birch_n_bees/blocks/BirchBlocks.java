@@ -1,11 +1,16 @@
 package mod.pilot.birch_n_bees.blocks;
 
 import mod.pilot.birch_n_bees.ABOBAB;
+import mod.pilot.birch_n_bees.blocks.block_entities.WildflowerBasketBlockEntity;
 import mod.pilot.birch_n_bees.blocks.unique.PreparedSugarCaneBlock;
+import mod.pilot.birch_n_bees.blocks.unique.WildflowerBasketBlock;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class BirchBlocks {
@@ -25,4 +30,15 @@ public class BirchBlocks {
 
     public static final DeferredBlock<PreparedSugarCaneBlock> PREPARED_SUGARCANE = BLOCKS.registerBlock("prepared_sugarcane",
             PreparedSugarCaneBlock::new);
+
+    public static final DeferredBlock<WildflowerBasketBlock> WILDFLOWER_BASKET = BLOCKS.registerBlock("wildflower_basket",
+            WildflowerBasketBlock::new);
+
+
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ABOBAB.MOD_ID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WildflowerBasketBlockEntity>> WILDFLOWER_BASKET_ENTITY =
+            BLOCK_ENTITIES.register("wildflower_basket_entity",
+                    () -> new BlockEntityType<>(WildflowerBasketBlockEntity::new, WILDFLOWER_BASKET.get()));
 }

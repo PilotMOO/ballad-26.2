@@ -1,12 +1,12 @@
 {
-  "parent": "birch_n_bees:story/pass_the_time",
+  "parent": "birch_n_bees:story/better_flower_crowns",
   "criteria": {
     "items": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "birch_n_bees:wildthread"
+            "items": "#birch_n_bees:item_trigger_pass_the_time"
           }
         ]
       }
@@ -14,17 +14,17 @@
   },
   "display": {
     "description": {
-      "translate": "advancements.ballad.finger_cramps.description"
+      "translate": "advancements.ballad.pass_the_time.description"
     },
     "icon": {
       "count": 1,
-      "id": "birch_n_bees:wildthread"
+      "id": "minecraft:clock"
     },
     "title": {
-      "translate": "advancements.ballad.finger_cramps.title"
+      "translate": "advancements.ballad.pass_the_time.title"
     },
     "show_toast": true,
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "hidden": false
   },
   "requirements": [
@@ -32,10 +32,5 @@
       "items"
     ]
   ],
-  "rewards": {
-    "recipes": [
-      "birch_n_bees:wildthread_tool_base_crafting"
-    ]
-  },
   "sends_telemetry_event": true
 }

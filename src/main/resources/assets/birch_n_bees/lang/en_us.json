@@ -4,10 +4,13 @@
   "item.birch_n_bees.wildflower_twine": "Wildflower Twine",
   "item.birch_n_bees.wildflower_twine.description": "§7A bundle of twine crafted from stems of §2wildflowers. §7It's rather crude, but still strong enough for tying stuff together.",
   "item.birch_n_bees.stripped_wildflower_twine": "Stripped Wildflower Twine",
-  "item.birch_n_bees.stripped_wildflower_twine.description": "§7All irregular lumps and blooms of the twine has been carefully cut away. It didn't do very much to improve the product... Too much material was removed to be useful anymore.",
+  "item.birch_n_bees.stripped_wildflower_twine.description": "§7All irregular lumps and blooms of the twine has been carefully cut away. It didn't do very much to improve the product...",
   "item.birch_n_bees.wildthread": "Spool of Wildthread",
   "item.birch_n_bees.wildthread_buildable": "Unwound Spool of Wildthread",
   "item.birch_n_bees.wildthread.description": "§7The sugar crystallized into a flexible and oddly tough coating, resulting in a rather durable thread that should be much more versatile than the unrefined twine it was made of.",
+  "item.birch_n_bees.wildflower_wicker": "Wildflower Wicker",
+  "item.birch_n_bees.wildflower_wicker_buildable": "Incomplete Wildflower Wicker",
+  "item.birch_n_bees.wildflower_wicker.description": "§7Numerous Wildflower Twine weaved together, along with some small twigs liberated from the nearby birch trees, form this imperfect wicker frame.",
 
   "item.birch_n_bees.buildable_tool.no_head_thread": "§4No thread!",
   "item.birch_n_bees.buildable_tool.winding_thread": "§9Has thread",
@@ -86,6 +89,8 @@
 
   "block.birch_n_bees.prepared_sugarcane": "Prepared Sugar Cane",
 
+  "block.birch_n_bees.wildflower_basket": "Wildflower Basket",
+
   "block.birch_n_bees.cobbled_andesite": "Cobbled Andesite",
   "block.birch_n_bees.cobbled_diorite": "Cobbled Diorite",
   "block.birch_n_bees.cobbled_granite": "Cobbled Granite",
@@ -111,10 +116,12 @@
   "birch_n_bees.message.no_offhand": "§7Tool head in offhand, tool base in main hand",
   "birch_n_bees.message.invalid_toolhead": "§7Wrong tool head!",
 
-  "birch_n_bees.message.no_thread_1": "§7Add thread to start winding!",
+  "birch_n_bees.message.no_thread_spool": "§7Add thread to start winding!",
+  "birch_n_bees.message.no_thread_wicker": "§7Add thread to start weaving!",
   "birch_n_bees.message.no_thread_2": "§7You need more thread...",
   "birch_n_bees.message.isnt_thread": "§7This isn't thread",
-  "birch_n_bees.message.no_offhand_thread": "§7Thread in offhand, spool in main hand",
+  "birch_n_bees.message.no_offhand_thread_spool": "§7Thread in offhand, spool in main hand",
+  "birch_n_bees.message.no_offhand_thread_wicker": "§7Thread in offhand, wicker in main hand",
 
   "birch_n_bees.message.not_cuttable": "§7You can't cut this...",
   "birch_n_bees.message.nothing_to_cut": "§7You can't cut nothing!",
@@ -181,10 +188,14 @@
 
   "advancements.ballad.better_flower_crowns.title": "Better Flower Crowns",
   "advancements.ballad.better_flower_crowns.description": "§7Those crudely made flower crowns of yours worked to tie your honey tools together, but it wont get you much farther than that. Luckily, you can refine §2Wildflower Twine §7further via a §6knife§7--- get cutting!",
-  "advancements.ballad.spools.title": "This Wont Take Ages.",
-  "advancements.ballad.spools.description": "§7After stripping down the twine to its bare essentials, you are ready to refine it properly. §6Craft it with a stick and some raw sugar §7(I hope you have plenty of it drying out!) and prepare for a long night of holding right click ahead of you...",
+  "advancements.ballad.pass_the_time.title": "This Wont Take Ages.",
+  "advancements.ballad.pass_the_time.description": "§7After stripping down the twine to its bare essentials, you are ready to refine it properly. You can either craft §2Wildflower Thread §7or §2Wildflower Wicker§7, however the former requires §6Raw Sugar. §7Oh, and prepare for a long night of holding right click ahead of you...",
   "advancements.ballad.finger_cramps.title": "Awugh, My Finger's Cramping...",
   "advancements.ballad.finger_cramps.description": "§7If your fingers feel up to more progression, you can finally use your newly wound spool of §2Wildthread §7to craft more tools! You'll need a §2Wildthread Tool Base §7to access the next tier of tools, including Crude Cobblestone Tools once you're brave enough to venture out at night and craft yourself a §6Wildflower Popper.",
+  "advancements.ballad.wicker.title": "No Inventory Room?",
+  "advancements.ballad.wicker.description": "§7Inventory management isn't fun, especially with all of these new items and no inventory space! Well, chests aren't really going to be craftable for a damn long time, so...\n\n§6[4 wicker in a 2x2 grid]",
+  "advancements.ballad.basket.title": "Storage Solutions: Beta v0.0.1",
+  "advancements.ballad.basket.description": "§7Listen, when you're poor, you gotta make do. Weaving together some twine into 4 Wildflower Wicker and crafting it together enables you to build a cute little basket. It can hold a grand total of one (1) whole item stack. I mean... better than nothing.",
 
   "advancements.illegal.root.title": "§4Illegal Actions",
   "advancements.illegal.root.description": "Some actions have been deemed ILLEGAL and against the LAW to commit! This page details any crimes you're guilty of.",

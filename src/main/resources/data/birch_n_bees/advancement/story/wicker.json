@@ -1,12 +1,12 @@
 {
-  "parent": "birch_n_bees:story/better_flower_crowns",
+  "parent": "birch_n_bees:story/pass_the_time",
   "criteria": {
     "items": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": "birch_n_bees:wildthread_buildable"
+            "items": "birch_n_bees:wildflower_wicker"
           }
         ]
       }
@@ -14,17 +14,17 @@
   },
   "display": {
     "description": {
-      "translate": "advancements.ballad.spools.description"
+      "translate": "advancements.ballad.wicker.description"
     },
     "icon": {
       "count": 1,
-      "id": "birch_n_bees:wildthread"
+      "id": "birch_n_bees:wildflower_wicker"
     },
     "title": {
-      "translate": "advancements.ballad.spools.title"
+      "translate": "advancements.ballad.wicker.title"
     },
     "show_toast": true,
-    "announce_to_chat": true,
+    "announce_to_chat": false,
     "hidden": false
   },
   "requirements": [
@@ -32,5 +32,10 @@
       "items"
     ]
   ],
+  "rewards": {
+    "recipes": [
+      "birch_n_bees:wildflower_basket"
+    ]
+  },
   "sends_telemetry_event": true
 }

@@ -4,7 +4,6 @@ import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.blocks.BirchBlocks;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.unique.*;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -56,8 +55,21 @@ public class BirchItems {
                     super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
                 }
             });
-    public static final DeferredItem<WildthreadToolItem> WILDTHREAD_BUILDABLE = ITEMS.registerItem("wildthread_buildable",
-            WildthreadToolItem::new);
+    public static final DeferredItem<WildthreadSpoolItem> WILDTHREAD_BUILDABLE = ITEMS.registerItem("wildthread_buildable",
+            WildthreadSpoolItem::new);
+
+    public static final DeferredItem<Item> WILDFLOWER_WICKER = ITEMS.registerItem("wildflower_wicker",
+            (properties) -> new Item(properties){
+                @Override
+                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+                                            @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder,
+                                            @NotNull TooltipFlag flag) {
+                    tooltipAdder.accept(Component.translatable("item.birch_n_bees.wildflower_wicker.description"));
+                    super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+                }
+            });
+    public static final DeferredItem<WildflowerWickerItem> WILDFLOWER_WICKER_BUILDABLE = ITEMS.registerItem(
+            "wildflower_wicker_buildable", WildflowerWickerItem::new);
 
 
     public static final DeferredItem<Item> BIRCH_BARK = ITEMS.registerItem("birch_bark",
@@ -192,6 +204,8 @@ public class BirchItems {
     public static final DeferredItem<BlockItem> COBBLED_GRANITE = ITEMS.registerSimpleBlockItem(BirchBlocks.COBBLED_GRANITE);
     public static final DeferredItem<BlockItem> COBBLED_TUFF = ITEMS.registerSimpleBlockItem(BirchBlocks.COBBLED_TUFF);
 
+    public static final DeferredItem<BlockItem> WILDFLOWER_BASKET = ITEMS.registerSimpleBlockItem(BirchBlocks.WILDFLOWER_BASKET);
+
     public static final DeferredItem<BlockItem> PREPARED_SUGARCANE = ITEMS.registerSimpleBlockItem(BirchBlocks.PREPARED_SUGARCANE);
     public static final DeferredItem<Item> RAW_SUGAR = ITEMS.registerItem("raw_sugar",
             (properties) -> new Item(properties){
@@ -249,5 +263,6 @@ public class BirchItems {
         WILDTHREAD_TOOL_BASE.get().fillValidHeads();
 
         WILDTHREAD_BUILDABLE.get().fillValidHeads();
+        WILDFLOWER_WICKER_BUILDABLE.get().fillValidHeads();
     }
 }

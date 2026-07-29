@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class WildthreadToolItem extends BuildableToolBase{
+public class WildthreadSpoolItem extends BuildableToolBase{
     private static final int craftTime = 3000, checkpoint = craftTime / 3;
 
-    public WildthreadToolItem(Properties properties) {
+    public WildthreadSpoolItem(Properties properties) {
         super(properties, craftTime);
     }
 
@@ -44,7 +44,7 @@ public class WildthreadToolItem extends BuildableToolBase{
             if (offhand.isEmpty() && user instanceof Player p) {
                 if (stack.getDamageValue() < getMaxDamage(stack)) {
                     messagePlayer(p, "birch_n_bees.message.no_thread_2");
-                } else messagePlayer(p, "birch_n_bees.message.no_thread_1");
+                } else messagePlayer(p, "birch_n_bees.message.no_thread_spool");
             }
             else if ((toolHead = findTool(offhand)).isValid()) {
                 setHead(stack, toolHead);
@@ -52,7 +52,7 @@ public class WildthreadToolItem extends BuildableToolBase{
                 user.playSound(SoundEvents.COBWEB_HIT, 1.0F, 1.5F);
             } else if (user instanceof Player p) messagePlayer(p, "birch_n_bees.message.isnt_thread");
         } else if (offhand.equals(stack) && user instanceof Player p) {
-            messagePlayer(p, "birch_n_bees.message.no_offhand_thread");
+            messagePlayer(p, "birch_n_bees.message.no_offhand_thread_spool");
         }
     }
 

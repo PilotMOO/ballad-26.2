@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "birch_n_bees:block/wildflower_basket",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "birch_n_bees:block/wildflower_basket"
+    },
+    "facing=south": {
+      "model": "birch_n_bees:block/wildflower_basket",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "birch_n_bees:block/wildflower_basket",
+      "y": 270
+    }
+  }
+}

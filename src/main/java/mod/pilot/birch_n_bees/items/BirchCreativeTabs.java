@@ -24,6 +24,10 @@ public class BirchCreativeTabs {
                         register.accept(BirchItems.WILDTHREAD.get());
                         register.accept(BirchItems.SPLINTERS.get());
                         register.accept(BirchItems.BUNDLE_OF_SPLINTERS.get());
+                        register.accept(BirchItems.WILDFLOWER_WICKER_BUILDABLE.get());
+                        register.accept(BirchItems.WILDFLOWER_WICKER.get());
+                        register.accept(BirchItems.WILDFLOWER_BASKET.get());
+
                         register.accept(BirchItems.CLAY_BRICK.get());
 
                         register.accept(BirchItems.STONE_PEBBLE.get());
@@ -39,6 +43,7 @@ public class BirchCreativeTabs {
                         register.accept(BirchItems.COBBLED_TUFF.get());
 
                         register.accept(BirchItems.STICKY_PLANKS.get());
+
 
                         register.accept(BirchItems.PREPARED_SUGARCANE.get());
                         register.accept(BirchItems.RAW_SUGAR.get());
