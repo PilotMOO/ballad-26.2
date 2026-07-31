@@ -1,5 +1,6 @@
 package mod.pilot.birch_n_bees;
 
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerInventoryManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -21,5 +22,6 @@ public class ABOBABClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
+        DynamicPlayerInventoryManager.systemSetup(true, DynamicPlayerInventoryManager.DEFAULT_TOKEN_CONSTRUCTOR);
     }
 }
