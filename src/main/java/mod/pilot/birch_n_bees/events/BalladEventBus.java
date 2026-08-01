@@ -6,14 +6,15 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.entity.mob.BloomingRemainsEntity;
 import mod.pilot.birch_n_bees.entity.mob.NestHeadEntity;
 import mod.pilot.birch_n_bees.entity.mob.SplinteringEntity;
-import mod.pilot.birch_n_bees.items.BirchItems;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerInventoryManager;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.DefaultDataComponentsBoundEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID)
 public class BalladEventBus {
@@ -29,5 +30,20 @@ public class BalladEventBus {
         event.register(BirchEntities.SPLINTERING.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.WORLD_SURFACE, SplinteringEntity::splinteringSpawnCheck, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(BirchEntities.NESTHEAD.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.WORLD_SURFACE, NestHeadEntity::nestHeadSpawnCheck, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(BirchEntities.BLOOMING_REMAINS.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.WORLD_SURFACE, BloomingRemainsEntity::bloomingRemainsSpawnCheck, RegisterSpawnPlacementsEvent.Operation.AND);
+    }
+
+    @SubscribeEvent
+    public static void register(RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar("1");
+        registrar.playBidirectional(
+                DynamicPlayerInventoryManager.DynamicInventoryToken.PAYLOAD_TYPE,
+                DynamicPlayerInventoryManager.DynamicInventoryToken.STREAM_CODEC,
+                DynamicPlayerInventoryManager.DynamicInventoryToken::handlePacketSync
+        );
+        registrar.playBidirectional(
+                DynamicPlayerInventoryManager.TokenTerminateRequest.PAYLOAD_TYPE,
+                DynamicPlayerInventoryManager.TokenTerminateRequest.STREAM_CODEC,
+                DynamicPlayerInventoryManager.TokenTerminateRequest::handleTerminateRequest
+        );
     }
 }

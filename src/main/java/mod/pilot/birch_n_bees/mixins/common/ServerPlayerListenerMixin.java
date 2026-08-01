@@ -1,7 +1,7 @@
 package mod.pilot.birch_n_bees.mixins.common;
 
 import com.mojang.authlib.GameProfile;
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.mixin_interfaces.IServerPlayerReferenceHolder;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.mixin_interfaces.IPlayerReference;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,7 +20,7 @@ public abstract class ServerPlayerListenerMixin extends Player {
     @Inject(method = "initMenu", at = @At("HEAD"))
     private void menuListener(AbstractContainerMenu container, CallbackInfo ci){
         Player player = this;
-        if (container instanceof IServerPlayerReferenceHolder referenceHolder
+        if (container instanceof IPlayerReference referenceHolder
                 && player instanceof ServerPlayer sPlayer){
             referenceHolder.reference(sPlayer);
         }

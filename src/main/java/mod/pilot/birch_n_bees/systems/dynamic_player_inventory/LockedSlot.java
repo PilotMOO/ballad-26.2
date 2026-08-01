@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 
 public class LockedSlot extends Slot {
     private static final Identifier greenquisitor
-            = Identifier.withDefaultNamespace("container/slot/potion");
+            = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "greenquisitor");
 
     public LockedSlot(Slot slot) {
         super(slot.container, slot.getSlotIndex(), slot.x, slot.y);
@@ -69,7 +69,7 @@ public class LockedSlot extends Slot {
 
     @Override
     public @Nullable Identifier getNoItemIcon() {
-        return Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "greenquisitor");
+        return greenquisitor;
     }
 
     @Override

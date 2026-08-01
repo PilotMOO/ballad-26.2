@@ -8,10 +8,12 @@ import mod.pilot.birch_n_bees.entity.mob.client.*;
 import mod.pilot.birch_n_bees.entity.projectiles.client.OvergrownArrowRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.SplinterProjectileRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.WildflowerPopperRenderer;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerInventoryManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID,/* bus = EventBusSubscriber.Bus.MOD,*/ value = Dist.CLIENT)
 public class ClientManager {
@@ -27,5 +29,17 @@ public class ClientManager {
 
 
         event.registerBlockEntityRenderer(BirchBlocks.WILDFLOWER_BASKET_ENTITY.get(), WildflowerBasketRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void register(RegisterClientPayloadHandlersEvent event) {
+        event.register(
+                DynamicPlayerInventoryManager.DynamicInventoryToken.PAYLOAD_TYPE,
+                DynamicPlayerInventoryManager.DynamicInventoryToken::handlePacketSync
+        );
+        event.register(
+                DynamicPlayerInventoryManager.TokenTerminateRequest.PAYLOAD_TYPE,
+                DynamicPlayerInventoryManager.TokenTerminateRequest::handleTerminateRequest
+        );
     }
 }

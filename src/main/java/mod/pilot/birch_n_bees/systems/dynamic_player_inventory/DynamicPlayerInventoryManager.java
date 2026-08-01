@@ -1,8 +1,20 @@
 package mod.pilot.birch_n_bees.systems.dynamic_player_inventory;
 
+import io.netty.buffer.ByteBuf;
+import mod.pilot.birch_n_bees.ABOBAB;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -26,8 +38,8 @@ public class DynamicPlayerInventoryManager {
         flush();
     }
     public static void flush(){
-        DynamicPlayerInventoryManager.client = false;
-        DynamicPlayerInventoryManager.TOKEN_BUILDER = null;
+        client = false;
+        TOKEN_BUILDER = null;
         PLAYERS_BY_UUID = null;
         TOKENS_BY_SLOT = null;
         size = 0; index = -1;
@@ -93,6 +105,9 @@ public class DynamicPlayerInventoryManager {
             TOKENS_BY_SLOT[index] = token;
             locateNextOpenIndexIfAny(index);
         }
+        if (isClientSide()){
+            ClientPacketDistributor.sendToServer(token);
+        } else PacketDistributor.sendToAllPlayers(token);
         return token;
     }
     public static void clearToken(UUID player){
@@ -104,11 +119,35 @@ public class DynamicPlayerInventoryManager {
     }
     public static void clearToken(int at){
         if (at >= size) return;
+        UUID uuid = PLAYERS_BY_UUID[at];
+        PLAYERS_BY_UUID[at] = null;
+        TOKENS_BY_SLOT[at] = null;
+        if (index == -1 || index > at) index = at;
+
+        TokenTerminateRequest terminate = new TokenTerminateRequest(uuid);
+        if (isClientSide()) ClientPacketDistributor.sendToServer(terminate);
+        else PacketDistributor.sendToAllPlayers(terminate);
+    }
+    public static void clearTokenQuietly(UUID player){
+        for (int i = 0; i < size; i++) {
+            if (player.equals(PLAYERS_BY_UUID[i])){
+                clearToken(i);
+            }
+        }
+    }
+    public static void clearTokenQuietly(int at){
+        if (at >= size) return;
         PLAYERS_BY_UUID[at] = null;
         TOKENS_BY_SLOT[at] = null;
         if (index == -1 || index > at) index = at;
     }
 
+
+    public static @Nullable DynamicInventoryToken mutateToken(Player player, Function<DynamicInventoryToken, DynamicInventoryToken> mutator){
+        int tokenIndex = getIndex(player.getUUID());
+        if (tokenIndex == -1) return null;
+        return TOKENS_BY_SLOT[tokenIndex] = mutator.apply(TOKENS_BY_SLOT[tokenIndex]);
+    }
     public static @Nullable DynamicInventoryToken mutateToken(UUID player, Function<DynamicInventoryToken, DynamicInventoryToken> mutator){
         int tokenIndex = getIndex(player);
         if (tokenIndex == -1) return null;
@@ -170,7 +209,16 @@ public class DynamicPlayerInventoryManager {
         else return PLAYERS_BY_UUID[index] == null;
     }
 
-    public static class DynamicInventoryToken{
+    public static long mostSignificantBits(DynamicInventoryToken token){
+        int index = getIndex(token);
+        return PLAYERS_BY_UUID[index].getMostSignificantBits();
+    }
+    public static long leastSignificantBits(DynamicInventoryToken token){
+        int index = getIndex(token);
+        return PLAYERS_BY_UUID[index].getLeastSignificantBits();
+    }
+
+    public static class DynamicInventoryToken implements CustomPacketPayload {
         public static DynamicInventoryToken defaultToken(boolean unrestricted){
             return new DynamicInventoryToken(9, unrestricted ? 27 : 0, true);
         }
@@ -180,8 +228,17 @@ public class DynamicPlayerInventoryManager {
             this.validOffhand = offhand;
         }
         public int hotbarSlots;
+        public static int hotbarSlots(DynamicInventoryToken token) {
+            return token.hotbarSlots;
+        }
         public int inventorySlots;
+        public static int inventorySlots(DynamicInventoryToken token) {
+            return token.inventorySlots;
+        }
         public boolean validOffhand;
+        public static boolean validOffhand(DynamicInventoryToken token){
+            return token.validOffhand;
+        }
 
         public boolean shouldLock(int index){
             if (index < 9){
@@ -191,10 +248,102 @@ public class DynamicPlayerInventoryManager {
             }
         }
 
+        public void applyLocking(AbstractContainerMenu menu){
+            for (Slot slot : menu.slots){
+                if (slot instanceof LockedSlot locked){
+                    locked.locked = shouldLock(locked.getSlotIndex());
+                }
+            }
+        }
+
         public int totalSlots(){
             return inventorySlots + hotbarSlots;
         }
+
+        public static final StreamCodec<ByteBuf, DynamicInventoryToken> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.INT,
+                DynamicInventoryToken::hotbarSlots,
+                ByteBufCodecs.INT,
+                DynamicInventoryToken::inventorySlots,
+                ByteBufCodecs.BOOL,
+                DynamicInventoryToken::validOffhand,
+                ByteBufCodecs.LONG,
+                DynamicPlayerInventoryManager::mostSignificantBits,
+                ByteBufCodecs.LONG,
+                DynamicPlayerInventoryManager::leastSignificantBits,
+                DynamicPlayerInventoryManager.DynamicInventoryToken::unpackFromPayload
+        );
+
+        public static DynamicInventoryToken unpackFromPayload(int hotbarSlots, int inventorySlots, boolean offhand,
+                                                              long mostSig, long leastSig){
+            DynamicInventoryToken token = new DynamicInventoryToken(hotbarSlots, inventorySlots, offhand);
+            UUID uuid = new UUID(mostSig, leastSig);
+            if (size == 0){
+                size = 1;
+                PLAYERS_BY_UUID = new UUID[size];
+                TOKENS_BY_SLOT = new DynamicInventoryToken[size];
+                PLAYERS_BY_UUID[0] = uuid;
+                TOKENS_BY_SLOT[0] = token;
+                index = -1;
+            }
+            if (index == -1){
+                growArray(1);
+                PLAYERS_BY_UUID[index] = uuid;
+                TOKENS_BY_SLOT[index] = token;
+                index = -1;
+            }
+            else {
+                PLAYERS_BY_UUID[index] = uuid;
+                TOKENS_BY_SLOT[index] = token;
+                locateNextOpenIndexIfAny(index);
+            }
+            return token;
+        }
+        public static void handlePacketSync(DynamicInventoryToken token, IPayloadContext context){
+            Player player = context.player();
+            UUID uuid = PLAYERS_BY_UUID[getIndex(token)];
+            if (player.getUUID().equals(uuid)){
+                System.out.println("Successfully received client packet and found valid UUID!");
+                token.applyLocking(player.inventoryMenu);
+                if (isServerSide()){
+                    PacketDistributor.sendToAllPlayers(token);
+                }
+            }
+        }
+
+        public static final Type<DynamicInventoryToken> PAYLOAD_TYPE =
+                new Type<>(Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "dynamic_inventory_token"));
+        @Override
+        public @NonNull Type<? extends CustomPacketPayload> type() {
+            return PAYLOAD_TYPE;
+        }
     }
+    public record TokenTerminateRequest(UUID uuid) implements CustomPacketPayload{
+        public static TokenTerminateRequest fromLong(long mostSig, long leastSig){
+            return new TokenTerminateRequest(new UUID(mostSig, leastSig));
+        }
+        public static final StreamCodec<ByteBuf, TokenTerminateRequest> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.LONG,
+                (request) -> request.uuid().getMostSignificantBits(),
+                ByteBufCodecs.LONG,
+                (request) -> request.uuid().getLeastSignificantBits(),
+                TokenTerminateRequest::fromLong
+        );
+
+        public static void handleTerminateRequest(TokenTerminateRequest request, IPayloadContext context){
+            clearTokenQuietly(request.uuid);
+            if (isServerSide()) PacketDistributor.sendToAllPlayers(request);
+        }
+
+        public static final Type<TokenTerminateRequest> PAYLOAD_TYPE =
+                new Type<>(Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "token_terminate_request"));
+        @Override
+        public @NonNull Type<? extends CustomPacketPayload> type() {
+            return PAYLOAD_TYPE;
+        }
+    }
+
+
 
     public static final Function<Player, DynamicInventoryToken> DEFAULT_TOKEN_CONSTRUCTOR =
             (player) -> DynamicPlayerInventoryManager.DynamicInventoryToken.defaultToken(false);

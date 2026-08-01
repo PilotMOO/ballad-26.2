@@ -1,7 +1,7 @@
 package mod.pilot.birch_n_bees.mixins.common;
 
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.LockedSlot;
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.mixin_interfaces.IServerPlayerReferenceHolder;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.mixin_interfaces.IPlayerReference;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,17 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import javax.annotation.Nullable;
 
 @Mixin(AbstractContainerMenu.class)
-@Implements(@Interface(iface = IServerPlayerReferenceHolder.class, prefix = "playerRef$"))
+@Implements(@Interface(iface = IPlayerReference.class, prefix = "playerRef$"))
 public abstract class ContainerMenuRestrictionMixin{
 
-    public @Nullable ServerPlayer playerRef$getReference(){
+    public @Nullable Player playerRef$getReference(){
         return playerRef$serverPlayer;
     }
-    public void playerRef$reference(ServerPlayer player){
+    public void playerRef$reference(Player player){
         playerRef$serverPlayer = player;
     }
     @Unique
-    public @Nullable ServerPlayer playerRef$serverPlayer;
+    public @Nullable Player playerRef$serverPlayer;
 
 
 
@@ -71,8 +71,8 @@ public abstract class ContainerMenuRestrictionMixin{
         return LockedSlot.wrap(slot);
     }
 
-    @Inject(method = "removed", at = @At("HEAD"))
+/*    @Inject(method = "removed", at = @At("HEAD"))
     private void removeListener(Player player, CallbackInfo ci){
         if (player == playerRef$getReference()) playerRef$reference(null);
-    }
+    }*/
 }
