@@ -26,7 +26,7 @@ public class LockableInventoryItemStackList extends NonNullList<ItemStack> {
         if (size > 27) size = 27;
         if (size < 0) size = 0;
         inventoryLimit = size - 1;
-        lockedSize = hotbarLimit + inventoryLimit + 2;
+        lockedSize = hotbarLimit + inventoryLimit + 2; //+2 because both limits are zero-context, but the locked size isn't
     }
     public void resizeHotbar(int size) {
         if (size > 9) size = 9;
