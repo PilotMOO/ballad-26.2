@@ -8,13 +8,9 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerInventoryManager;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import mod.pilot.birch_n_bees.util.BirchBiomeModification;
 import mod.pilot.birch_n_bees.util.BirchDataComponents;
-import net.minecraft.server.MinecraftServer;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -34,7 +30,6 @@ public class ABOBAB {
         modContainer.registerConfig(ModConfig.Type.STARTUP, Config.SERVER_SPEC, "ballad_config.toml");
         configLoaded = true;
         HotBrickWatcher.init(Config.SERVER.brickCookTime.get());
-        DynamicPlayerInventoryManager.modInit(modEventBus);
 
         BirchAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         BirchBlocks.BLOCKS.register(modEventBus);
@@ -52,13 +47,4 @@ public class ABOBAB {
         biomeModifiers.register("birch_spawns", () -> BirchBiomeModification.CODEC);
     }
     public static boolean configLoaded = false;
-
-    public static void onServerSetup(ServerStartedEvent event){
-        boolean setup = DynamicPlayerInventoryManager.setup;
-        System.out.println("have we already set shit up? " + setup + ", are we on the client? "
-                + DynamicPlayerInventoryManager.isClientSide());
-        if (!setup) {
-            DynamicPlayerInventoryManager.systemSetup(false, DynamicPlayerInventoryManager.DEFAULT_TOKEN_CONSTRUCTOR);
-        }
-    }
 }

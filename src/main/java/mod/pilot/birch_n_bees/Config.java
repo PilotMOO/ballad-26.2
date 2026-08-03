@@ -12,6 +12,7 @@ public class Config
         public final ModConfigSpec.ConfigValue<Double> birchChance;
 
         public final ModConfigSpec.ConfigValue<Integer> brickCookTime;
+        public final ModConfigSpec.ConfigValue<Boolean> enableDefaultInventory;
 
         public Server(ModConfigSpec.Builder builder){
             builder.push("Ballad Config");
@@ -22,6 +23,7 @@ public class Config
 
             builder.push("Misc");
             brickCookTime = builder.defineInRange("How long it takes for clay bricks to cook", 1000, 0, Integer.MAX_VALUE);
+            enableDefaultInventory = builder.define("Set the default inventory size to vanilla?", false);
             builder.pop();
 
             builder.pop();

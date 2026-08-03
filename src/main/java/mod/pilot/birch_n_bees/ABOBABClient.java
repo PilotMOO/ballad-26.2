@@ -1,6 +1,5 @@
 package mod.pilot.birch_n_bees;
 
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerInventoryManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -18,10 +17,5 @@ public class ABOBABClient {
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-    }
-
-    @SubscribeEvent
-    static void onClientSetup(FMLClientSetupEvent event) {
-        DynamicPlayerInventoryManager.systemSetup(true, DynamicPlayerInventoryManager.DEFAULT_TOKEN_CONSTRUCTOR);
     }
 }

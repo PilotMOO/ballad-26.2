@@ -225,10 +225,6 @@ public class BirchItems {
     public static final DeferredItem<SpawnEggItem> BLOOMING_REMAINS_SPAWN = ITEMS.registerItem("blooming_remains_spawn",
             (properties -> new SpawnEggItem(properties.spawnEgg(BirchEntities.BLOOMING_REMAINS.get()))));
 
-    public static final DeferredItem<Item> CLAYFLINT = ITEMS.registerItem("clayflint", (Item::new));
-    public static final DeferredItem<Item> MOON = ITEMS.registerItem("moon", (Item::new));
-    public static final DeferredItem<Item> WITHER_HEART = ITEMS.registerItem("wither_heart", (Item::new));
-
     public static final DeferredItem<TestingToolBase> TESTING_TOOL_BASE = ITEMS.registerItem("buildable_tool",
             TestingToolBase::new);
     public static final DeferredItem<BuildableToolBase> HONEY_TOOL_BASE = ITEMS.registerItem("honey_tool_base",
@@ -265,4 +261,12 @@ public class BirchItems {
         WILDTHREAD_BUILDABLE.get().fillValidHeads();
         WILDFLOWER_WICKER_BUILDABLE.get().fillValidHeads();
     }
+
+
+    public static final DeferredItem<Item> CLAYFLINT = ITEMS.registerItem("clayflint", (Item::new));
+    public static final DeferredItem<Item> MOON = ITEMS.registerItem("moon", (Item::new));
+    public static final DeferredItem<Item> WITHER_HEART = ITEMS.registerItem("wither_heart", (Item::new));
+
+    public static final DeferredItem<Item> OFFHAND_LOCKER = ITEMS.registerItem("offhand_locker", (OffhandLockingTestWand::new));
+    public static final DeferredItem<Item> HOTBAR_LOCKER = ITEMS.registerItem("hotbar_locker", (HotbarLockingTestWand::new));
 }

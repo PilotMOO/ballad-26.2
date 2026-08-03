@@ -8,11 +8,14 @@
     "common.BeeDecoratorMixin",
     "common.BirchInfector",
     "common.ContainerMenuRestrictionMixin",
+    "common.InventoryMixin",
     "common.ItemUseMixin",
-    "common.ServerPlayerListenerMixin"
+    "common.PlayerCanUseEquipmentSlotMixin",
+    "common.ServerPlayerMixin"
   ],
   "client": [
-    "client.AbstractClientPlayerMixin"
+    "client.AbstractClientPlayerMixin",
+    "client.ClientPacketInjector"
   ],
   "minVersion": "0.8"
 }
