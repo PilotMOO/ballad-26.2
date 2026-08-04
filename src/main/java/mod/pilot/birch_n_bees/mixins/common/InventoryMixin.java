@@ -21,23 +21,16 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Inventory.class)
 public abstract class InventoryMixin implements Container, Nameable, IPlayerInventoryResizable {
-    @Final
-    @Shadow private NonNullList<ItemStack> items;
-
-    @Shadow
-    @Final
-    public Player player;
-
-    @Shadow
-    @Final
-    private EntityEquipment equipment;
+    @Final @Shadow private NonNullList<ItemStack> items;
+    @Shadow @Final public Player player;
+    @Shadow @Final private EntityEquipment equipment;
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;withSize(ILjava/lang/Object;)Lnet/minecraft/core/NonNullList;"))
     private NonNullList<ItemStack> hijackItemListInit(NonNullList<ItemStack> original){
         return new LockableInventoryItemStackList(36, ItemStack.EMPTY);
     }
 
-    @ModifyReturnValue(method = "getFreeSlot", at = @At("RETURN"))
+/*    @ModifyReturnValue(method = "getFreeSlot", at = @At("RETURN"))
     private int applyResizeContext_getFreeSlot(int original){
         if (original == -1 || !(items instanceof LockableInventoryItemStackList lockable)) return -1;
         else return lockable.getEffectiveIndex(original);
@@ -60,7 +53,7 @@ public abstract class InventoryMixin implements Container, Nameable, IPlayerInve
             else return -1;
         }
         else return lockable.getEffectiveIndex(original);
-    }
+    }*/
 
     @Override
     public void ballad$resizeHotbar(int size) {
@@ -74,20 +67,18 @@ public abstract class InventoryMixin implements Container, Nameable, IPlayerInve
             }
         }
     }
-
     @Override
     public void ballad$resizeInventory(int size) {
         if (items instanceof LockableInventoryItemStackList lockable) {
-            int old = lockable.lockedSize;
+            int old = lockable.inventoryLimit;
             lockable.resizeInventory(size);
             if (lockable.inventoryLimit < old) {
-                for (int i = lockable.inventoryLimit + 1; i < 27; i++) {
-                    ballad$dropAndRemoveItem(i + 9);
+                for (int i = lockable.inventoryLimit + 10; i < 36; i++) {
+                    ballad$dropAndRemoveItem(i);
                 }
             }
         }
     }
-
     @Override
     public void ballad$updateArmor(boolean[] armor) {
         if (!armor[0]) ballad$dropAndRemoveEquipment(EquipmentSlot.HEAD);
@@ -95,7 +86,6 @@ public abstract class InventoryMixin implements Container, Nameable, IPlayerInve
         if (!armor[2]) ballad$dropAndRemoveEquipment(EquipmentSlot.LEGS);
         if (!armor[3]) ballad$dropAndRemoveEquipment(EquipmentSlot.FEET);
     }
-
     @Override
     public void ballad$updateOffhand(boolean valid) {
         if (!valid) ballad$dropAndRemoveEquipment(EquipmentSlot.OFFHAND);
