@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 public class LockableInventoryItemStackList extends NonNullList<ItemStack> {
     public LockableInventoryItemStackList(int size, ItemStack defaultValue) {
         super((this.list = createList(size, defaultValue)), defaultValue);

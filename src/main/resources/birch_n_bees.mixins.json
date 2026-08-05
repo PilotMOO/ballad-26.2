@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "birch_n_bees.refmap.json",
   "mixins": [
+    "InventoryAccessor",
     "SlotAccessor",
     "common.BeeDecoratorMixin",
     "common.BirchInfector",
@@ -11,6 +12,7 @@
     "common.InventoryMixin",
     "common.ItemUseMixin",
     "common.PlayerCanUseEquipmentSlotMixin",
+    "common.PlayerInventoryInterceptor",
     "common.ServerPlayerMixin"
   ],
   "client": [

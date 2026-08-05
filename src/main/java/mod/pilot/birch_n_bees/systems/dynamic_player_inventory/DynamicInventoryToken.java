@@ -4,6 +4,7 @@ import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.Config;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -82,11 +83,14 @@ public class DynamicInventoryToken implements ValueIOSerializable {
                 locked.locked = shouldLock(menu, slot);
             }
         }
-        IPlayerInventoryResizable resizable = (IPlayerInventoryResizable)player.getInventory();
+        DynamicInventory resizable = (DynamicInventory) player.getInventory();
         resizable.ballad$resizeHotbar(hotbarSlots);
         resizable.ballad$resizeInventory(inventorySlots);
         resizable.ballad$updateOffhand(offhand);
         resizable.ballad$updateArmor(armor);
+        if (player instanceof ServerPlayer serverPlayer){
+            serverPlayer.getInventory().setChanged();
+        }
     }
     public boolean shouldLock(AbstractContainerMenu menu, Slot slot) {
         int index = slot.getSlotIndex();

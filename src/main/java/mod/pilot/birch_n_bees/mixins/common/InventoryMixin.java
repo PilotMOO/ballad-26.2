@@ -2,6 +2,7 @@ package mod.pilot.birch_n_bees.mixins.common;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.IPlayerInventoryResizable;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.LockableInventoryItemStackList;
@@ -20,14 +21,19 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Inventory.class)
-public abstract class InventoryMixin implements Container, Nameable, IPlayerInventoryResizable {
+public abstract class InventoryMixin implements Container, Nameable/*, IPlayerInventoryResizable*/ {
     @Final @Shadow private NonNullList<ItemStack> items;
     @Shadow @Final public Player player;
     @Shadow @Final private EntityEquipment equipment;
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;withSize(ILjava/lang/Object;)Lnet/minecraft/core/NonNullList;"))
     private NonNullList<ItemStack> hijackItemListInit(NonNullList<ItemStack> original){
-        return new LockableInventoryItemStackList(36, ItemStack.EMPTY);
+        Object self = this;
+        if (self instanceof DynamicInventory dyn) {
+            dyn.items = original;
+            dyn.createWrapper();
+        }
+        return original;
     }
 
 /*    @ModifyReturnValue(method = "getFreeSlot", at = @At("RETURN"))
@@ -55,7 +61,7 @@ public abstract class InventoryMixin implements Container, Nameable, IPlayerInve
         else return lockable.getEffectiveIndex(original);
     }*/
 
-    @Override
+    /*@Override
     public void ballad$resizeHotbar(int size) {
         if (items instanceof LockableInventoryItemStackList lockable) {
             int old = lockable.hotbarLimit;
@@ -103,5 +109,5 @@ public abstract class InventoryMixin implements Container, Nameable, IPlayerInve
         ItemStack item = equipment.get(equipmentSlot);
         player.drop(item, true, false);
         equipment.set(equipmentSlot, ItemStack.EMPTY);
-    }
+    }*/
 }
