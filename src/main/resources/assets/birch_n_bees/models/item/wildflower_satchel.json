@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "birch_n_bees:item/wildflower_satchel"
+  }
+}

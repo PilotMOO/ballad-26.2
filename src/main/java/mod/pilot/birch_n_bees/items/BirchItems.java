@@ -2,14 +2,17 @@ package mod.pilot.birch_n_bees.items;
 
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.blocks.BirchBlocks;
+import mod.pilot.birch_n_bees.data.InputReader;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.unique.*;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -70,6 +73,11 @@ public class BirchItems {
             });
     public static final DeferredItem<WildflowerWickerItem> WILDFLOWER_WICKER_BUILDABLE = ITEMS.registerItem(
             "wildflower_wicker_buildable", WildflowerWickerItem::new);
+
+    public static final DeferredItem<BundleItem> WILDFLOWER_SATCHEL = ITEMS.registerItem(
+            "wildflower_satchel", (properties) -> new WildflowerSatchelItem(properties
+                    .stacksTo(1)
+                    .component(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY)));
 
 
     public static final DeferredItem<Item> BIRCH_BARK = ITEMS.registerItem("birch_bark",

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/template_bundle_open_front",
+  "textures": {
+    "layer0": "birch_n_bees:item/opened_wildflower_satchel_front"
+  }
+}

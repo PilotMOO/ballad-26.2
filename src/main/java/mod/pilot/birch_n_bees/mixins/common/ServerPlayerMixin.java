@@ -1,6 +1,7 @@
 package mod.pilot.birch_n_bees.mixins.common;
 
 import com.mojang.authlib.GameProfile;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -19,8 +20,10 @@ public abstract class ServerPlayerMixin extends Player {
 
     @Inject(method = "initMenu", at = @At("HEAD"))
     private void menuListener(AbstractContainerMenu container, CallbackInfo ci){
-        if (!DynamicInventoryToken.has(this)) this.setData(DynamicInventoryToken.ATTACHMENT, new DynamicInventoryToken());
+        /*if (!DynamicInventoryToken.has(this)) {
+            this.setData(DynamicInventoryToken.ATTACHMENT, new DynamicInventoryToken());
+        }*/
         System.out.println("applying the shits from the server");
-        DynamicInventoryToken.get(this).apply(this);
+        DynamicInventoryToken.applyInFull(this);
     }
 }

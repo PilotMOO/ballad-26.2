@@ -26,6 +26,7 @@ public class BirchCreativeTabs {
                         register.accept(BirchItems.BUNDLE_OF_SPLINTERS.get());
                         register.accept(BirchItems.WILDFLOWER_WICKER_BUILDABLE.get());
                         register.accept(BirchItems.WILDFLOWER_WICKER.get());
+                        register.accept(BirchItems.WILDFLOWER_SATCHEL.get());
                         register.accept(BirchItems.WILDFLOWER_BASKET.get());
 
                         register.accept(BirchItems.CLAY_BRICK.get());

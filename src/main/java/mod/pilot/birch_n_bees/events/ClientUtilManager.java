@@ -16,9 +16,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID,/* bus = EventBusSubscriber.Bus.MOD,*/ value = Dist.CLIENT)
-public class ClientManager {
+public class ClientUtilManager {
     @SubscribeEvent
     public static void registerLayers(final EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(BirchEntities.SPLINTER_PROJECTILE.get(), SplinterProjectileRenderer::new);
@@ -34,11 +35,10 @@ public class ClientManager {
     }
 
     @SubscribeEvent
-    public static void applyTokenOnScreenOpen(ScreenEvent.Opening event){
-        if (event.isCanceled()) return;
-
-        Screen screen = event.getScreen();
-        Minecraft mc = screen.getMinecraft();
-        if (mc.player != null) DynamicInventoryToken.get(mc.player).apply(mc.player);
+    public static void register(RegisterClientPayloadHandlersEvent event) {
+        event.register(
+                DynamicInventoryToken.TokenReapplyRequest.PACKET_TYPE,
+                DynamicInventoryToken::receiveReapplyRequestOnClient
+        );
     }
 }

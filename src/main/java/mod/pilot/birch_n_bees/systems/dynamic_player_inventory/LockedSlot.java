@@ -12,13 +12,17 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 public class LockedSlot extends Slot {
-    private static final Identifier greenquisitor
+    private static final Identifier GREENQUISITOR
             = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "greenquisitor");
+    private static final Identifier LOCKED_SLOT
+            = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "inventory/locked_slot");
+    private static final Identifier LOCKED_SLOT_ALT
+            = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "inventory/locked_slot_alt");
 
     public LockedSlot(Slot slot) {
         super(slot.container, slot.getSlotIndex(), slot.x, slot.y);
         this.referencedSlot = slot;
-        locked = true;
+        locked = false;
     }
 
     public static LockedSlot wrap(Slot slot){
@@ -96,7 +100,7 @@ public class LockedSlot extends Slot {
 
     @Override
     public @Nullable Identifier getNoItemIcon() {
-        return locked ? greenquisitor : referencedSlot.getNoItemIcon();
+        return locked ? LOCKED_SLOT : referencedSlot.getNoItemIcon();
     }
 
     @Override
@@ -110,7 +114,8 @@ public class LockedSlot extends Slot {
 
     @Override
     public boolean isActive() {
-        return true; /*!locked && referencedSlot.isActive();*/
+        //We want the slot to be active so our locked icon will render
+        return locked || referencedSlot.isActive();
     }
 
     @Override

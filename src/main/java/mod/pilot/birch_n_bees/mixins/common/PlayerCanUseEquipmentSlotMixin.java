@@ -16,17 +16,17 @@ public abstract class PlayerCanUseEquipmentSlotMixin extends Entity implements A
         super(type, level);
     }
 
-
     @ModifyReturnValue(method = "canUseSlot", at = @At("RETURN"))
     private boolean validateEquipmentSlotViaToken(boolean original, EquipmentSlot slot) {
         Object self = this;
         if (self instanceof Player player){
             DynamicInventoryToken token = DynamicInventoryToken.get(player);
             if (slot.equals(EquipmentSlot.OFFHAND)) return token.offhand;
-            if (slot.equals(EquipmentSlot.HEAD)) return token.armor[0];
-            if (slot.equals(EquipmentSlot.CHEST)) return token.armor[1];
-            if (slot.equals(EquipmentSlot.LEGS)) return token.armor[2];
-            if (slot.equals(EquipmentSlot.FEET)) return token.armor[3];
+            if (slot.equals(EquipmentSlot.FEET)) return token.armor[0];
+            if (slot.equals(EquipmentSlot.LEGS)) return token.armor[1];
+            if (slot.equals(EquipmentSlot.CHEST)) return token.armor[2];
+            if (slot.equals(EquipmentSlot.HEAD)) return token.armor[3];
+
         }
         return original;
     }

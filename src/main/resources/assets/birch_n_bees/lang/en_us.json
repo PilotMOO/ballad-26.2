@@ -12,6 +12,10 @@
   "item.birch_n_bees.wildflower_wicker_buildable": "Incomplete Wildflower Wicker",
   "item.birch_n_bees.wildflower_wicker.description": "§7Numerous Wildflower Twine weaved together, along with some small twigs liberated from the nearby birch trees, form this imperfect wicker frame.",
 
+  "item.birch_n_bees.wildflower_satchel": "Wildflower Satchel",
+  "item.birch_n_bees.wildflower_satchel.description": "§6[Left Ctrl] for more info...",
+  "item.birch_n_bees.wildflower_satchel.description.advanced": "§cJostling it around too much might cause items to spill out!",
+
   "item.birch_n_bees.buildable_tool.no_head_thread": "§4No thread!",
   "item.birch_n_bees.buildable_tool.winding_thread": "§9Has thread",
 

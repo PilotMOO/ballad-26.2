@@ -1,9 +1,14 @@
 package mod.pilot.birch_n_bees.systems.dynamic_player_inventory;
 
+import io.netty.buffer.ByteBuf;
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.Config;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -14,6 +19,7 @@ import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -45,13 +51,6 @@ public class DynamicInventoryToken implements ValueIOSerializable {
         this.armor = armor;
     }
 
-    public DynamicInventoryToken copy(){
-        return new DynamicInventoryToken(hotbarSlots, inventorySlots, offhand, armor);
-    }
-
-    public static int HOTBAR_SOFT_CAP = 9;
-    public static int INVENTORY_SOFT_CAP = 27;
-
     public static int DEFAULT_HOTBAR = 9;
     public static int DEFAULT_INVENTORY_VANILLA = 27, DEFAULT_INVENTORY_ABOBAB = 0;
     public static int defaultInventoryByConfig(){
@@ -71,28 +70,44 @@ public class DynamicInventoryToken implements ValueIOSerializable {
     public int hotbarSlots;
     public int inventorySlots;
     public boolean offhand;
-    //goes, head, chest, legs, feet from index 0-3 (I think...)
+    //goes: feet, legs, chest, head from index 0-3 (I think...)
     public boolean[] armor;
 
-    public void apply(Player player){
-        apply(player, player.containerMenu);
+    public static void applyInFull(Player player){
+        get(player).apply(player);
     }
-    public void apply(Player player, AbstractContainerMenu menu) {
+    public static void applyOnlyToMenu(Player player){
+        get(player).applyToMenu(player.containerMenu);
+    }
+    public static void applyOnlyToInventory(Player player){
+        get(player).applyToInventory(player);
+    }
+
+    public void apply(Player player){
+        applyToInventory(player);
+        applyToMenu(player.containerMenu);
+    }
+    public void applyToMenu(AbstractContainerMenu menu) {
         for (Slot slot : menu.slots){
             if (slot instanceof LockedSlot locked){
-                locked.locked = shouldLock(menu, slot);
+                locked.locked = shouldLock(/*menu, */slot);
             }
         }
+        //menu.broadcastFullState();
+    }
+    public void applyToInventory(Player player){
         DynamicInventory resizable = (DynamicInventory) player.getInventory();
         resizable.ballad$resizeHotbar(hotbarSlots);
         resizable.ballad$resizeInventory(inventorySlots);
         resizable.ballad$updateOffhand(offhand);
         resizable.ballad$updateArmor(armor);
+        resizable.setChanged();
         if (player instanceof ServerPlayer serverPlayer){
-            serverPlayer.getInventory().setChanged();
+            requestTokenReapplyFromServer(serverPlayer);
         }
     }
-    public boolean shouldLock(AbstractContainerMenu menu, Slot slot) {
+
+    public boolean shouldLock(/*AbstractContainerMenu menu, */Slot slot) {
         int index = slot.getSlotIndex();
         if (/*menu instanceof InventoryMenu && */index == 40) return !offhand;
         if (index < 9) return index >= hotbarSlots;
@@ -100,6 +115,24 @@ public class DynamicInventoryToken implements ValueIOSerializable {
             return !armor[index - 36];
         }
         else return (index - 8) > inventorySlots;
+    }
+
+    public static void requestTokenReapplyFromServer(ServerPlayer player){
+        player.connection.send(TokenReapplyRequest.INSTANCE);
+    }
+    public static void requestTokenReapplyFromClient(LocalPlayer player){
+        player.connection.send(TokenReapplyRequest.INSTANCE);
+    }
+
+    public static void receiveReapplyRequestOnServer(TokenReapplyRequest request, final IPayloadContext context){
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            applyInFull(player);
+            //if (player instanceof ServerPlayer sp) requestTokenReapplyFromServer(sp);
+        });
+    }
+    public static void receiveReapplyRequestOnClient(TokenReapplyRequest request, final IPayloadContext context){
+        context.enqueueWork(() -> applyInFull(context.player()));
     }
 
     @Override
@@ -111,7 +144,6 @@ public class DynamicInventoryToken implements ValueIOSerializable {
             output.putBoolean("armor" + i, armor[i]);
         }
     }
-
     @Override
     public void deserialize(ValueInput input) {
         hotbarSlots = input.getIntOr("hotbarSlots", DEFAULT_HOTBAR);
@@ -121,17 +153,6 @@ public class DynamicInventoryToken implements ValueIOSerializable {
             armor[i] = input.getBooleanOr("armor" + i, DEFAULT_ARMOR[i]);
         }
     }
-
-    @Override
-    public String toString() {
-        return "DynamicInventoryToken{" +
-                "hotbarSlots=" + hotbarSlots +
-                ", inventorySlots=" + inventorySlots +
-                ", offhand=" + offhand +
-                ", armor=" + Arrays.toString(armor) +
-                '}';
-    }
-
     public static class Syncer implements AttachmentSyncHandler<DynamicInventoryToken> {
         @Override
         public void write(RegistryFriendlyByteBuf buf, DynamicInventoryToken attachment, boolean initialSync) {
@@ -154,5 +175,25 @@ public class DynamicInventoryToken implements ValueIOSerializable {
             }
             return new DynamicInventoryToken(hotbarSlots, inventorySlots, offhand, armor);
         }
+    }
+    public record TokenReapplyRequest() implements CustomPacketPayload{
+        public static final TokenReapplyRequest INSTANCE = new TokenReapplyRequest();
+        public static StreamCodec<ByteBuf, TokenReapplyRequest> CODEC = StreamCodec.unit(INSTANCE);
+        public static final Type<TokenReapplyRequest> PACKET_TYPE =
+                new Type<>(Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "token_reapply_request"));
+        @Override
+        public @NonNull Type<? extends CustomPacketPayload> type() {
+            return PACKET_TYPE;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DynamicInventoryToken{" +
+                "hotbarSlots=" + hotbarSlots +
+                ", inventorySlots=" + inventorySlots +
+                ", offhand=" + offhand +
+                ", armor=" + Arrays.toString(armor) +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package mod.pilot.birch_n_bees.mixins.common;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.LockedSlot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ArmorSlot;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +16,8 @@ public abstract class ContainerMenuRestrictionMixin{
     @ModifyVariable(method = "addSlot", at = @At("HEAD"), argsOnly = true, name = "slot")
     private Slot lockAddedSlots(Slot slot){
         if (slot instanceof LockedSlot) return slot;
-        else if (slot instanceof ArmorSlot || slot.getSlotIndex() == 40) return LockedSlot.wrap(slot);
+        else if (slot instanceof ArmorSlot ||
+                (slot.getSlotIndex() == 40 && ((Object)this) instanceof InventoryMenu)) return LockedSlot.wrap(slot);
         return slot;
     }
 
@@ -29,5 +31,4 @@ public abstract class ContainerMenuRestrictionMixin{
     private Slot inventoryLocking(Slot slot){
         return LockedSlot.wrap(slot);
     }
-
 }

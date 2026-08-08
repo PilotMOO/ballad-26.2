@@ -7,6 +7,7 @@ import mod.pilot.birch_n_bees.data.BirchDataHelper;
 import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.ai.HostileFishGoal;
 import mod.pilot.birch_n_bees.items.BirchItems;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import mod.pilot.birch_n_bees.util.BirchTags;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -44,6 +46,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
@@ -345,14 +348,18 @@ public class BalladWorldEvents {
         } else event.setNewSpeed(event.getOriginalSpeed() / 5);
     }
 
-    /*@SubscribeEvent
-    public static void fovScope(ViewportEvent.ComputeFov event){
-        Entity entity = Minecraft.getInstance().cameraEntity;
-        if (entity instanceof LivingEntity lEntity){
-            if (lEntity.isUsingItem() && lEntity.getUseItem().is(BirchTags.Items.CAUSES_FOV_ZOOM)) {
-                float scale = Math.min((float)lEntity.getTicksUsingItem() / 20.0F, 1.0F);
-                event.setFOV(event.getFOV() * (1 - (scale * scale * 0.15F)));
-            }
+    @SubscribeEvent
+    public static void reapplyTokenUponLogin(PlayerEvent.PlayerLoggedInEvent event){
+        Player player = event.getEntity();
+        DynamicInventoryToken.applyInFull(player);
+        player.inventoryMenu.broadcastFullState();
+    }
+
+    @SubscribeEvent
+    public static void preventSwappingIfInvalid(LivingSwapItemsEvent.Hands event){
+        if (event.getEntity() instanceof Player player){
+            DynamicInventoryToken token = DynamicInventoryToken.get(player);
+            event.setCanceled(!token.offhand || token.hotbarSlots == 0);
         }
-    }*/
+    }
 }

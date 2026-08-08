@@ -6,6 +6,7 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.entity.mob.BloomingRemainsEntity;
 import mod.pilot.birch_n_bees.entity.mob.NestHeadEntity;
 import mod.pilot.birch_n_bees.entity.mob.SplinteringEntity;
+import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,4 +32,13 @@ public class BalladEventBus {
         event.register(BirchEntities.BLOOMING_REMAINS.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.WORLD_SURFACE, BloomingRemainsEntity::bloomingRemainsSpawnCheck, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
+    @SubscribeEvent
+    public static void registerPackets(RegisterPayloadHandlersEvent event){
+        final PayloadRegistrar registrar = event.registrar("1");
+        registrar.playBidirectional(
+                DynamicInventoryToken.TokenReapplyRequest.PACKET_TYPE,
+                DynamicInventoryToken.TokenReapplyRequest.CODEC,
+                DynamicInventoryToken::receiveReapplyRequestOnServer
+        );
+    }
 }

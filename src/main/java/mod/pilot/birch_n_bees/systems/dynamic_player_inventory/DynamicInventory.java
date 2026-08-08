@@ -26,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.Predicate;
@@ -37,23 +36,23 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     }
     public EntityEquipment equipment;
     public NonNullList<ItemStack> items;
-    public FullContextWrapper fullWrapper;
-    public IteratorOnlyContextWrapper iterWrapper;
+    //public FullContextWrapper fullWrapper;
+    public IteratorContextWrapper wrapper;
     public void createWrapper(){
-        fullWrapper = new FullContextWrapper();
-        iterWrapper = new IteratorOnlyContextWrapper();
+        //fullWrapper = new FullContextWrapper();
+        wrapper = new IteratorContextWrapper();
     }
     public int hotbarLimit, inventoryLimit;
     public int lockedSize;
-    public void resizeInventory(int size) {
-        size = Math.clamp(size, 0, 27);
-        inventoryLimit = size - 1;
-        lockedSize = hotbarLimit + inventoryLimit + 2; //+2 because both limits are zero-context, but the locked size isn't
-    }
     public void resizeHotbar(int size) {
         size = Math.clamp(size, 0, 9);
         hotbarLimit = size - 1;
         lockedSize = hotbarLimit + inventoryLimit + 2;
+    }
+    public void resizeInventory(int size) {
+        size = Math.clamp(size, 0, 27);
+        inventoryLimit = size - 1;
+        lockedSize = hotbarLimit + inventoryLimit + 2; //+2 because both limits are zero-context, but the locked size isn't
     }
 
     public DynamicInventoryToken token(){
@@ -79,7 +78,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     public boolean invalidSlot(int slot){
         if (slot < 9) return slot > hotbarLimit;
         else if (slot < 36) return slot > (inventoryLimit + 9);
-        else return true;
+        else return false;
     }
 
     /*REWRITTEN METHODS*/
@@ -88,19 +87,25 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         return this.selected;
     }
     @Override public void setSelectedSlot(int selected) {
-        if (!isHotbarSlot(selected)) {
+        if (selected < -1 || selected >= 9) {
             throw new IllegalArgumentException("Invalid selected slot");
-        } else if (selected <= hotbarLimit){
-            this.selected = selected;
         }
+        else if (selected <= hotbarLimit) this.selected = selected;
+        else if (selected == hotbarLimit + 1) this.selected = 0;
+        else /*if (selected == 8)*/ this.selected = hotbarLimit;
     }
 
     @Override
     public @NonNull ItemStack getSelectedItem() {
-        return getWithoutContext(selected);
+        if (selected == -1) return ItemStack.EMPTY;
+        else return getWithoutContext(selected);
     }
     @Override
     public @NonNull ItemStack setSelectedItem(@NonNull ItemStack itemStack) {
+        if (selected == -1) {
+            placeItemBackInInventory(itemStack);
+            return ItemStack.EMPTY;
+        }
         //In theory, the selected item should never get into locked hotbar slots,
         // so we should be fine deferring to contextless assigment...
         return setWithoutContext(selected, itemStack);
@@ -111,7 +116,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         // however if they try to use the same for(...) logic where they reference indexes instead,
         // we can't just return the full context wrapper, else we will have issues.
         // So, just return a wrapper that contextualizes only the iterator!
-        return iterWrapper;
+        return wrapper;
     }
     @Override
     public int getFreeSlot() {
@@ -139,8 +144,8 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     public void pickSlot(int slot) {
         this.setSelectedSlot(this.getSuitableHotbarSlot());
         ItemStack oldSelected = getSelectedItem();
-        setSelectedItem(getWithContext(slot));
-        setWithContext(slot, oldSelected);
+        setSelectedItem(getWithoutContext(slot));
+        setWithoutContext(slot, oldSelected);
     }
     @Override
     public int findSlotMatchingItem(@NonNull ItemStack itemStack) {
@@ -209,7 +214,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
 
         if (accessor.callHasRemainingSpaceForItem(getSelectedItem(), newItemStack)) {
             return this.selected;
-        } else if (accessor.callHasRemainingSpaceForItem(this.getItem(40), newItemStack)) {
+        } else if (token().offhand && accessor.callHasRemainingSpaceForItem(this.getItem(40), newItemStack)) {
             return 40;
         } else {
             for(int i = 0; i < items.size(); ++i) {
@@ -304,7 +309,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     public @NonNull ItemStack removeItem(int slot, int count) {
         if (invalidSlot(slot)) return ItemStack.EMPTY;
         if (slot < items.size()) {
-            return ContainerHelper.removeItem(fullWrapper, slot, count);
+            return ContainerHelper.removeItem(wrapper, slot, count);
         } else {
             EquipmentSlot equipmentSlot = EQUIPMENT_SLOT_MAPPING.get(slot);
             if (equipmentSlot != null) {
@@ -371,6 +376,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = getWithoutContext(i);
             if (!item.isEmpty()) {
+                System.out.println("shitting MYself... index " + i + ", stack " + item);
                 output.add(new ItemStackWithSlot(i, item));
             }
         }
@@ -381,6 +387,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
 
         for (ItemStackWithSlot item : input) {
             if (item.isValidInContainer(this.items.size())) {
+                System.out.println("shitting yourself... index " + item.slot() + ", stack " + item.stack());
                 setWithoutContext(item.slot(), item.stack());
             }
         }
@@ -390,7 +397,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
 
     @Override
     public boolean isEmpty() {
-        for (ItemStack itemStack : fullWrapper) {
+        for (ItemStack itemStack : wrapper) {
             if (!itemStack.isEmpty()) {
                 return false;
             }
@@ -458,20 +465,22 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
 
     @Override
     public void fillStackedContents(@NonNull StackedItemContents contents) {
-        for (ItemStack itemStack : iterWrapper) {
+        for (ItemStack itemStack : wrapper) {
             contents.accountSimpleStack(itemStack);
         }
     }
 
     @Override
     public @NonNull ItemStack removeFromSelected(boolean all) {
-        return super.removeFromSelected(all);
+        //Up-ported just in case it's finicky as shit and that's why the tossing logic was fucky
+        ItemStack selectedItem = this.getSelectedItem();
+        return selectedItem.isEmpty() ? ItemStack.EMPTY : this.removeItem(this.selected, all ? selectedItem.getCount() : 1);
     }
     /**/
 
     @Override public @NonNull Iterator<ItemStack> iterator() {return new ContextualIterator();}
 
-    public class FullContextWrapper extends NonNullList<ItemStack>{
+    /*public class FullContextWrapper extends NonNullList<ItemStack>{
         protected FullContextWrapper() {
             //Dud arguments, we never actually reference or use these...
             super(ImmutableList.of(), null);
@@ -496,9 +505,9 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         public @NonNull Iterator<ItemStack> iterator() {
             return new ContextualIterator();
         }
-    }
-    public class IteratorOnlyContextWrapper extends NonNullList<ItemStack>{
-        protected IteratorOnlyContextWrapper() {
+    }*/
+    public class IteratorContextWrapper extends NonNullList<ItemStack>{
+        protected IteratorContextWrapper() {
             //Dud arguments, we never actually reference or use these...
             super(ImmutableList.of(), null);
         }
@@ -545,69 +554,57 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         int old = hotbarLimit;
         resizeHotbar(size);
         if (hotbarLimit < old){
-
-            boolean server = player instanceof ServerPlayer && false;
-            ClientboundSetPlayerInventoryPacket[] packets = null;
-            if (server) packets = new ClientboundSetPlayerInventoryPacket[9 - hotbarLimit];
-            for (int i = hotbarLimit + 1; i < 9; i++){
-                ballad$dropAndRemoveItem(i);
-                if (server) packets[i] = createInventoryUpdatePacket(i);
-            }
-            //Reassign the selected to the limited index if it is out of bounds
             if (selected > hotbarLimit) setSelectedSlot(hotbarLimit);
-
-            if (server){
-                ServerPlayer sp = ((ServerPlayer)player);
-                for (ClientboundSetPlayerInventoryPacket packet : packets){
+            if (player instanceof ServerPlayer sp) {
+                ClientboundSetPlayerInventoryPacket[] packets = new ClientboundSetPlayerInventoryPacket[9 - hotbarLimit];
+                for (int i = hotbarLimit + 1; i < 9; i++) {
+                    ballad$dropAndRemoveItem(i, true);
+                    packets[i - (hotbarLimit + 1)] = createInventoryUpdatePacket(i);
+                }
+                for (ClientboundSetPlayerInventoryPacket packet : packets) {
                     if (packet != null) sp.connection.send(packet);
                 }
             }
+
+            if (hotbarLimit == -1 && equipment instanceof DynamicPlayerEquipment dynEq) dynEq.updateMainhand(false);
+        }
+        else if (old == -1) {
+            setSelectedSlot(0);
+            if (equipment instanceof DynamicPlayerEquipment dynEq) dynEq.updateMainhand(true);
         }
     }
     @Override
     public void ballad$resizeInventory(int size) {
         int old = inventoryLimit;
         resizeInventory(size);
-        if (inventoryLimit < old) {
-            boolean server = player instanceof ServerPlayer && false;
-            ClientboundSetPlayerInventoryPacket[] packets = null;
-            if (server) packets = new ClientboundSetPlayerInventoryPacket[36 - (inventoryLimit + 9)];
-
+        if (inventoryLimit < old && player instanceof ServerPlayer sp) {
+            ClientboundSetPlayerInventoryPacket[] packets = new ClientboundSetPlayerInventoryPacket[36 - (inventoryLimit + 9)];
             for (int i = inventoryLimit + 9; i < 36; i++) {
-                ballad$dropAndRemoveItem(i);
-                if (server) packets[i - 8] = createInventoryUpdatePacket(i);
+                ballad$dropAndRemoveItem(i, false);
+                packets[i - 8] = createInventoryUpdatePacket(i);
             }
-
-            if (server){
-                ServerPlayer sp = ((ServerPlayer)player);
-                for (ClientboundSetPlayerInventoryPacket packet : packets){
-                    if (packet != null) sp.connection.send(packet);
-                }
+            for (ClientboundSetPlayerInventoryPacket packet : packets){
+                if (packet != null) sp.connection.send(packet);
             }
         }
 
     }
     @Override
     public void ballad$updateArmor(boolean[] armor) {
-        if (!armor[0]) ballad$dropAndRemoveEquipment(EquipmentSlot.HEAD);
-        if (!armor[1]) ballad$dropAndRemoveEquipment(EquipmentSlot.CHEST);
-        if (!armor[2]) ballad$dropAndRemoveEquipment(EquipmentSlot.LEGS);
-        if (!armor[3]) ballad$dropAndRemoveEquipment(EquipmentSlot.FEET);
+        if (equipment instanceof DynamicPlayerEquipment dynEq){
+            dynEq.updateArmor(armor);
+        }
     }
     @Override
     public void ballad$updateOffhand(boolean valid) {
-        if (!valid) ballad$dropAndRemoveEquipment(EquipmentSlot.OFFHAND);
+        if (equipment instanceof DynamicPlayerEquipment dynEq){
+            dynEq.updateOffhand(valid);
+        }
     }
 
-
-    private void ballad$dropAndRemoveItem(int index){
+    private void ballad$dropAndRemoveItem(int index, boolean tossFromHand){
         ItemStack item = getWithoutContext(index);
-        player.drop(item, true, false);
+        player.drop(item, !tossFromHand, tossFromHand);
         setWithoutContext(index, ItemStack.EMPTY);
-    }
-    private void ballad$dropAndRemoveEquipment(EquipmentSlot equipmentSlot){
-        ItemStack item = equipment.get(equipmentSlot);
-        player.drop(item, true, false);
-        equipment.set(equipmentSlot, ItemStack.EMPTY);
     }
 }
