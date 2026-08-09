@@ -1,10 +1,12 @@
 package mod.pilot.birch_n_bees.items.unique;
 
 import mod.pilot.birch_n_bees.data.InputReader;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,14 +33,16 @@ public class WildflowerSatchelItem extends BundleItem {
     public void inventoryTick(@NonNull ItemStack itemStack, @NonNull ServerLevel level,
                               @NonNull Entity owner, @Nullable EquipmentSlot slot) {
         float chance = 0f;
-        if (owner.isSprinting()) chance = 0.0025f;
-        if (owner instanceof LivingEntity le && le.isJumping()){
-            chance *= 4f;
-            chance += 0.25f;
-        }
+        boolean sprinting = owner.isSprinting();
+        if (Math.abs(owner.getDeltaMovement().y) > 0.5){
+            chance = 0.2f;
+            if (sprinting) chance *= 2f;
+        } else if (sprinting && owner.tickCount % 20 == 0) chance = 0.025f;
+
         if (chance != 0f){
             RandomSource random = owner.getRandom();
-            if (chance > random.nextFloat()) return;
+            float rand = random.nextFloat();
+            if (chance < rand)return;
 
             BundleContents contents = itemStack.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
             if (contents.isEmpty()) return;
@@ -48,16 +52,19 @@ public class WildflowerSatchelItem extends BundleItem {
             mutable.toggleSelectedItem(randomIndex);
             ItemStack dropped = mutable.removeOne();
             if (dropped == null) return;
-            ItemStack delta = dropped.split(random.nextInt(4));
+            int count = random.nextInt(0,4);
+            if (count == 0) return;
+            ItemStack delta = dropped.split(count);
 
             if (owner instanceof LivingEntity le) le.drop(delta, true, true);
-            else if (owner.level() instanceof ServerLevel server) {
-                ItemEntity itemEntity = new ItemEntity(server, owner.getX(), owner.getY(), owner.getZ(), delta);
-                server.addFreshEntity(itemEntity);
+            else {
+                ItemEntity itemEntity = new ItemEntity(level, owner.getX(), owner.getY(), owner.getZ(), delta);
+                level.addFreshEntity(itemEntity);
             }
             mutable.tryInsert(dropped);
             itemStack.set(DataComponents.BUNDLE_CONTENTS, mutable.toImmutable());
-            owner.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 0.8F, 0.8F + owner.level().getRandom().nextFloat() * 0.4F);
+            level.playSound(null, owner.blockPosition(), SoundEvents.BUNDLE_REMOVE_ONE, SoundSource.PLAYERS,
+                    1f, 0.8F + owner.level().getRandom().nextFloat() * 0.6F);
         }
     }
 

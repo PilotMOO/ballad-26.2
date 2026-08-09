@@ -34,7 +34,8 @@
   ],
   "rewards": {
     "recipes": [
-      "birch_n_bees:wildflower_basket"
+      "birch_n_bees:wildflower_basket",
+      "birch_n_bees:wildflower_satchel"
     ]
   },
   "sends_telemetry_event": true

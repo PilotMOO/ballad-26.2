@@ -7,12 +7,14 @@ import mod.pilot.birch_n_bees.data.BirchDataHelper;
 import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.ai.HostileFishGoal;
 import mod.pilot.birch_n_bees.items.BirchItems;
+import mod.pilot.birch_n_bees.items.unique.WildflowerSatchelItem;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import mod.pilot.birch_n_bees.util.BirchTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
@@ -360,6 +364,50 @@ public class BalladWorldEvents {
         if (event.getEntity() instanceof Player player){
             DynamicInventoryToken token = DynamicInventoryToken.get(player);
             event.setCanceled(!token.offhand || token.hotbarSlots == 0);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerHurt(LivingDamageEvent.Post event){
+        if (event.getEntity() instanceof Player player && player.level() instanceof ServerLevel server){
+            for (ItemStack item : player.getInventory()){
+                if (item.is(BirchItems.WILDFLOWER_SATCHEL)){
+                    BundleContents contents = item.get(DataComponents.BUNDLE_CONTENTS);
+                    if (contents != null && !contents.isEmpty()){
+                        System.out.println("All previous criteria has been met! trying to drop items...");
+                        int toDrop = Math.min(64, (int)Math.floor(event.getInflictedDamage() * player.getRandom().nextInt(4)));
+                        System.out.println("We took " + event.getInflictedDamage() +" damage! Equalling " + toDrop +" drops...");
+                        BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
+                        boolean cycleFlag = true;
+                        int countTracker = contents.size();
+                        boolean soundFlag = false;
+                        while (toDrop > 0 && countTracker > 0 && cycleFlag){
+                            int index = player.getRandom().nextInt(countTracker);
+                            System.out.println("Cycle, toDrop is " + toDrop + ", random index is " + index);
+                            mutable.toggleSelectedItem(index);
+                            ItemStack removed = mutable.removeOne();
+                            System.out.println("Random itemstack is " + removed);
+                            if (removed != null) {
+                                ItemStack delta = removed.split(player.getRandom().nextInt(toDrop));
+                                player.drop(delta, true, false);
+                                soundFlag = true;
+                                int tryInsert = mutable.tryInsert(removed);
+                                toDrop -= tryInsert;
+                                if (tryInsert == 0) countTracker--;
+                                System.out.println("Removed was not null! we returned " + tryInsert + " to the stack, putting back into bundle");
+                            } else {
+                                System.out.println("Oops! It looks like we failed to retrieve an item from the bundle! toDrop: " + toDrop);
+                                cycleFlag = false;
+                            }
+                            if (soundFlag) {
+                                server.playSound(null, player.blockPosition(), SoundEvents.BUNDLE_REMOVE_ONE, SoundSource.PLAYERS,
+                                        1.5F, 0.8F + server.getRandom().nextFloat() * 0.4F);
+                            }
+                        }
+                        item.set(DataComponents.BUNDLE_CONTENTS, mutable.toImmutable());
+                    }
+                }
+            }
         }
     }
 }

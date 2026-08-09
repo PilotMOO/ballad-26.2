@@ -1,0 +1,36 @@
+{
+  "parent": "birch_n_bees:story/wicker",
+  "criteria": {
+    "items": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "birch_n_bees:wildflower_satchel"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.ballad.satchel.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "birch_n_bees:wildflower_satchel"
+    },
+    "title": {
+      "translate": "advancements.ballad.satchel.title"
+    },
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "items"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

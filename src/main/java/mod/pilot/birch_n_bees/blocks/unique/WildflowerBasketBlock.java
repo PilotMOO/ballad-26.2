@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import mod.pilot.birch_n_bees.blocks.block_entities.WildflowerBasketBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -65,7 +66,7 @@ public class WildflowerBasketBlock extends HorizontalDirectionalBlock implements
             ItemStack basketStack = basket.heldStack;
             if (basketStack.isEmpty()) {
                 if (itemStack.isEmpty()) return InteractionResult.TRY_WITH_EMPTY_HAND;
-                else {
+                else if (!itemStack.has(DataComponents.BUNDLE_CONTENTS) || itemStack.get(DataComponents.BUNDLE_CONTENTS).isEmpty()){
                     basket.updateItemStack(itemStack.copyAndClear(), server, player);
                     level.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
                             SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS,

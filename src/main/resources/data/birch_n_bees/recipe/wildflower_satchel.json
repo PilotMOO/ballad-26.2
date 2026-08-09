@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "birch_n_bees:wildflower_wicker",
+    "birch_n_bees:wildflower_wicker",
+    "birch_n_bees:stripped_wildflower_twine",
+    "minecraft:stick"
+  ],
+  "result": {
+    "count": 1,
+    "id": "birch_n_bees:wildflower_satchel"
+  }
+}
