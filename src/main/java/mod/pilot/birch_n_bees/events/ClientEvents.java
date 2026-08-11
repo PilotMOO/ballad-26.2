@@ -20,7 +20,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID, value = Dist.CLIENT)
-public class ClientEvent {
+public class ClientEvents {
     @SubscribeEvent
     public static void applyTokenOnScreenOpen(ScreenEvent.Opening event){
         if (event.isCanceled()) return;

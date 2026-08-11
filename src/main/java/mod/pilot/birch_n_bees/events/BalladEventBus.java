@@ -7,6 +7,7 @@ import mod.pilot.birch_n_bees.entity.mob.BloomingRemainsEntity;
 import mod.pilot.birch_n_bees.entity.mob.NestHeadEntity;
 import mod.pilot.birch_n_bees.entity.mob.SplinteringEntity;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
+import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,6 +40,11 @@ public class BalladEventBus {
                 DynamicInventoryToken.TokenReapplyRequest.PACKET_TYPE,
                 DynamicInventoryToken.TokenReapplyRequest.CODEC,
                 DynamicInventoryToken::receiveReapplyRequestOnServer
+        );
+        registrar.playToClient(
+                HealthToken.RequestClientCure.PACKET_TYPE,
+                HealthToken.RequestClientCure.CODEC,
+                HealthToken.RequestClientCure::handle
         );
     }
 }

@@ -8,11 +8,11 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
+import mod.pilot.birch_n_bees.systems.extended_health.AilmentManager;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import mod.pilot.birch_n_bees.util.BirchBiomeModification;
 import mod.pilot.birch_n_bees.util.BirchDataComponents;
 import net.neoforged.neoforge.common.world.BiomeModifier;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -40,6 +40,8 @@ public class ABOBAB {
         BirchCreativeTabs.TABS.register(modEventBus);
         BirchEntities.ENTITIES.register(modEventBus);
         BirchCriteriaRegistries.TRIGGERS.register(modEventBus);
+
+        AilmentManager.init(modEventBus);
 
         final DeferredRegister<MapCodec<? extends BiomeModifier>> biomeModifiers =
                 DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MOD_ID);
