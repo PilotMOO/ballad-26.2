@@ -11,7 +11,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
@@ -22,6 +24,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 
 public class HealthToken implements ValueIOSerializable {
@@ -94,12 +97,12 @@ public class HealthToken implements ValueIOSerializable {
     }
 
     public void add(AilmentInstance<?> ailmentInstance){
-        boolean client = AilmentManager.isClientSide();
+        /*boolean client = AilmentManager.isClientSide();
         if (ailmentInstance instanceof AilmentInstance.Server && client) {
             throw new RuntimeException("Oops! found a Server-side ailment instance on the logical client! That shouldn't have happened... Instance is: " + ailmentInstance.type.ID);
         } else if (ailmentInstance instanceof AilmentInstance.Client && !client){
             throw new RuntimeException("Oops! found a Client-side ailment instance on the logical server! That shouldn't have happened... Instance is: " + ailmentInstance.type.ID);
-        }
+        }*/
         instances.add(ailmentInstance);
     }
     public void remove(Identifier id){
@@ -115,6 +118,9 @@ public class HealthToken implements ValueIOSerializable {
             }
         }
     }
+    public void remove(AilmentInstance<?> ailmentInstance){
+        instances.remove(ailmentInstance);
+    }
 
     @Override
     public void serialize(@NonNull ValueOutput output) {
@@ -124,6 +130,7 @@ public class HealthToken implements ValueIOSerializable {
             AilmentInstance<?> ailment = instances.get(i);
             String prepend = "ailment" + i;
             output.putString(prepend + "_ID", ailment.type.ID.toString());
+            output.putBoolean(prepend + "_client", ailment.clientSide);
             ailment.serialize(prepend, output);
         }
     }
@@ -137,8 +144,9 @@ public class HealthToken implements ValueIOSerializable {
                 if (stringID.isEmpty()) continue;
                 Identifier ident = Identifier.parse(stringID);
                 Ailment ailment = AilmentManager.byIdentifier(ident);
+                boolean client = input.getBooleanOr(prepend + "_client", false);
                 if (ailment == null) continue;
-                AilmentInstance<?> instance = ailment.deserializeSidedInstance(AilmentManager.isClientSide(), prepend, input);
+                AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, prepend, input);
                 instances.set(i, instance);
             }
         });
@@ -158,14 +166,26 @@ public class HealthToken implements ValueIOSerializable {
         public @Nullable HealthToken read(@NonNull IAttachmentHolder holder, RegistryFriendlyByteBuf buf,
                                                     @Nullable HealthToken previousValue) {
             int size = buf.readInt();
+            System.out.println("Size is " + size);
+            if (size == 0) return new HealthToken();
             ArrayList<AilmentInstance<?>> instances = new ArrayList<>(size);
             for (int i = 0; i < size; i++){
+                System.out.println("Yummers, we are on cycle " + i + ", size is " + size);
                 String stringID = buf.readUtf();
                 Identifier ident = Identifier.parse(stringID);
                 Ailment ailment = AilmentManager.byIdentifier(ident);
+                System.out.println("identifier is " + ident);
                 if (ailment != null){
                     AilmentInstance<?> oldInstance = previousValue != null ? previousValue.getAilment(ailment) : null;
-                    instances.set(i, ailment.readSidedInstance(holder, buf, oldInstance));
+                    boolean client;
+                    if (oldInstance != null) client = oldInstance.clientSide;
+                    else if (holder instanceof Entity e) client = e.level().isClientSide();
+                    else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to read a HealthToken from a sync. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
+                    System.out.println("Ailment wasn't null! Context says that this is " + (client ? "client side" : "server side"));
+                    System.out.println("cycle is " + i + ", instances has size " + instances.size());
+                    //Why the FUCK does ArrayList.set(int, E) throw an error even if the index would be in bounds of the
+                    // array as defined by the initialCapacity argument??? Why can't I use the FUCKING ARRAY in my FUCKING ARRAYLIST
+                    instances.add(ailment.readSidedInstance(holder, buf, client, oldInstance));
                 }
             }
             return new HealthToken(instances);
@@ -189,7 +209,15 @@ public class HealthToken implements ValueIOSerializable {
         }
 
         public static void handle(RequestClientCure request, final IPayloadContext context){
-            context.enqueueWork(() -> get(context.player()).remove(request.ailmentID()));
+            context.enqueueWork(() -> {
+                HealthToken token = get(context.player());
+                AilmentInstance.Client instance = (AilmentInstance.Client)token.getAilment(
+                        AilmentManager.byIdentifier(request.ailmentID()));
+                if (instance != null){
+                    if (context.player() instanceof AbstractClientPlayer player) instance.cure(player, token);
+                    token.remove(instance);
+                }
+            });
         }
     }
 

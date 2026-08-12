@@ -7,10 +7,10 @@ import mod.pilot.birch_n_bees.data.BirchDataHelper;
 import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.ai.HostileFishGoal;
 import mod.pilot.birch_n_bees.items.BirchItems;
-import mod.pilot.birch_n_bees.items.unique.WildflowerSatchelItem;
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
+import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
 import mod.pilot.birch_n_bees.util.BirchTags;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -240,8 +240,14 @@ public class BalladWorldEvents {
     }
 
     @SubscribeEvent
-    public static void breakHeldContraband(PlayerTickEvent.Pre event){
+    public static void playerPretick(PlayerTickEvent.Pre event){
         Player player = event.getEntity();
+        if (HealthToken.has(player)){
+            HealthToken token = HealthToken.get(player);
+            if (player instanceof ServerPlayer sPlayer) token.tickInstanceServer(sPlayer);
+            else if (player instanceof AbstractClientPlayer cPlayer) token.tickInstanceClient(cPlayer);
+        }
+
         ItemStack item = player.getMainHandItem();
         if (BirchDataHelper.contraband(item) && player.level() instanceof ServerLevel server){
             if (item.isDamageableItem()) item.hurtAndBreak(5, server, player, (item1) -> {});

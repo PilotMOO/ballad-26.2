@@ -6,24 +6,15 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class AilmentManager {
-    private static boolean CLIENT_FLAG = false;
-    public static boolean isClientSide(){
-        return CLIENT_FLAG;
-    }
-    static void clientInit(FMLClientSetupEvent event){
-        System.out.println("Hello from AilmentManager::clientInit! We think this is the logical client...");
-        CLIENT_FLAG = true;
-    }
-
     private static final int NATIVE_AILMENT_COUNT = 0;
     public static void init(IEventBus bus){
         registered = new Ailment[NATIVE_AILMENT_COUNT];
-        bus.addListener(AilmentManager::clientInit);
         bus.addListener(AilmentManager::registerNativeAilments);
         bus.post(new RegisterAilmentsEvent());
     }

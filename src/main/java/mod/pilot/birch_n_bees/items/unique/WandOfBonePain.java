@@ -19,10 +19,6 @@ public class WandOfBonePain extends Item {
 
     @Override
     public InteractionResult use(Level level, @NonNull Player player, InteractionHand hand) {
-        System.out.println("The wand of bone pain has been used! according to the AilmentManager, this is the "
-                + (AilmentManager.isClientSide() ? "Client side." : "Server side.")
-                + " according to the level, this is the "
-                + (level.isClientSide() ? "Client side." : "Server side."));
         HealthToken token = HealthToken.get(player);
         if (level instanceof ServerLevel) {
             if (player.isSecondaryUseActive()) {
