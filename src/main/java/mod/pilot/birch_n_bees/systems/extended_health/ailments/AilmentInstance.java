@@ -1,7 +1,11 @@
-package mod.pilot.birch_n_bees.systems.extended_health;
+package mod.pilot.birch_n_bees.systems.extended_health.ailments;
 
+import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
+import mod.pilot.birch_n_bees.systems.extended_health.IHealthTokenSerializable;
+import mod.pilot.birch_n_bees.systems.extended_health.Serializer;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -18,7 +22,8 @@ import org.jspecify.annotations.Nullable;
  *          being {@link AbstractClientPlayer} via {@link Client},
  *          and {@link ServerPlayer} via {@link Server}
  */
-public abstract sealed class AilmentInstance<P extends Player> permits AilmentInstance.Client, AilmentInstance.Server {
+public abstract sealed class AilmentInstance<P extends Player> implements IHealthTokenSerializable<P, AilmentInstance<P>>
+        permits AilmentInstance.Client, AilmentInstance.Server {
     protected AilmentInstance(Ailment parentType, boolean clientSide, byte severity, int timeUntilCured){
         this.type = parentType;
         this.clientSide = clientSide;
@@ -31,6 +36,12 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
      * for example if you are making a complex multi-stage ailment that can worsen without treatment.
      */
     public Ailment type;
+
+    @Override
+    public Identifier getIdentifier() {
+        return type.ID;
+    }
+
     /**How long, in ticks, has this instance been active on a player.*/
     public int age;
     /**How extreme the ailment is, used to manage the strength of effects inflicted by the ailment.
@@ -40,6 +51,10 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
      * Client-side instances do not manage the "cure" logic and exist solely for parity and for client-specific effects,
      * deferring to the server instance for incrementing cure progress.*/
     public final boolean clientSide;
+    @Override
+    public boolean clientSide() {
+        return clientSide;
+    }
 
     /**
      * How long, in ticks, until this ailment is cured.
@@ -129,12 +144,14 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
     public abstract void cure(P player, HealthToken token);
 
     /**Helper method to serialize this instance for saving to file*/
-    public void serialize(String prepend, ValueOutput output){
-        getSerializer().serialize(this, prepend, output);
+    public void serialize(int index, ValueOutput output){
+        Serializer<P, AilmentInstance<P>> serializer = getSerializer();
+        serializer.serialize(this, serializer.generatePrepend(index), output);
     }
     /**Helper method to deserialize this instance for parsing from save file*/
-    public void deserialize(String prepend, ValueInput input){
-        getSerializer().deserialize(this, prepend, input);
+    public void deserialize(int index, ValueInput input){
+        Serializer<P, AilmentInstance<P>> serializer = getSerializer();
+        serializer.deserialize(this, serializer.generatePrepend(index), input);
     }
 
     /**Helper method to write the relevant data to the ByteBuf for sync handling
@@ -144,38 +161,14 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
     }
 
     /**
-     * Get the {@link Serializer} compatible for this instance.
-     * <p>This method is {@code final}, defer to {@link AilmentInstance#getComplexSerializer()} to implement a custom serializer</p>
-     * @return the {@link Serializer} to save this instance to file or write data to sync
-     */
-    public final Serializer<AilmentInstance<P>> getSerializer(){
-        if (hasComplexData()) return getComplexSerializer();
-        else return getSidedSerializer();
-    }
-
-    /**
-     * Returns the associated {@link AilmentInstance.SimpleSerializer} for this instance--
-     * either {@link SimpleSerializer#CLIENT_INSTANCE} for {@link AilmentInstance.Client},
-     * or {@link SimpleSerializer#SERVER_INSTANCE} for {@link AilmentInstance.Server}.
+     * Returns the associated {@link DefaultSerializer} for this instance--
+     * either {@link DefaultSerializer#CLIENT_INSTANCE} for {@link AilmentInstance.Client},
+     * or {@link DefaultSerializer#SERVER_INSTANCE} for {@link AilmentInstance.Server}.
      * <p>All accessible implementations of this method are {@code final},
      * defer to {@link AilmentInstance#getComplexSerializer()} to implement a custom serializer.</p>
-     * @return the associated {@link AilmentInstance.SimpleSerializer} for this instance
+     * @return the associated {@link DefaultSerializer} for this instance
      */
-    protected abstract SimpleSerializer<P> getSidedSerializer();
-
-    /**If this given AilmentInstance type requires a custom serializer. Default {@code false}
-     * @return if this given AilmentInstance type requires a custom serializer*/
-    public boolean hasComplexData(){return false;}
-    /**Retrieves the custom {@link Serializer} for this instance.
-     * <b>This method returns a null value by default, despite the {@code @NonNull} annotation.</b>
-     * Validate if this instance has a custom serializer via {@link AilmentInstance#hasComplexData()}
-     * <p>For instances that require a custom serializer due to implementing and saving additional data,
-     * override this method to return your custom {@link Serializer}.
-     * <b>Make sure to override {@link AilmentInstance#hasComplexData()} to return {@code true},
-     * otherwise your serializer will not be used</b></p>
-     * @return the custom serializer for this instance, {@code null} for default implementations
-     */
-    public @NonNull Serializer<AilmentInstance<P>> getComplexSerializer(){return null;}
+    @Override public abstract DefaultSerializer<P> getDefaultSerializer();
 
     /**The client-side implementation of {@link AilmentInstance}, for use with {@link AbstractClientPlayer} objects.
      * <p>Client-side instances <b>should not manage cure logic, and only apply client-side effects</b>
@@ -205,8 +198,8 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
         }
 
         @Override
-        protected final SimpleSerializer<AbstractClientPlayer> getSidedSerializer() {
-            return SimpleSerializer.CLIENT_INSTANCE;
+        public final DefaultSerializer<AbstractClientPlayer> getDefaultSerializer() {
+            return DefaultSerializer.CLIENT_INSTANCE;
         }
     }
 
@@ -241,8 +234,8 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
             requestClientCure(player);
         }
         @Override
-        protected SimpleSerializer<ServerPlayer> getSidedSerializer() {
-            return SimpleSerializer.SERVER_INSTANCE;
+        public DefaultSerializer<ServerPlayer> getDefaultSerializer() {
+            return DefaultSerializer.SERVER_INSTANCE;
         }
 
         /**
@@ -254,56 +247,6 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
         }
     }
 
-    /**
-     * A baseclass for serializers that handle the serialization of {@link AilmentInstance}s.
-     * <p>Refer to {@link SimpleSerializer} if your instance does not use custom data.</p>
-     * @param <A> the type of {@link AilmentInstance} this serializer handles
-     */
-    public static abstract class Serializer<A extends AilmentInstance<?>>{
-        /**
-         * Writes all the relevant data of the first argument to the supplied {@link ValueOutput} argument for serialization.
-         * <p><b>When implementing this method, make sure to concatenate the 2nd string argument to the FRONT
-         * of each of the string IDs when putting data.</b>
-         * Refer to the default implementation in {@link SimpleSerializer} for reference.</p>
-         * @param instance the {@link AilmentInstance} to get the data from
-         * @param prepend the unique string I.D. to prepend to each of the data string arguments when assigning data to the {@link ValueOutput}
-         * @param output the {@link ValueOutput} to write data to
-         */
-        public abstract void serialize(A instance, String prepend, @NonNull ValueOutput output);
-
-        /**
-         * Reads all relevant data of the {@link ValueInput} and assigns the data to the default {@link AilmentInstance} object for deserialization.
-         * <p>Make sure to prepend each string ID with the supplied string prepend in order to access the correct data.
-         * Refer to your custom implementation of {@link Serializer#serialize(AilmentInstance, String, ValueOutput)}
-         * or the default implementation in {@link SimpleSerializer} for reference.</p>
-         * @param instance the {@link AilmentInstance} to assign the data to
-         * @param prepend the unique string I.D. to prepend to each of the data string arguments when reading data from the {@link ValueInput}
-         * @param input the {@link ValueInput} to read data from
-         */
-        public abstract void deserialize(A instance, String prepend, @NonNull ValueInput input);
-
-        /**
-         * Writes all the relevant data of the first argument to the supplied {@link RegistryFriendlyByteBuf} for syncing.
-         * @param instance the {@link AilmentInstance} to get the relevant data
-         * @param buf the {@link RegistryFriendlyByteBuf} to write data to
-         */
-        public abstract void write(A instance, @NonNull RegistryFriendlyByteBuf buf);
-
-        /**
-         * Reads all relevant data of the {@link RegistryFriendlyByteBuf} and assigns the data to the default {@link AilmentInstance} object for syncing.
-         * <p>Because java generics kind of suck, you may have to do an unchecked cast to return the correct generic
-         * if you don't create your own custom subclasses of {@link Client} and {@link Server}</p>
-         * @param holder the {@link IAttachmentHolder} the AilmentInstance belongs to
-         * @param newInstance the {@link AilmentInstance} to assign the data to
-         * @param buf the {@link RegistryFriendlyByteBuf} to get the data from
-         * @param oldInstance an optional {@link AilmentInstance} that refers to the old value that will be replaced with the new value.
-         *                    <b>May be null, but can be used to preserve information that would otherwise not be synced
-         *                    or lost when syncing</b>
-         * @return the 2nd {@link AilmentInstance} argument with the synced data now applied
-         */
-        public abstract AilmentInstance<?> read(IAttachmentHolder holder, AilmentInstance<?> newInstance, @NonNull RegistryFriendlyByteBuf buf,
-                               @Nullable AilmentInstance<?> oldInstance);
-    }
 
     /**
      * A simple, default implementation of {@link Serializer} for handling {@link AilmentInstance}s
@@ -311,12 +254,12 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
      * @param <P> the relevant {@link Player} object the {@link AilmentInstance} objects this serializer handles manages;
      *           either {@link AbstractClientPlayer} for {@link Client} or {@link ServerPlayer} for {@link Server}
      */
-    public static class SimpleSerializer<P extends Player> extends Serializer<AilmentInstance<P>>{
-        /**Refer to {@link SimpleSerializer#CLIENT_INSTANCE} or {@link SimpleSerializer#SERVER_INSTANCE},
+    public static class DefaultSerializer<P extends Player> extends Serializer<P, AilmentInstance<P>> {
+        /**Refer to {@link DefaultSerializer#CLIENT_INSTANCE} or {@link DefaultSerializer#SERVER_INSTANCE},
          * or implement your own custom serializer via the superclass {@link Serializer}*/
-        private SimpleSerializer(){}
-        public static final SimpleSerializer<AbstractClientPlayer> CLIENT_INSTANCE = new SimpleSerializer<>();
-        public static final SimpleSerializer<ServerPlayer> SERVER_INSTANCE = new SimpleSerializer<>();
+        private DefaultSerializer(){}
+        public static final DefaultSerializer<AbstractClientPlayer> CLIENT_INSTANCE = new DefaultSerializer<>();
+        public static final DefaultSerializer<ServerPlayer> SERVER_INSTANCE = new DefaultSerializer<>();
 
         @Override
         public void serialize(AilmentInstance<P> instance, String prepend, @NonNull ValueOutput output) {
@@ -339,8 +282,8 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
         }
 
         @Override
-        @SuppressWarnings("unchecked") //God I hate Java generics
-        public AilmentInstance<P> read(IAttachmentHolder holder, AilmentInstance<?> newInstance, @NonNull RegistryFriendlyByteBuf buf, @Nullable AilmentInstance<?> oldInstance) {
+        public AilmentInstance<P> read(IAttachmentHolder holder, AilmentInstance<P> newInstance,
+                                       @NonNull RegistryFriendlyByteBuf buf, @Nullable AilmentInstance<P> oldInstance) {
             newInstance.age = buf.readInt();
             newInstance.severity = buf.readByte();
 
@@ -350,14 +293,14 @@ public abstract sealed class AilmentInstance<P extends Player> permits AilmentIn
                 if (oldInstance != null) newInstance.timeUntilCured = oldInstance.timeUntilCured;
             } else newInstance.timeUntilCured = buf_cureTime;
 
-            return (AilmentInstance<P>) newInstance;
+            return newInstance;
         }
     }
 
     @Override
     public String toString() {
         return "AilmentInstance{" +
-                "type=" + type +
+                "type=" + type.ID +
                 ", age=" + age +
                 ", severity=" + severity +
                 ", clientSide=" + clientSide +

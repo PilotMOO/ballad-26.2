@@ -2,9 +2,9 @@ package mod.pilot.birch_n_bees.items;
 
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.blocks.BirchBlocks;
-import mod.pilot.birch_n_bees.data.InputReader;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.unique.*;
+import mod.pilot.birch_n_bees.items.unique.testing.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -278,4 +278,5 @@ public class BirchItems {
     public static final DeferredItem<Item> OFFHAND_LOCKER = ITEMS.registerItem("offhand_locker", (OffhandLockingTestWand::new));
     public static final DeferredItem<Item> HOTBAR_LOCKER = ITEMS.registerItem("hotbar_locker", (HotbarLockingTestWand::new));
     public static final DeferredItem<Item> WAND_OF_BONE_PAIN = ITEMS.registerItem("wand_of_bone_pain", (WandOfBonePain::new));
+    public static final DeferredItem<Item> AILMENT_INSPECTOR = ITEMS.registerItem("ailment_inspector", (AilmentInspectionWand::new));
 }

@@ -1,18 +1,16 @@
-package mod.pilot.birch_n_bees.systems.extended_health;
+package mod.pilot.birch_n_bees.systems.extended_health.ailments;
 
-import mod.pilot.birch_n_bees.systems.extended_health.types.OhOuchMyBones;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.types.OhOuchMyBones;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.IModBusEvent;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class AilmentManager {
-    private static final int NATIVE_AILMENT_COUNT = 0;
+    private static final int NATIVE_AILMENT_COUNT = 1;
     public static void init(IEventBus bus){
         registered = new Ailment[NATIVE_AILMENT_COUNT];
         bus.addListener(AilmentManager::registerNativeAilments);

@@ -2,7 +2,12 @@ package mod.pilot.birch_n_bees.systems.extended_health;
 
 import io.netty.buffer.ByteBuf;
 import mod.pilot.birch_n_bees.ABOBAB;
-import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.Ailment;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentInstance;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
+import mod.pilot.birch_n_bees.systems.extended_health.limbs.Body;
+import mod.pilot.birch_n_bees.systems.extended_health.limbs.Limb;
+import mod.pilot.birch_n_bees.systems.extended_health.limbs.LimbManager;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,7 +18,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentSyncHandler;
@@ -24,8 +28,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HealthToken implements ValueIOSerializable {
     public static AttachmentType<HealthToken> ATTACHMENT;
@@ -38,12 +42,16 @@ public class HealthToken implements ValueIOSerializable {
         return player.hasData(ATTACHMENT);
     }
 
-    public HealthToken(){this(0);}
-    public HealthToken(int size){
-        this(new ArrayList<>(size));
+
+    public HealthToken(@Nullable Player player){
+        this(LimbManager.constructDefaultSidedBody(player), 0);
     }
-    public HealthToken(ArrayList<AilmentInstance<?>> ailments){
-        instances = ailments;
+    public HealthToken(Body<?> body, int size){
+        this(body, new ArrayList<>(size));
+    }
+    public HealthToken(Body<?> body, ArrayList<AilmentInstance<?>> ailments){
+        this.instances = ailments;
+        this.body = body;
     }
 
     public ArrayList<AilmentInstance<?>> instances;
@@ -53,7 +61,25 @@ public class HealthToken implements ValueIOSerializable {
         }
         return null;
     }
-    public void tickInstanceClient(AbstractClientPlayer player){
+    public void addAilment(AilmentInstance<?> ailmentInstance){instances.add(ailmentInstance);}
+    public void removeAilmentByID(Identifier id){
+        Ailment ailment = AilmentManager.byIdentifier(id);
+        if (ailment != null) removeAilment(ailment);
+    }
+    public void removeAilment(Ailment ailment){
+        int size = instances.size();
+        for (int i = 0; i < size; i++){
+            if (instances.get(i).type.equals(ailment)){
+                instances.remove(i);
+                return;
+            }
+        }
+    }
+    public void removeAilment(AilmentInstance<?> ailmentInstance){
+        instances.remove(ailmentInstance);
+    }
+
+    public void tickAilmentInstanceClient(AbstractClientPlayer player){
         int size = instances.size();
         boolean[] toRemove = new boolean[size];
         boolean check = false;
@@ -74,7 +100,7 @@ public class HealthToken implements ValueIOSerializable {
             }
         }
     }
-    public void tickInstanceServer(ServerPlayer player){
+    public void tickAilmentInstanceServer(ServerPlayer player){
         int size = instances.size();
         boolean[] toRemove = new boolean[size];
         boolean check = false;
@@ -96,30 +122,12 @@ public class HealthToken implements ValueIOSerializable {
         }
     }
 
-    public void add(AilmentInstance<?> ailmentInstance){
-        /*boolean client = AilmentManager.isClientSide();
-        if (ailmentInstance instanceof AilmentInstance.Server && client) {
-            throw new RuntimeException("Oops! found a Server-side ailment instance on the logical client! That shouldn't have happened... Instance is: " + ailmentInstance.type.ID);
-        } else if (ailmentInstance instanceof AilmentInstance.Client && !client){
-            throw new RuntimeException("Oops! found a Client-side ailment instance on the logical server! That shouldn't have happened... Instance is: " + ailmentInstance.type.ID);
-        }*/
-        instances.add(ailmentInstance);
-    }
-    public void remove(Identifier id){
-        Ailment ailment = AilmentManager.byIdentifier(id);
-        if (ailment != null) remove(ailment);
-    }
-    public void remove(Ailment ailment){
-        int size = instances.size();
-        for (int i = 0; i < size; i++){
-            if (instances.get(i).type.equals(ailment)){
-                instances.remove(i);
-                return;
-            }
+    public Body<?> body;
+    public @Nullable Limb<?> getLimb(Identifier id){
+        for (Limb<?> limb : body.limbs){
+            if (limb.ID.equals(id)) return limb;
         }
-    }
-    public void remove(AilmentInstance<?> ailmentInstance){
-        instances.remove(ailmentInstance);
+        return null;
     }
 
     @Override
@@ -132,6 +140,15 @@ public class HealthToken implements ValueIOSerializable {
             output.putString(prepend + "_ID", ailment.type.ID.toString());
             output.putBoolean(prepend + "_client", ailment.clientSide);
             ailment.serialize(prepend, output);
+        }
+        int limbCount = body.limbs.length;
+        output.putInt("limbCount", limbCount);
+        for (int i = 0;  i < limbCount; i++){
+            Limb<?> limb = body.limbs[i];
+            String prepend = "limb" + i;
+            output.putString(prepend + "_ID", limb.ID.toString());
+            output.putBoolean(prepend + "_client", limb.clientSide);
+            limb.serialize(prepend, output);
         }
     }
     @Override
@@ -146,10 +163,27 @@ public class HealthToken implements ValueIOSerializable {
                 Ailment ailment = AilmentManager.byIdentifier(ident);
                 boolean client = input.getBooleanOr(prepend + "_client", false);
                 if (ailment == null) continue;
-                AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, prepend, input);
-                instances.set(i, instance);
+                AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, i, input);
+                instances.add(instance);
             }
         });
+        input.getInt("limbCount").ifPresent((size) -> {
+            instances = new ArrayList<>(size);
+            for (int i = 0; i < size; i++){
+                String prepend = "ailment" + i;
+                String stringID = input.getStringOr(prepend + "_ID", "");
+                if (stringID.isEmpty()) continue;
+                Identifier ident = Identifier.parse(stringID);
+                LimbManager.LimbDefaultInstanceSupplier supplier = LimbManager.byIdentifier(ident);
+                if (supplier == null) continue;
+                boolean client = input.getBooleanOr(prepend + "_client", false);
+                //ToDo: Add creation of dud limbs with defaulted values for deserializing purposes
+                //Limb<?> limb = supplier.getSidedDefaultInstance(client, )
+                //AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, i, input);
+                //instances.add(instance);
+            }
+        });
+
     }
     public static class Syncer implements AttachmentSyncHandler<HealthToken> {
         @Override
@@ -215,7 +249,7 @@ public class HealthToken implements ValueIOSerializable {
                         AilmentManager.byIdentifier(request.ailmentID()));
                 if (instance != null){
                     if (context.player() instanceof AbstractClientPlayer player) instance.cure(player, token);
-                    token.remove(instance);
+                    token.removeAilment(instance);
                 }
             });
         }

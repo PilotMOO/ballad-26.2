@@ -1,9 +1,10 @@
-package mod.pilot.birch_n_bees.items.unique;
+package mod.pilot.birch_n_bees.items.unique.testing;
 
+import mod.pilot.birch_n_bees.items.unique.BuildableToolBase;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class TestingToolBase extends BuildableToolBase{
+public class TestingToolBase extends BuildableToolBase {
     public TestingToolBase(Properties properties) {
         super(properties, 80);
     }

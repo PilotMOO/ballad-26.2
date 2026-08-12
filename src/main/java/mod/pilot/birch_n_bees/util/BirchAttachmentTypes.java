@@ -3,6 +3,7 @@ package mod.pilot.birch_n_bees.util;
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -24,7 +25,8 @@ public class BirchAttachmentTypes {
                             .build());
     public static final Supplier<AttachmentType<HealthToken>> HEALTH_TOKEN_ATTACHMENT =
             ATTACHMENT_TYPES.register("health_token_attachment",
-                    () -> AttachmentType.serializable(() -> new HealthToken())
+                    () -> AttachmentType.serializable(
+                            (holder) -> new HealthToken(holder instanceof Player p ? p : null))
                             .sync(new HealthToken.Syncer())
                             .build());
 }

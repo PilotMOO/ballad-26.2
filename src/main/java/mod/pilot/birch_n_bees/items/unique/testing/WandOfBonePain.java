@@ -1,7 +1,6 @@
-package mod.pilot.birch_n_bees.items.unique;
+package mod.pilot.birch_n_bees.items.unique.testing;
 
-import mod.pilot.birch_n_bees.systems.extended_health.Ailment;
-import mod.pilot.birch_n_bees.systems.extended_health.AilmentManager;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
 import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,9 +21,9 @@ public class WandOfBonePain extends Item {
         HealthToken token = HealthToken.get(player);
         if (level instanceof ServerLevel) {
             if (player.isSecondaryUseActive()) {
-                token.remove(AilmentManager.OH_OUCH_MY_BONES);
+                token.removeAilment(AilmentManager.OH_OUCH_MY_BONES);
             } else if (token.getAilment(AilmentManager.OH_OUCH_MY_BONES) == null) {
-                token.add(AilmentManager.OH_OUCH_MY_BONES.buildInstance(false, (byte)0, 200));
+                token.addAilment(AilmentManager.OH_OUCH_MY_BONES.buildInstance(false, (byte)0, 200));
             } else player.sendSystemMessage(Component.literal("Hi."));
             player.setData(HealthToken.ATTACHMENT, token);
             System.out.println("Token AFTER modification on the SERVER: " + token);

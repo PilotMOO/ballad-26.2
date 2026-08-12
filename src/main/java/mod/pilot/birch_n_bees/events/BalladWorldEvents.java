@@ -244,8 +244,8 @@ public class BalladWorldEvents {
         Player player = event.getEntity();
         if (HealthToken.has(player)){
             HealthToken token = HealthToken.get(player);
-            if (player instanceof ServerPlayer sPlayer) token.tickInstanceServer(sPlayer);
-            else if (player instanceof AbstractClientPlayer cPlayer) token.tickInstanceClient(cPlayer);
+            if (player instanceof ServerPlayer sPlayer) token.tickAilmentInstanceServer(sPlayer);
+            else if (player instanceof AbstractClientPlayer cPlayer) token.tickAilmentInstanceClient(cPlayer);
         }
 
         ItemStack item = player.getMainHandItem();

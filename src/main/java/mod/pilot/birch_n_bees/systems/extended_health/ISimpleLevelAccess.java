@@ -1,5 +1,6 @@
 package mod.pilot.birch_n_bees.systems.extended_health;
 
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentInstance;
 import net.minecraft.world.level.Level;
 
 /**
