@@ -1,6 +1,7 @@
 package mod.pilot.birch_n_bees.systems.extended_health;
 
 import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentInstance;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -23,19 +24,13 @@ public interface IHealthTokenSerializable<P extends Player, O extends IHealthTok
     default void serialize(String prepend, ValueOutput output){
         getSerializer().serialize((O)this, prepend, output);
     }
-    /**Helper method to serialize this instance to save to file*/
-    default void serialize(int index, ValueOutput output){
-        Serializer<P, O> serializer = getSerializer();
-        getSerializer().serialize((O)this, serializer.generatePrepend(index), output);
-    }
     /**Helper method to deserialize this instance for parsing from save file*/
     default void deserialize(String prepend, ValueInput input){
         getSerializer().deserialize((O)this, prepend, input);
     }
-    /**Helper method to deserialize this instance for parsing from save file*/
-    default void deserialize(int index, ValueInput input){
-        Serializer<P, O> serializer = getSerializer();
-        serializer.deserialize((O)this, serializer.generatePrepend(index), input);
+
+    default void write(RegistryFriendlyByteBuf buf){
+        getSerializer().write((O)this, buf);
     }
 
     /**
@@ -67,7 +62,4 @@ public interface IHealthTokenSerializable<P extends Player, O extends IHealthTok
      * @return the custom serializer for this object, {@code null} for default implementations
      */
     default @NonNull Serializer<P, O> getComplexSerializer(){return null;}
-
-    Identifier getIdentifier();
-    boolean clientSide();
 }

@@ -11,15 +11,21 @@ public class Head {
     public static final Identifier HEAD = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "head");
 
     public static class Client extends Limb.Client{
-        protected Client(AbstractClientPlayer player) {
+        public Client(AbstractClientPlayer player) {
             super(HEAD, player, 1.25f);
         }
+        private Client() {super(HEAD);}
+        public static Client buildEmpty() {return new Head.Client();}
     }
     public static class Server extends Limb.Server{
-        protected Server(ServerPlayer player) {
+        public Server(ServerPlayer player) {
             super(HEAD, player, 1.25f);
         }
+        private Server() {super(HEAD);}
+        public static Server buildEmpty() {return new Head.Server();}
     }
 
-    public static final LimbManager.SimpleLimbSupplier SUPPLIER = new LimbManager.SimpleLimbSupplier(HEAD, Client::new, Server::new);
+    public static final LimbManager.SimpleLimbSupplier SUPPLIER = new LimbManager.SimpleLimbSupplier(HEAD,
+            Client::new, Client::buildEmpty,
+            Server::new, Server::buildEmpty);
 }

@@ -18,6 +18,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class LimbManager {
     private static final int NATIVE_LIMB_COUNT = 6;
@@ -144,24 +145,36 @@ public class LimbManager {
                 return getDefaultServerInstance(sPlayer);
             } else throw new IllegalArgumentException("Oops! Somehow received a non-ServerPlayer object when invoking getSidedDefaultInstance with the client argument set to false!");
         }
+        default Limb<?> getSidedEmptyInstance(boolean client){
+            return client ? getEmptyClientInstance() : getEmptyServerInstance();
+        }
         Identifier getLimbID();
         Limb.Client getDefaultClientInstance(AbstractClientPlayer player);
+        Limb.Client getEmptyClientInstance();
         Limb.Server getDefaultServerInstance(ServerPlayer player);
+        Limb.Server getEmptyServerInstance();
     }
     public static class SimpleLimbSupplier implements LimbDefaultInstanceSupplier{
         final Function<AbstractClientPlayer, Limb.Client> clientSupplier;
+        final Supplier<Limb.Client> clientEmpty;
         final Function<ServerPlayer, Limb.Server> serverSupplier;
+        final Supplier<Limb.Server> serverEmpty;
         public final Identifier limbID;
         public SimpleLimbSupplier(Identifier limbID,
                 Function<AbstractClientPlayer, Limb.Client> clientSupplier,
-                Function<ServerPlayer, Limb.Server> serverSupplier){
+                Supplier<Limb.Client> clientEmpty,
+                Function<ServerPlayer, Limb.Server> serverSupplier,
+                Supplier<Limb.Server> serverEmpty){
             this.limbID = limbID;
             this.clientSupplier = clientSupplier; this.serverSupplier = serverSupplier;
+            this.clientEmpty = clientEmpty; this.serverEmpty = serverEmpty;
         }
 
         @Override public Identifier getLimbID() {return limbID;}
         @Override public Limb.Client getDefaultClientInstance(AbstractClientPlayer player) {return clientSupplier.apply(player);}
+        @Override public Limb.Client getEmptyClientInstance() {return clientEmpty.get();}
         @Override public Limb.Server getDefaultServerInstance(ServerPlayer player) {return serverSupplier.apply(player);}
+        @Override public Limb.Server getEmptyServerInstance() {return serverEmpty.get();}
     }
     public static class RegisterLimbsEvent extends Event implements IModBusEvent {
         public LimbDefaultInstanceSupplier[] allRegisteredLimbSuppliers() {

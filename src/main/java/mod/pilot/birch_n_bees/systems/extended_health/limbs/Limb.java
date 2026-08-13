@@ -18,26 +18,14 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public abstract sealed class Limb<P extends Player> implements IHealthTokenSerializable<P, Limb<P>> permits Limb.Client, Limb.Server {
-    public final P player;
     public final Identifier ID;
-
-    @Override
-    public Identifier getIdentifier() {
-        return ID;
-    }
 
     public float entityHealthScalar;
     public float maxHealth;
     public float damage;
     public final boolean clientSide;
 
-    @Override
-    public boolean clientSide() {
-        return clientSide;
-    }
-
     protected Limb(Identifier ID, P player, float healthPercent, boolean client){
-        this.player = player;
         this.ID = ID;
         damage = 0;
 
@@ -50,6 +38,13 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
 
         this.clientSide = client;
     }
+    protected Limb(Identifier ID, boolean client){
+        this.ID = ID;
+        this.maxHealth = 1;
+        this.entityHealthScalar = -1;
+        this.damage = 0;
+        this.clientSide = client;
+    }
     public void updateHealth(float entityMaxHealth){
         float old = maxHealth;
         maxHealth = entityHealthScalar * entityMaxHealth;
@@ -59,26 +54,24 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         }
     }
 
-    public abstract void hurt(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token);
+    public abstract void hurt(P player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token);
 
     public float getEffectiveHealth(){
         return maxHealth - damage;
     }
 
     public static non-sealed class Client extends Limb<AbstractClientPlayer>{
-        protected Client(Identifier ID, AbstractClientPlayer player, float healthPercent) {
+        public Client(Identifier ID, AbstractClientPlayer player, float healthPercent) {
             super(ID, player, healthPercent, true);
+        }
+        public Client(Identifier ID){
+            super(ID, true);
         }
 
         public boolean awaitServerSync = false;
         @Override
-        public void hurt(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public void hurt(AbstractClientPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
             awaitServerSync = true;
-        }
-
-        @Override
-        public Serializer<AbstractClientPlayer, Limb<AbstractClientPlayer>> getSerializer() {
-            return null;
         }
 
         @Override
@@ -87,26 +80,24 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         }
     }
     public static non-sealed class Server extends Limb<ServerPlayer>{
-        protected Server(Identifier ID, ServerPlayer player, float healthPercent) {
+        public Server(Identifier ID, ServerPlayer player, float healthPercent) {
             super(ID, player, healthPercent, false);
+        }
+        public Server(Identifier ID){
+            super(ID, false);
         }
 
         @Override
-        public void hurt(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
-            damage += modifyLimbDamage(amount, source, relativeYaw, relativePitch, token);
+        public void hurt(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+            damage += modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }
-        public float modifyLimbDamage(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token){
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token){
             float delta = amount - getEffectiveHealth();
             if (delta < 0){
                 return amount;
             } else {
                 return getEffectiveHealth() + (delta * 0.1f);
             }
-        }
-
-        @Override
-        public Serializer<ServerPlayer, Limb<ServerPlayer>> getSerializer() {
-            return null;
         }
 
         @Override
@@ -119,13 +110,11 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         /**Refer to {@link DefaultSerializer#CLIENT_INSTANCE} or {@link DefaultSerializer#SERVER_INSTANCE},
          * or implement your own custom serializer via the superclass {@link Serializer}*/
         private DefaultSerializer(){}
+        public static DefaultSerializer<?> getSidedDefaultSerializer(boolean client){
+            return client ? CLIENT_INSTANCE : SERVER_INSTANCE;
+        }
         public static final DefaultSerializer<AbstractClientPlayer> CLIENT_INSTANCE = new DefaultSerializer<>();
         public static final DefaultSerializer<ServerPlayer> SERVER_INSTANCE = new DefaultSerializer<>();
-
-        @Override
-        public String generatePrepend(int index) {
-            return "limb" + index;
-        }
 
         @Override
         public void serialize(Limb<P> instance, String prepend, @NonNull ValueOutput output) {

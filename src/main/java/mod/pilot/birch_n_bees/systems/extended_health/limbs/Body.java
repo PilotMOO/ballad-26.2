@@ -1,12 +1,10 @@
 package mod.pilot.birch_n_bees.systems.extended_health.limbs;
 
-import mod.pilot.birch_n_bees.systems.extended_health.IHealthTokenSerializable;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
+import org.jetbrains.annotations.Nullable;
 
 public abstract sealed class Body<P extends Player> permits Body.Client, Body.Server {
     public Body(P player, Limb<P>[] limbs, boolean client){
@@ -16,6 +14,15 @@ public abstract sealed class Body<P extends Player> permits Body.Client, Body.Se
     }
     public final P player;
     public Limb<P>[] limbs;
+    public int size() {return limbs.length;}
+    @SuppressWarnings("unchecked")
+    public void unsafeSet(Limb<?> limb, int index){
+        limbs[index] = (Limb<P>)limb;
+    }
+    public @Nullable Limb<?> getLimbByID(Identifier ID){
+        for (Limb<P> limb : limbs) if (limb.ID.equals(ID)) return limb;
+        return null;
+    }
     public final boolean clientSide;
 
     public static non-sealed class Client extends Body<AbstractClientPlayer>{

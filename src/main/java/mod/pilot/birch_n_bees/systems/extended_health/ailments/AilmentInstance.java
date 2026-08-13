@@ -5,7 +5,6 @@ import mod.pilot.birch_n_bees.systems.extended_health.IHealthTokenSerializable;
 import mod.pilot.birch_n_bees.systems.extended_health.Serializer;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -37,11 +36,6 @@ public abstract sealed class AilmentInstance<P extends Player> implements IHealt
      */
     public Ailment type;
 
-    @Override
-    public Identifier getIdentifier() {
-        return type.ID;
-    }
-
     /**How long, in ticks, has this instance been active on a player.*/
     public int age;
     /**How extreme the ailment is, used to manage the strength of effects inflicted by the ailment.
@@ -51,11 +45,6 @@ public abstract sealed class AilmentInstance<P extends Player> implements IHealt
      * Client-side instances do not manage the "cure" logic and exist solely for parity and for client-specific effects,
      * deferring to the server instance for incrementing cure progress.*/
     public final boolean clientSide;
-    @Override
-    public boolean clientSide() {
-        return clientSide;
-    }
-
     /**
      * How long, in ticks, until this ailment is cured.
      * Will ONLY progress if {@link AilmentInstance#canCureProgress(Player, HealthToken)} returns true.
@@ -142,23 +131,6 @@ public abstract sealed class AilmentInstance<P extends Player> implements IHealt
      *             and is attached to the supplied {@code player} argument
      */
     public abstract void cure(P player, HealthToken token);
-
-    /**Helper method to serialize this instance for saving to file*/
-    public void serialize(int index, ValueOutput output){
-        Serializer<P, AilmentInstance<P>> serializer = getSerializer();
-        serializer.serialize(this, serializer.generatePrepend(index), output);
-    }
-    /**Helper method to deserialize this instance for parsing from save file*/
-    public void deserialize(int index, ValueInput input){
-        Serializer<P, AilmentInstance<P>> serializer = getSerializer();
-        serializer.deserialize(this, serializer.generatePrepend(index), input);
-    }
-
-    /**Helper method to write the relevant data to the ByteBuf for sync handling
-     * @param buf the {@link RegistryFriendlyByteBuf} to write data to*/
-    public void write(RegistryFriendlyByteBuf buf){
-        getSerializer().write(this, buf);
-    }
 
     /**
      * Returns the associated {@link DefaultSerializer} for this instance--

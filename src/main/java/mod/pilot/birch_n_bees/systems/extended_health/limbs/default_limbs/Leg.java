@@ -16,10 +16,11 @@ public class Leg {
 
     public static class LeftClient extends Limb.Client{
         public LeftClient(AbstractClientPlayer player) {super(LEFT_LEG, player, 1f);}
+        private LeftClient() {super(LEFT_LEG);}
     }
     public static class LeftServer extends Limb.Server{
         public LeftServer(ServerPlayer player) {super(LEFT_LEG, player, 1f);}
-
+        private LeftServer() {super(LEFT_LEG);}
         @Override
         public float modifyLimbDamage(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
             //ToDo implement directional damage calculations
@@ -28,9 +29,11 @@ public class Leg {
     }
     public static class RightClient extends Limb.Client{
         public RightClient(AbstractClientPlayer player) {super(RIGHT_LEG, player, 1f);}
+        private RightClient() {super(RIGHT_LEG);}
     }
     public static class RightServer extends Limb.Server{
         public RightServer(ServerPlayer player) {super(RIGHT_LEG, player, 1f);}
+        private RightServer() {super(RIGHT_LEG);}
 
         @Override
         public float modifyLimbDamage(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
@@ -39,8 +42,10 @@ public class Leg {
         }
     }
 
-    public static final LimbManager.SimpleLimbSupplier LEFT_SUPPLIER
-            = new LimbManager.SimpleLimbSupplier(LEFT_LEG, LeftClient::new, LeftServer::new);
-    public static final LimbManager.SimpleLimbSupplier RIGHT_SUPPLIER
-            = new LimbManager.SimpleLimbSupplier(RIGHT_LEG, RightClient::new, RightServer::new);
+    public static final LimbManager.SimpleLimbSupplier LEFT_SUPPLIER = new LimbManager.SimpleLimbSupplier(LEFT_LEG,
+            LeftClient::new, LeftClient::new,
+            LeftServer::new, LeftServer::new);
+    public static final LimbManager.SimpleLimbSupplier RIGHT_SUPPLIER = new LimbManager.SimpleLimbSupplier(RIGHT_LEG,
+            RightClient::new, RightClient::new,
+            RightServer::new, RightServer::new);
 }
