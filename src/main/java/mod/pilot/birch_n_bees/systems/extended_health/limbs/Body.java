@@ -6,13 +6,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 public abstract sealed class Body<P extends Player> permits Body.Client, Body.Server {
-    public Body(P player, Limb<P>[] limbs, boolean client){
-        this.player = player;
+    public Body(Limb<P>[] limbs, boolean client){
         this.limbs = limbs;
         this.clientSide = client;
     }
-    public final P player;
     public Limb<P>[] limbs;
     public int size() {return limbs.length;}
     @SuppressWarnings("unchecked")
@@ -25,14 +25,28 @@ public abstract sealed class Body<P extends Player> permits Body.Client, Body.Se
     }
     public final boolean clientSide;
 
+    @SuppressWarnings("unchecked")
+    public static Body<?> buildSidedBody(Limb<?>[] limbs, boolean client){
+        return client ?
+                new Client((Limb<AbstractClientPlayer>[])limbs) :
+                new Server((Limb<ServerPlayer>[])limbs);
+    }
     public static non-sealed class Client extends Body<AbstractClientPlayer>{
-        public Client(AbstractClientPlayer player, Limb<AbstractClientPlayer>[] limbs) {
-            super(player, limbs, true);
+        public Client(Limb<AbstractClientPlayer>[] limbs) {
+            super(limbs, true);
         }
     }
     public static non-sealed class Server extends Body<ServerPlayer>{
-        public Server(ServerPlayer player, Limb<ServerPlayer>[] limbs) {
-            super(player, limbs, false);
+        public Server(Limb<ServerPlayer>[] limbs) {
+            super(limbs, false);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Body{" +
+                "limbs=" + Arrays.toString(limbs) +
+                ", clientSide=" + clientSide +
+                '}';
     }
 }

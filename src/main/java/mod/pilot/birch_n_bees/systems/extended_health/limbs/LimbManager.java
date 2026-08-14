@@ -61,7 +61,7 @@ public class LimbManager {
         }
         BuildBodyEvent.Client event = ModLoader.postEventWithReturn(new BuildBodyEvent.Client(player, limbs));
         limbs = (Limb.Client[])event.limbs;
-        return new Body.Client(player, limbs);
+        return new Body.Client(limbs);
     }
     public static Body.Server constructDefaultServerBody(ServerPlayer player){
         Limb.Server[] limbs = new Limb.Server[NATIVE_LIMB_COUNT];
@@ -70,7 +70,7 @@ public class LimbManager {
         }
         BuildBodyEvent.Server event = ModLoader.postEventWithReturn(new BuildBodyEvent.Server(player, limbs));
         limbs = (Limb.Server[])event.limbs;
-        return new Body.Server(player, limbs);
+        return new Body.Server(limbs);
     }
 
     @SuppressWarnings("unchecked")

@@ -54,6 +54,8 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         }
     }
 
+    public void onExternalUpdate(P player){}
+
     public abstract void hurt(P player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token);
 
     public float getEffectiveHealth(){
@@ -144,5 +146,16 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
             newInstance.damage = buf.readFloat();
             return newInstance;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Limb{" +
+                "ID=" + ID.toString() +
+                ", entityHealthScalar=" + entityHealthScalar +
+                ", maxHealth=" + maxHealth +
+                ", damage=" + damage +
+                ", clientSide=" + clientSide +
+                '}';
     }
 }

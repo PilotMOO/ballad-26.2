@@ -27,9 +27,9 @@ public abstract class Ailment {
     public abstract void alieveSideEffectsClient(AilmentInstance.Client instance, AbstractClientPlayer player, HealthToken token);
     public abstract void alieveSideEffectsServer(AilmentInstance.Server instance, ServerPlayer player, HealthToken token);
 
-    public AilmentInstance<?> deserializeSidedInstance(boolean client, int index, ValueInput input){
+    public AilmentInstance<?> deserializeSidedInstance(boolean client, String prepend, ValueInput input){
         AilmentInstance<?> instance = constructDefaultSidedInstance(client);
-        instance.deserialize(index, input);
+        instance.deserialize(prepend, input);
         return instance;
     }
     @SuppressWarnings("unchecked") //Daily reminder that I hate java generics

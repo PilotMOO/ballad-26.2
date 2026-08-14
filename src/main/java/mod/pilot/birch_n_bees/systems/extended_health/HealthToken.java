@@ -43,12 +43,12 @@ public class HealthToken implements ValueIOSerializable {
 
 
     public HealthToken(@Nullable Player player){
-        this(LimbManager.constructDefaultSidedBody(player), 0);
+        this(0, LimbManager.constructDefaultSidedBody(player));
     }
-    public HealthToken(Body<?> body, int size){
-        this(body, new ArrayList<>(size));
+    public HealthToken(int size, Body<?> body){
+        this(new ArrayList<>(size), body);
     }
-    public HealthToken(Body<?> body, ArrayList<AilmentInstance<?>> ailments){
+    public HealthToken(ArrayList<AilmentInstance<?>> ailments, Body<?> body){
         this.instances = ailments;
         this.body = body;
     }
@@ -123,10 +123,7 @@ public class HealthToken implements ValueIOSerializable {
 
     public Body<?> body;
     public @Nullable Limb<?> getLimb(Identifier id){
-        for (Limb<?> limb : body.limbs){
-            if (limb.ID.equals(id)) return limb;
-        }
-        return null;
+        return body.getLimbByID(id);
     }
 
     @Override
@@ -162,7 +159,7 @@ public class HealthToken implements ValueIOSerializable {
                 Ailment ailment = AilmentManager.byIdentifier(ident);
                 boolean client = input.getBooleanOr(prepend + "_client", false);
                 if (ailment == null) continue;
-                AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, i, input);
+                AilmentInstance<?> instance = ailment.deserializeSidedInstance(client, prepend, input);
                 instances.add(instance);
             }
         });
@@ -203,6 +200,9 @@ public class HealthToken implements ValueIOSerializable {
         @Override
         public @Nullable HealthToken read(@NonNull IAttachmentHolder holder, RegistryFriendlyByteBuf buf,
                                                     @Nullable HealthToken previousValue) {
+            boolean validateClient = true,
+                    clientFlagFinal = false;
+
             int ailmentSize = buf.readInt();
             ArrayList<AilmentInstance<?>> instances = new ArrayList<>(ailmentSize);
             if (ailmentSize != 0) {
@@ -215,7 +215,9 @@ public class HealthToken implements ValueIOSerializable {
                         boolean client;
                         if (oldInstance != null) client = oldInstance.clientSide;
                         else if (holder instanceof Entity e) client = e.level().isClientSide();
-                        else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to read a HealthToken from a sync. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
+                        else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to read an ailment instance from HealthToken syncing. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
+                        clientFlagFinal |= client;
+                        validateClient = false;
                         //Why the FUCK does ArrayList.set(int, E) throw an error even if the index would be in bounds of the
                         // array as defined by the initialCapacity argument??? Why can't I use the FUCKING ARRAY in my FUCKING ARRAYLIST
                         instances.add(ailment.readSidedInstance(holder, buf, client, oldInstance));
@@ -231,11 +233,23 @@ public class HealthToken implements ValueIOSerializable {
                     LimbManager.LimbDefaultInstanceSupplier supplier = LimbManager.byIdentifier(ident);
                     if (supplier != null){
                         Limb<?> oldInstance = previousValue != null ? previousValue.getLimb(ident) : null;
-                        boolean client
+                        boolean client;
+                        if (oldInstance != null) client = oldInstance.clientSide;
+                        else if (holder instanceof Entity e) client = e.level().isClientSide();
+                        else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to read a limb from HealthToken syncing. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
+                        clientFlagFinal |= client;
+                        validateClient = false;
+                        Limb<?> limb = supplier.getSidedEmptyInstance(client);
+                        limb.readUnsafe(holder, buf, oldInstance);
+                        limbs[i] = limb;
                     }
                 }
             }
-            return new HealthToken(instances);
+            if (validateClient){
+                if (holder instanceof Entity e) clientFlagFinal = e.level().isClientSide();
+                else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to build a body for HealthToken syncing. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
+            }
+            return new HealthToken(instances, Body.buildSidedBody(limbs, clientFlagFinal));
         }
     }
     public record RequestClientCure(Identifier ailmentID) implements CustomPacketPayload {
@@ -272,6 +286,7 @@ public class HealthToken implements ValueIOSerializable {
     public String toString() {
         return "HealthToken{" +
                 "instances=" + instances +
+                ", body=" + body +
                 '}';
     }
 }

@@ -6,7 +6,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An interface for defining an object as serializable and syncable within a {@link HealthToken}.
@@ -28,9 +30,16 @@ public interface IHealthTokenSerializable<P extends Player, O extends IHealthTok
     default void deserialize(String prepend, ValueInput input){
         getSerializer().deserialize((O)this, prepend, input);
     }
-
+    /**Helper method to write information to a ByteBuf for syncing*/
     default void write(RegistryFriendlyByteBuf buf){
         getSerializer().write((O)this, buf);
+    }
+    /**Helper method to read information from a ByteBuf for syncing*/
+    default void read(IAttachmentHolder holder, RegistryFriendlyByteBuf buf, @Nullable O oldInstance){
+        getSerializer().read(holder, (O)this, buf, oldInstance);
+    }
+    default void readUnsafe(IAttachmentHolder holder, RegistryFriendlyByteBuf buf, @Nullable Object oldInstance){
+        getSerializer().read(holder, (O)this, buf, (O)oldInstance);
     }
 
     /**
