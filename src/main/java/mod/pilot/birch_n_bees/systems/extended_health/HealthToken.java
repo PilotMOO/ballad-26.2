@@ -189,7 +189,7 @@ public class HealthToken implements ValueIOSerializable {
                 buf.writeUtf(ailmentInstance.type.ID.toString());
                 ailmentInstance.write(buf);
             }
-            int limbSize = attachment.body.limbs.length;
+            int limbSize = attachment.body.size();
             buf.writeInt(limbSize);
             for (int i = 0; i < limbSize; i++){
                 Limb<?> limb = attachment.body.limbs[i];
@@ -277,6 +277,33 @@ public class HealthToken implements ValueIOSerializable {
                 if (instance != null){
                     if (context.player() instanceof AbstractClientPlayer player) instance.cure(player, token);
                     token.removeAilment(instance);
+                }
+            });
+        }
+    }
+    public record SyncLimb(Identifier limbID) implements CustomPacketPayload {
+        public SyncLimb(String id) {
+            this(Identifier.parse(id));
+        }
+        public static StreamCodec<ByteBuf, SyncLimb> CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.STRING_UTF8,
+                        (syncLimb) -> syncLimb.limbID.toString(),
+                        SyncLimb::new
+                );
+        public static final Type<SyncLimb> PACKET_TYPE =
+                new Type<>(Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "sync_limb"));
+        @Override
+        public @NonNull Type<? extends CustomPacketPayload> type() {
+            return PACKET_TYPE;
+        }
+
+        public static void handle(SyncLimb request, final IPayloadContext context){
+            context.enqueueWork(() -> {
+                HealthToken token = get(context.player());
+                Limb.Client limb = (Limb.Client)token.getLimb(request.limbID);
+                if (limb != null){
+                    if (context.player() instanceof AbstractClientPlayer player) limb.onExternalClientUpdate(player);
                 }
             });
         }

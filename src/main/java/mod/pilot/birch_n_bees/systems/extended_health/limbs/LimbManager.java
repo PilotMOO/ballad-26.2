@@ -1,18 +1,25 @@
 package mod.pilot.birch_n_bees.systems.extended_health.limbs;
 
 
+import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
 import mod.pilot.birch_n_bees.systems.extended_health.limbs.default_limbs.Arm;
 import mod.pilot.birch_n_bees.systems.extended_health.limbs.default_limbs.Head;
 import mod.pilot.birch_n_bees.systems.extended_health.limbs.default_limbs.Leg;
 import mod.pilot.birch_n_bees.systems.extended_health.limbs.default_limbs.Torso;
+import mod.pilot.birch_n_bees.util.BirchTags;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.IModBusEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
@@ -21,12 +28,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class LimbManager {
-    private static final int NATIVE_LIMB_COUNT = 6;
+    private static final int NATIVE_LIMB_COUNT = 6,
+            NATIVE_ONLY_DAMAGES_COUNT = 4;
     public static void init(IEventBus bus){
         registered = new LimbDefaultInstanceSupplier[NATIVE_LIMB_COUNT];
         RegisterLimbsEvent event = new RegisterLimbsEvent();
         registerNativeLimbs(event);
         bus.post(event);
+
+        onlyReferences = new OnlyDamagesReference[NATIVE_ONLY_DAMAGES_COUNT];
+        bus.addListener(LimbManager::registerNativeOnlyDamageReferences);
+        bus.post(new RegisterOnlyDamageTagReferencesEvent());
     }
     private static LimbDefaultInstanceSupplier[] registered;
     private static int count = 0;
@@ -38,7 +50,6 @@ public class LimbManager {
         }
         registered[count++] = supplier;
     }
-
     public static LimbDefaultInstanceSupplier[] allLimbSuppliers(){
         return registered;
     }
@@ -48,6 +59,31 @@ public class LimbManager {
         }
         return null;
     }
+
+    private static OnlyDamagesReference[] onlyReferences;
+    private static int onlyRefCount = 0;
+    private static void register_INTERNAL(OnlyDamagesReference reference){
+        if (onlyRefCount >= onlyReferences.length){
+            OnlyDamagesReference[] newArray = new OnlyDamagesReference[onlyRefCount + 1];
+            System.arraycopy(onlyReferences, 0, newArray, 0, onlyRefCount);
+            onlyReferences = newArray;
+        }
+        onlyReferences[onlyRefCount++] = reference;
+    }
+    public static OnlyDamagesReference[] allOnlyReferences(){return onlyReferences;}
+    public static boolean validateAgainstDamageOnly(DamageSource source, Identifier limbID){
+        for (OnlyDamagesReference ref : onlyReferences){
+            Identifier[] refID = ref.getIf(source);
+            if (refID != null) {
+                for (Identifier id : refID) {
+                    if (id.equals(limbID)) return true;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public static @Nullable Body<?> constructDefaultSidedBody(Player player) {
         if (player instanceof AbstractClientPlayer cPlayer) return constructDefaultClientBody(cPlayer);
@@ -177,9 +213,7 @@ public class LimbManager {
         @Override public Limb.Server getEmptyServerInstance() {return serverEmpty.get();}
     }
     public static class RegisterLimbsEvent extends Event implements IModBusEvent {
-        public LimbDefaultInstanceSupplier[] allRegisteredLimbSuppliers() {
-            return allLimbSuppliers();
-        }
+        public LimbDefaultInstanceSupplier[] allRegisteredLimbSuppliers() {return allLimbSuppliers();}
         public void registerLimbSupplier(LimbDefaultInstanceSupplier supplier){
             LimbManager.register_INTERNAL(supplier);
         }
@@ -191,5 +225,66 @@ public class LimbManager {
         event.registerLimbSupplier(Arm.RIGHT_SUPPLIER);
         event.registerLimbSupplier(Leg.LEFT_SUPPLIER);
         event.registerLimbSupplier(Leg.RIGHT_SUPPLIER);
+    }
+
+    public record OnlyDamagesReference(Supplier<TagKey<DamageType>> tag, Identifier[] id){
+        public boolean is(DamageSource source){
+            return source.is(tag.get());
+        }
+        public @Nullable Identifier[] getIf(DamageSource source){
+            if (is(source)) return id;
+            return null;
+        }
+    }
+    public static class RegisterOnlyDamageTagReferencesEvent extends Event implements IModBusEvent{
+        public OnlyDamagesReference[] allRegisteredOnlyReferences() { return allOnlyReferences(); }
+        public void register(Supplier<TagKey<DamageType>> tag, Identifier... id){
+            register_INTERNAL(new OnlyDamagesReference(tag, id));
+        }
+    }
+    private static void registerNativeOnlyDamageReferences(LimbManager.RegisterOnlyDamageTagReferencesEvent event){
+        event.register(() -> BirchTags.DamageTypes.ONLY_DAMAGES_HEAD, Head.HEAD);
+        event.register(() -> BirchTags.DamageTypes.ONLY_DAMAGES_TORSO, Torso.TORSO);
+        event.register(() -> BirchTags.DamageTypes.ONLY_DAMAGES_ARMS, Arm.LEFT_ARM, Arm.RIGHT_ARM);
+        event.register(() -> BirchTags.DamageTypes.ONLY_DAMAGES_LEGS, Leg.LEFT_LEG, Leg.RIGHT_LEG);
+    }
+
+    public static void limbDamageHook(LivingDamageEvent.Post event){
+        //This method is invoked within a different event listener that already validates that
+        // the event's entity is a server player, so we can just cast
+        ServerPlayer player =  (ServerPlayer) event.getEntity();
+
+        HealthToken token = HealthToken.get(player);
+        int limbCount = token.body.size();
+        Limb.Server[] applicableLimbs = new Limb.Server[limbCount];
+
+        float damage = event.getInflictedDamage();
+        DamageSource dmgSource = event.getSource();
+        double yaw, pitch;
+        Vec3 sourcePos = dmgSource.getSourcePosition();
+        if (sourcePos != null){
+            double diffX = player.getX() - sourcePos.x,
+                    diffZ = player.getZ() - sourcePos.z;
+            double horizontalDist = Math.sqrt((diffX * diffX) + (diffZ * diffZ));
+            double yDist = Math.abs(player.getY() - sourcePos.y);
+            yaw = Math.tan(diffX / diffZ) - player.getYRot();
+            pitch = Math.tan(yDist / horizontalDist);
+        } else yaw = pitch = 0;
+        int validLimbCount = 0;
+        for (Limb<?> limb : token.body.limbs){
+            Limb.Server sLimb = (Limb.Server)limb;
+            if (sLimb.isDamageApplicableToLimb(
+                    player, damage, dmgSource, yaw, pitch, token)) applicableLimbs[validLimbCount++] = sLimb;
+        }
+        HealthToken.SyncLimb[] packets = new HealthToken.SyncLimb[validLimbCount];
+        if (validLimbCount != 0){
+            for (int i = 0; i < validLimbCount; i++) {
+                Limb.Server sLimb = applicableLimbs[i];
+                sLimb.hurt(player, damage, dmgSource, yaw, pitch, token);
+                packets[i] = new HealthToken.SyncLimb(sLimb.ID);
+            }
+            player.syncData(HealthToken.ATTACHMENT);
+            player.connection.sendBundled(packets);
+        }
     }
 }

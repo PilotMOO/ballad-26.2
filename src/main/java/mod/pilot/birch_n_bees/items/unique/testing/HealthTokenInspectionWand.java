@@ -8,8 +8,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-public class AilmentInspectionWand extends Item {
-    public AilmentInspectionWand(Properties properties) {
+public class HealthTokenInspectionWand extends Item {
+    public HealthTokenInspectionWand(Properties properties) {
         super(properties);
     }
 

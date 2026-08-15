@@ -54,9 +54,24 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         }
     }
 
-    public void onExternalUpdate(P player){}
-
-    public abstract void hurt(P player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token);
+    /**
+     * Invoked for every applicable limb when the player takes damage.
+     * Use the supplied arguments to decide if the limb should take damage
+     * and apply additional effects dependent on the limb's health.
+     * <p><b>NOTE! Client limbs should NOT modify the health! Health is managed on the server and synced
+     * to the client, so any modifications made on the client will be OVERWRITTEN.</b></p>
+     * Refer to {@link Limb.Client#onExternalClientUpdate(AbstractClientPlayer)} for making adjustments
+     * on the client-side after a limb update, as this should be fired after the information has been synced.
+     * @param player the Player object associated with this limb
+     * @param amount the amount of damage dealt
+     * @param source the Damage Source
+     * @param relativeYaw the angle between the entity's facing direction and the direction of the damage along the X-Z plane.
+     *                    A.K.A. the direction of the attack relative to the entity's facing direction along just the X-Z plane
+     * @param relativePitch the angle between the entity's position and the damage's position in respect to the Y axis.
+     * @param token the HealthToken associated with this limb
+     */
+    public abstract void hurt(P player, float amount, DamageSource source,
+                              double relativeYaw, double relativePitch, HealthToken token);
 
     public float getEffectiveHealth(){
         return maxHealth - damage;
@@ -70,16 +85,18 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
             super(ID, true);
         }
 
-        public boolean awaitServerSync = false;
-        @Override
-        public void hurt(AbstractClientPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
-            awaitServerSync = true;
-        }
+        /**
+         * Invoked on ONLY the client after modifications have been made (and synced) from the server.
+         * @param player
+         */
+        public void onExternalClientUpdate(AbstractClientPlayer player){}
 
         @Override
         public Serializer<AbstractClientPlayer, Limb<AbstractClientPlayer>> getDefaultSerializer() {
             return DefaultSerializer.CLIENT_INSTANCE;
         }
+
+        @Override public void hurt(AbstractClientPlayer player, float amount, DamageSource source, double relativeYaw, double relativePitch, HealthToken token) {}
     }
     public static non-sealed class Server extends Limb<ServerPlayer>{
         public Server(Identifier ID, ServerPlayer player, float healthPercent) {
@@ -90,16 +107,22 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         }
 
         @Override
-        public void hurt(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public void hurt(ServerPlayer player, float amount, DamageSource source,
+                         double relativeYaw, double relativePitch, HealthToken token) {
             damage += modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }
-        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token){
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
+                                      double relativeYaw, double relativePitch, HealthToken token){
             float delta = amount - getEffectiveHealth();
             if (delta < 0){
                 return amount;
             } else {
                 return getEffectiveHealth() + (delta * 0.1f);
             }
+        }
+        public boolean isDamageApplicableToLimb(ServerPlayer player, float amount, DamageSource source,
+                                                double relativeYaw, double relativePitch, HealthToken token){
+            return LimbManager.validateAgainstDamageOnly(source, ID);
         }
 
         @Override

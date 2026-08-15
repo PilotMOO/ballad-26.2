@@ -278,5 +278,5 @@ public class BirchItems {
     public static final DeferredItem<Item> OFFHAND_LOCKER = ITEMS.registerItem("offhand_locker", (OffhandLockingTestWand::new));
     public static final DeferredItem<Item> HOTBAR_LOCKER = ITEMS.registerItem("hotbar_locker", (HotbarLockingTestWand::new));
     public static final DeferredItem<Item> WAND_OF_BONE_PAIN = ITEMS.registerItem("wand_of_bone_pain", (WandOfBonePain::new));
-    public static final DeferredItem<Item> AILMENT_INSPECTOR = ITEMS.registerItem("ailment_inspector", (AilmentInspectionWand::new));
+    public static final DeferredItem<Item> HEALTH_TOKEN_INSPECTOR = ITEMS.registerItem("health_token_inspector", (HealthTokenInspectionWand::new));
 }

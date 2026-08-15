@@ -18,7 +18,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID)
-public class BalladEventBus {
+public class BalladCommonModBus {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event){
         event.put(BirchEntities.SPLINTERING.get(), SplinteringEntity.createAttributes().build());
@@ -45,6 +45,11 @@ public class BalladEventBus {
                 HealthToken.RequestClientCure.PACKET_TYPE,
                 HealthToken.RequestClientCure.CODEC,
                 HealthToken.RequestClientCure::handle
+        );
+        registrar.playToClient(
+                HealthToken.SyncLimb.PACKET_TYPE,
+                HealthToken.SyncLimb.CODEC,
+                HealthToken.SyncLimb::handle
         );
     }
 }

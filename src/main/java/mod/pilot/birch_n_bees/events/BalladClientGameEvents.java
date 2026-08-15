@@ -20,7 +20,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID, value = Dist.CLIENT)
-public class ClientEvents {
+public class BalladClientGameEvents {
     @SubscribeEvent
     public static void applyTokenOnScreenOpen(ScreenEvent.Opening event){
         if (event.isCanceled()) return;
@@ -65,8 +65,6 @@ public class ClientEvents {
             = Identifier.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_right.png");
     @SubscribeEvent
     public static void uiRenderInterceptPost(RenderGuiLayerEvent.Post event){
-        /*if (true) return;*/
-
         if (event.getName().equals(VanillaGuiLayers.HOTBAR)){
             GuiGraphicsExtractor ext = event.getGuiGraphics();
             ext.disableScissor(); //Disable the scissors since we enabled it in the pre event

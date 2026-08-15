@@ -9,17 +9,14 @@ import mod.pilot.birch_n_bees.entity.projectiles.client.OvergrownArrowRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.SplinterProjectileRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.WildflowerPopperRenderer;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID,/* bus = EventBusSubscriber.Bus.MOD,*/ value = Dist.CLIENT)
-public class ClientUtilManager {
+public class BalladClientModBus {
     @SubscribeEvent
     public static void registerLayers(final EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(BirchEntities.SPLINTER_PROJECTILE.get(), SplinterProjectileRenderer::new);

@@ -22,9 +22,10 @@ public class Arm {
         public LeftServer(ServerPlayer player) {super(LEFT_ARM, player, 0.75f);}
         private LeftServer() {super(LEFT_ARM);}
         @Override
-        public float modifyLimbDamage(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
+                                      double relativeYaw, double relativePitch, HealthToken token) {
             //ToDo implement directional damage calculations
-            return super.modifyLimbDamage(amount, source, relativeYaw, relativePitch, token);
+            return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }
     }
     public static class RightClient extends Limb.Client{
@@ -35,9 +36,10 @@ public class Arm {
         public RightServer(ServerPlayer player) {super(RIGHT_ARM, player, 0.75f);}
         private RightServer() {super(RIGHT_ARM);}
         @Override
-        public float modifyLimbDamage(float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
+                                      double relativeYaw, double relativePitch, HealthToken token) {
             //ToDo implement directional damage calculations
-            return super.modifyLimbDamage(amount, source, relativeYaw, relativePitch, token);
+            return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }
     }
 

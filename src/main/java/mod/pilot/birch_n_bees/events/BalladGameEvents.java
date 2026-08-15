@@ -9,6 +9,7 @@ import mod.pilot.birch_n_bees.entity.ai.HostileFishGoal;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
+import mod.pilot.birch_n_bees.systems.extended_health.limbs.LimbManager;
 import mod.pilot.birch_n_bees.util.BirchTags;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
@@ -66,7 +67,7 @@ import java.util.ArrayList;
 import static net.minecraft.world.level.block.BeehiveBlock.HONEY_LEVEL;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID)
-public class BalladWorldEvents {
+public class BalladGameEvents {
     @SubscribeEvent
     public static void injectEntityAI(EntityJoinLevelEvent event){
         Entity entity = event.getEntity();
@@ -375,24 +376,21 @@ public class BalladWorldEvents {
 
     @SubscribeEvent
     public static void onPlayerHurt(LivingDamageEvent.Post event){
-        if (event.getEntity() instanceof Player player && player.level() instanceof ServerLevel server){
+        if (event.getEntity() instanceof ServerPlayer player /*&& player.level() instanceof ServerLevel server*/){
+            ServerLevel server = player.level();
             for (ItemStack item : player.getInventory()){
                 if (item.is(BirchItems.WILDFLOWER_SATCHEL)){
                     BundleContents contents = item.get(DataComponents.BUNDLE_CONTENTS);
                     if (contents != null && !contents.isEmpty()){
-                        System.out.println("All previous criteria has been met! trying to drop items...");
                         int toDrop = Math.min(64, (int)Math.floor(event.getInflictedDamage() * player.getRandom().nextInt(4)));
-                        System.out.println("We took " + event.getInflictedDamage() +" damage! Equalling " + toDrop +" drops...");
                         BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
                         boolean cycleFlag = true;
                         int countTracker = contents.size();
                         boolean soundFlag = false;
                         while (toDrop > 0 && countTracker > 0 && cycleFlag){
                             int index = player.getRandom().nextInt(countTracker);
-                            System.out.println("Cycle, toDrop is " + toDrop + ", random index is " + index);
                             mutable.toggleSelectedItem(index);
                             ItemStack removed = mutable.removeOne();
-                            System.out.println("Random itemstack is " + removed);
                             if (removed != null) {
                                 ItemStack delta = removed.split(player.getRandom().nextInt(toDrop));
                                 player.drop(delta, true, false);
@@ -400,9 +398,7 @@ public class BalladWorldEvents {
                                 int tryInsert = mutable.tryInsert(removed);
                                 toDrop -= tryInsert;
                                 if (tryInsert == 0) countTracker--;
-                                System.out.println("Removed was not null! we returned " + tryInsert + " to the stack, putting back into bundle");
                             } else {
-                                System.out.println("Oops! It looks like we failed to retrieve an item from the bundle! toDrop: " + toDrop);
                                 cycleFlag = false;
                             }
                             if (soundFlag) {
@@ -414,6 +410,8 @@ public class BalladWorldEvents {
                     }
                 }
             }
+
+            LimbManager.limbDamageHook(event);
         }
     }
 }

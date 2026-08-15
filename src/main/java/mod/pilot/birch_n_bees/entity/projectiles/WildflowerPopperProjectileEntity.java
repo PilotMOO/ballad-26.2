@@ -1,11 +1,10 @@
 package mod.pilot.birch_n_bees.entity.projectiles;
 
-import mod.pilot.birch_n_bees.events.BalladWorldEvents;
+import mod.pilot.birch_n_bees.events.BalladGameEvents;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -112,12 +111,12 @@ public class WildflowerPopperProjectileEntity extends Projectile implements Item
                     if (!breakIf.get()) {
                         BlockPos bPos1 = bPos.relative(direction);
                         if (level.getBlockState(bPos1).isAir()) {
-                            BalladWorldEvents.Stones stone;
-                            if ((stone = BalladWorldEvents.Stones.fromBlock(bState)) != null) {
+                            BalladGameEvents.Stones stone;
+                            if ((stone = BalladGameEvents.Stones.fromBlock(bState)) != null) {
                                 foundStone.set(true);
                                 if (stone.tier <= 1) {
                                     poppedStone.set(true);
-                                    if (level.getRandom().nextInt(2) == 0) BalladWorldEvents.popStone(face, level, bPos, stone);
+                                    if (level.getRandom().nextInt(2) == 0) BalladGameEvents.popStone(face, level, bPos, stone);
                                 }
                                 breakIf.set(true);
                             }
