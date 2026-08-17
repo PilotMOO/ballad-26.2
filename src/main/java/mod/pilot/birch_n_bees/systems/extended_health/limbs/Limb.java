@@ -53,6 +53,12 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
             damage -= difference * 0.1f;
         }
     }
+    public void heal(float count){
+        if (count > damage) damage = 0;
+        else damage -= count;
+    }
+
+    public void onHeal(float lastHealAmount){}
 
     /**
      * Invoked for every applicable limb when the player takes damage.

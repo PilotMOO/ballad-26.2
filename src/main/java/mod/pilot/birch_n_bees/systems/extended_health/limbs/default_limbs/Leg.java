@@ -22,7 +22,8 @@ public class Leg {
         public LeftServer(ServerPlayer player) {super(LEFT_LEG, player, 1f);}
         private LeftServer() {super(LEFT_LEG);}
         @Override
-        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
+                                      double relativeYaw, double relativePitch, HealthToken token) {
             //ToDo implement directional damage calculations
             return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }
@@ -36,7 +37,9 @@ public class Leg {
         private RightServer() {super(RIGHT_LEG);}
 
         @Override
-        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source, float relativeYaw, float relativePitch, HealthToken token) {
+        public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
+                                      double relativeYaw, double relativePitch, HealthToken token) {
+            System.out.println("yaw, pitch is " + relativeYaw + ", " + relativePitch);
             //ToDo implement directional damage calculations
             return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
         }

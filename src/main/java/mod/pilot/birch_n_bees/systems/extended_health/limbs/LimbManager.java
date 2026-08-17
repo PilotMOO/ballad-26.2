@@ -266,9 +266,9 @@ public class LimbManager {
             double diffX = player.getX() - sourcePos.x,
                     diffZ = player.getZ() - sourcePos.z;
             double horizontalDist = Math.sqrt((diffX * diffX) + (diffZ * diffZ));
-            double yDist = Math.abs(player.getY() - sourcePos.y);
-            yaw = Math.tan(diffX / diffZ) - player.getYRot();
-            pitch = Math.tan(yDist / horizontalDist);
+            double yDist = sourcePos.y - player.getY();
+            yaw = Math.atan2(diffX, diffZ)/* - Math.toRadians(player.getYRot())*/;
+            pitch = Math.atan2(yDist, horizontalDist);
         } else yaw = pitch = 0;
         int validLimbCount = 0;
         for (Limb<?> limb : token.body.limbs){

@@ -51,6 +51,6 @@ public class BirchTags {
         public static final TagKey<DamageType> ONLY_DAMAGES_HEAD = tag("only_damages_head");
         public static final TagKey<DamageType> ONLY_DAMAGES_TORSO = tag("only_damages_torso");
         public static final TagKey<DamageType> ONLY_DAMAGES_ARMS = tag("only_damages_arms");
-        public static final TagKey<DamageType> ONLY_DAMAGES_LEGS = tag("only_damages_feet");
+        public static final TagKey<DamageType> ONLY_DAMAGES_LEGS = tag("only_damages_legs");
     }
 }
