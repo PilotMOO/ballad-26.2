@@ -8,6 +8,7 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
+import mod.pilot.birch_n_bees.systems.extended_health.RevampedFoodData;
 import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
 import mod.pilot.birch_n_bees.systems.extended_health.limbs.LimbManager;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
@@ -31,6 +32,7 @@ public class ABOBAB {
         modContainer.registerConfig(ModConfig.Type.STARTUP, Config.SERVER_SPEC, "ballad_config.toml");
         configLoaded = true;
         HotBrickWatcher.init(Config.SERVER.brickCookTime.get());
+        RevampedFoodData.initConfig(Config.SERVER);
 
         BirchAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         BirchBlocks.BLOCKS.register(modEventBus);

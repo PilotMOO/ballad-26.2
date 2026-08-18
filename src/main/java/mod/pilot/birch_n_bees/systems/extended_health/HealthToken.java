@@ -126,8 +126,14 @@ public class HealthToken implements ValueIOSerializable {
         return body.getLimbByID(id);
     }
 
+    public boolean passiveRegen;
+    public int healingEfficiency;
+
     @Override
     public void serialize(@NonNull ValueOutput output) {
+        output.putBoolean("passiveRegen", passiveRegen);
+        output.putInt("healingEfficiency", healingEfficiency);
+
         int size = instances.size();
         output.putInt("ailmentCount", size);
         for (int i = 0; i < size; i++){
@@ -149,6 +155,9 @@ public class HealthToken implements ValueIOSerializable {
     }
     @Override
     public void deserialize(@NonNull ValueInput input) {
+        passiveRegen = input.getBooleanOr("passiveRegen", true);
+        healingEfficiency = input.getIntOr("healingEfficiency", 0);
+
         input.getInt("ailmentCount").ifPresent((size) -> {
             instances = new ArrayList<>(size);
             for (int i = 0; i < size; i++){
@@ -182,6 +191,9 @@ public class HealthToken implements ValueIOSerializable {
     public static class Syncer implements AttachmentSyncHandler<HealthToken> {
         @Override
         public void write(@NonNull RegistryFriendlyByteBuf buf, @NonNull HealthToken attachment, boolean initialSync) {
+            buf.writeBoolean(attachment.passiveRegen);
+            buf.writeInt(attachment.healingEfficiency);
+
             int ailmentSize = attachment.instances.size();
             buf.writeInt(ailmentSize);
             for (int i = 0; i < ailmentSize; i++){
@@ -200,6 +212,9 @@ public class HealthToken implements ValueIOSerializable {
         @Override
         public @Nullable HealthToken read(@NonNull IAttachmentHolder holder, RegistryFriendlyByteBuf buf,
                                                     @Nullable HealthToken previousValue) {
+            boolean passiveRegen = buf.readBoolean();
+            int healingEfficiency = buf.readInt();
+
             boolean validateClient = true,
                     clientFlagFinal = false;
 
@@ -249,7 +264,10 @@ public class HealthToken implements ValueIOSerializable {
                 if (holder instanceof Entity e) clientFlagFinal = e.level().isClientSide();
                 else throw new RuntimeException("Oops! Couldn't figure out dist context from supplied arguments when attempting to build a body for HealthToken syncing. HealthTokens are only compatible with Players, make sure you aren't putting them on anything else!");
             }
-            return new HealthToken(instances, Body.buildSidedBody(limbs, clientFlagFinal));
+            HealthToken token = new HealthToken(instances, Body.buildSidedBody(limbs, clientFlagFinal));
+            token.healingEfficiency = healingEfficiency;
+            token.passiveRegen = passiveRegen;
+            return token;
         }
     }
     public record RequestClientCure(Identifier ailmentID) implements CustomPacketPayload {

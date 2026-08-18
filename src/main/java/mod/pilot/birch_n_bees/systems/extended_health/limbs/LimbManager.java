@@ -263,14 +263,20 @@ public class LimbManager {
         double yaw, pitch;
         Vec3 sourcePos = dmgSource.getSourcePosition();
         if (sourcePos != null){
-            double diffX = player.getX() - sourcePos.x,
-                    diffZ = player.getZ() - sourcePos.z;
+            double diffX = sourcePos.x - player.getX(),
+                    diffZ = sourcePos.z - player.getZ();
             double horizontalDist = Math.sqrt((diffX * diffX) + (diffZ * diffZ));
-            double yDist = sourcePos.y - player.getY();
-            yaw = Math.atan2(diffX, diffZ)/* - Math.toRadians(player.getYRot())*/;
+            double sourceY = sourcePos.y;
+            if (dmgSource.getDirectEntity() != null) sourceY += dmgSource.getDirectEntity().getBbHeight() / 2;
+            double yDist = sourceY - (player.getY() + (player.getBbHeight() / 2));
+            System.out.println("Player rot is " + player.getYRot());
+            //for some reason entity rotations are really fucky so you need to add 90 degrees (???)
+            yaw = Math.toRadians(player.getYRot() + 90) - Math.atan2(diffZ, diffX);
             pitch = Math.atan2(yDist, horizontalDist);
+            if (yaw > Math.PI) yaw -= Math.TAU; //We want the rotations to be between -pi to pi (tau is 2 * pi)
         } else yaw = pitch = 0;
         int validLimbCount = 0;
+        System.out.println("yaw is deg[" + Math.toDegrees(yaw) + "], pitch is deg[" + Math.toDegrees(pitch) + "]");
         for (Limb<?> limb : token.body.limbs){
             Limb.Server sLimb = (Limb.Server)limb;
             if (sLimb.isDamageApplicableToLimb(

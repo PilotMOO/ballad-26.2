@@ -13,6 +13,7 @@ public class Leg {
     public static final Identifier
             LEFT_LEG = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "left_leg"),
             RIGHT_LEG = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "right_leg");
+    private static final double THIRTY_DEG_IN_RAD = 0.523599d;
 
     public static class LeftClient extends Limb.Client{
         public LeftClient(AbstractClientPlayer player) {super(LEFT_LEG, player, 1f);}
@@ -21,11 +22,21 @@ public class Leg {
     public static class LeftServer extends Limb.Server{
         public LeftServer(ServerPlayer player) {super(LEFT_LEG, player, 1f);}
         private LeftServer() {super(LEFT_LEG);}
+
+        @Override
+        public boolean isDamageApplicableToLimb(ServerPlayer player, float amount, DamageSource source,
+                                                double relativeYaw, double relativePitch, HealthToken token) {
+            return LimbManager.validateAgainstDamageOnly(source, ID)
+                    && relativePitch < -THIRTY_DEG_IN_RAD
+                    && relativeYaw > 0;
+        }
+
         @Override
         public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
                                       double relativeYaw, double relativePitch, HealthToken token) {
-            //ToDo implement directional damage calculations
-            return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
+            float modAmount = amount;
+            if (relativeYaw < THIRTY_DEG_IN_RAD) modAmount /= 2;
+            return super.modifyLimbDamage(player, modAmount, source, relativeYaw, relativePitch, token);
         }
     }
     public static class RightClient extends Limb.Client{
@@ -37,11 +48,19 @@ public class Leg {
         private RightServer() {super(RIGHT_LEG);}
 
         @Override
+        public boolean isDamageApplicableToLimb(ServerPlayer player, float amount, DamageSource source,
+                                                double relativeYaw, double relativePitch, HealthToken token) {
+            return LimbManager.validateAgainstDamageOnly(source, ID)
+                    && relativePitch < -THIRTY_DEG_IN_RAD
+                    && relativeYaw < 0;
+        }
+
+        @Override
         public float modifyLimbDamage(ServerPlayer player, float amount, DamageSource source,
                                       double relativeYaw, double relativePitch, HealthToken token) {
-            System.out.println("yaw, pitch is " + relativeYaw + ", " + relativePitch);
-            //ToDo implement directional damage calculations
-            return super.modifyLimbDamage(player, amount, source, relativeYaw, relativePitch, token);
+            float modAmount = amount;
+            if (relativeYaw > -THIRTY_DEG_IN_RAD) modAmount /= 2;
+            return super.modifyLimbDamage(player, modAmount, source, relativeYaw, relativePitch, token);
         }
     }
 

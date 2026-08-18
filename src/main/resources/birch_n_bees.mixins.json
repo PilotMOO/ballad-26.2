@@ -5,6 +5,7 @@
   "refmap": "birch_n_bees.refmap.json",
   "mixins": [
     "EntityEquipmentAccessor",
+    "FoodDataAccessor",
     "HudAccessor",
     "InventoryAccessor",
     "SlotAccessor",

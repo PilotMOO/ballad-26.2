@@ -57,6 +57,9 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
         if (count > damage) damage = 0;
         else damage -= count;
     }
+    public boolean isDead(){
+        return damage >= maxHealth;
+    }
 
     public void onHeal(float lastHealAmount){}
 
@@ -71,9 +74,13 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
      * @param player the Player object associated with this limb
      * @param amount the amount of damage dealt
      * @param source the Damage Source
-     * @param relativeYaw the angle between the entity's facing direction and the direction of the damage along the X-Z plane.
-     *                    A.K.A. the direction of the attack relative to the entity's facing direction along just the X-Z plane
-     * @param relativePitch the angle between the entity's position and the damage's position in respect to the Y axis.
+     * @param relativeYaw the angle, in radians, between the entity's facing direction and the direction of the damage along the X-Z plane.
+     *                    Note: values range from -pi to pi, with negative values corresponding
+     *                    to the right side, positive left, 0 center, and 180 or -180 behind
+     * @param relativePitch the angle, in radians, between the entity's center (halfway up the bounding box)
+     *                     and the damage's position (also halfway up the bounding box if the source has a direct entity)
+     *                     in respect to the Y axis. Note: Values range from -pi/2 to pi/2, with 0 being center,
+     *                      positive being above the center, and negative being below
      * @param token the HealthToken associated with this limb
      */
     public abstract void hurt(P player, float amount, DamageSource source,
@@ -126,6 +133,24 @@ public abstract sealed class Limb<P extends Player> implements IHealthTokenSeria
                 return getEffectiveHealth() + (delta * 0.1f);
             }
         }
+
+        /**
+         * Determines if this limb should be damaged by this attack.
+         * <p>Refer to {@link Limb.Server#modifyLimbDamage(ServerPlayer, float, DamageSource, double, double, HealthToken)}
+         * if you wish to change the amount of damage this limb sustains from an attack instead of outright preventing damage</p>
+         * @param player the Player object associated with this limb
+         * @param amount the amount of damage dealt
+         * @param source the Damage Source
+         * @param relativeYaw the angle, in radians, between the entity's facing direction and the direction of the damage along the X-Z plane.
+         *                    Note: values range from -pi to pi, with negative values corresponding
+         *                    to the right side, positive left, 0 center, and 180 or -180 behind
+         * @param relativePitch the angle, in radians, between the entity's center (halfway up the bounding box)
+         *                     and the damage's position (also halfway up the bounding box if the source has a direct entity)
+         *                     in respect to the Y axis. Note: Values range from -pi/2 to pi/2, with 0 being center,
+         *                      positive being above the center, and negative being below
+         * @param token the HealthToken associated with this limb
+         * @return {@code true} if the limb should get damaged by this source
+         */
         public boolean isDamageApplicableToLimb(ServerPlayer player, float amount, DamageSource source,
                                                 double relativeYaw, double relativePitch, HealthToken token){
             return LimbManager.validateAgainstDamageOnly(source, ID);
