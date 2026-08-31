@@ -8,11 +8,14 @@ import mod.pilot.birch_n_bees.entity.mob.client.*;
 import mod.pilot.birch_n_bees.entity.projectiles.client.OvergrownArrowRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.SplinterProjectileRenderer;
 import mod.pilot.birch_n_bees.entity.projectiles.client.WildflowerPopperRenderer;
+import mod.pilot.birch_n_bees.screens.BirchMenuTypes;
+import mod.pilot.birch_n_bees.screens.ExtendedHealthScreen;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID,/* bus = EventBusSubscriber.Bus.MOD,*/ value = Dist.CLIENT)
@@ -32,10 +35,15 @@ public class BalladClientModBus {
     }
 
     @SubscribeEvent
-    public static void register(RegisterClientPayloadHandlersEvent event) {
+    public static void registerPayloads(RegisterClientPayloadHandlersEvent event) {
         event.register(
                 DynamicInventoryToken.TokenReapplyRequest.PACKET_TYPE,
                 DynamicInventoryToken::receiveReapplyRequestOnClient
         );
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event){
+        event.register(BirchMenuTypes.HEALTH_UI_MENU_TYPE.get(), ExtendedHealthScreen::new);
     }
 }

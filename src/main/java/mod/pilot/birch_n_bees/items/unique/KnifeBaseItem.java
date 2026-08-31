@@ -71,7 +71,9 @@ public class KnifeBaseItem extends Item {
             entity.playSound(SoundEvents.BAMBOO_BREAK, .75f, 1.25f);
             stack.hurtAndBreak(5, entity, fromOffhand ? EquipmentSlot.OFFHAND :  EquipmentSlot.MAINHAND);
             if (entity instanceof Player p){
-                p.addItem(result);
+                if (!p.addItem(result)){
+                    p.drop(result, true);
+                }
             } else {
                 Vec3 pos = entity.position();
                 ItemEntity itemEntity = new ItemEntity(level,pos.x, pos.y, pos.z, result);
@@ -93,6 +95,9 @@ public class KnifeBaseItem extends Item {
             public @Nullable ItemStack getCutItem(ItemStack stack) {
                 if (stack.is(Items.SUGAR_CANE)) return new ItemStack(BirchItems.PREPARED_SUGARCANE.get());
                 if (stack.is(BirchItems.WILDFLOWER_TWINE)) return new ItemStack(BirchItems.STRIPPED_WILDFLOWER_TWINE.get());
+                if (stack.is(Items.PUMPKIN)) {
+                    return new ItemStack(BirchItems.PUMPKIN_SLICE.get(), 6);
+                }
                 return null;
             }
         }

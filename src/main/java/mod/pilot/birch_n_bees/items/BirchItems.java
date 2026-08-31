@@ -22,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Properties;
 import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = ABOBAB.MOD_ID) //Solely for the fillToolHeads method
@@ -226,6 +227,17 @@ public class BirchItems {
                 }
             });
 
+    public static final DeferredItem<Item> SMASHED_PUMPKIN = ITEMS.registerItem("smashed_pumpkin",
+            (properties) -> new Item(
+                    properties.stacksTo(3)
+                            .food(BirchFoodProperties.SMASHED_PUMPKIN_FOOD, BirchFoodProperties.SMASHED_PUMPKIN_CONSUMABLE))
+    );
+    public static final DeferredItem<Item> PUMPKIN_SLICE = ITEMS.registerItem("pumpkin_slice",
+            (properties) -> new Item(
+                    properties.stacksTo(16)
+                            .food(BirchFoodProperties.PUMPKIN_SLICE_FOOD, BirchFoodProperties.PUMPKIN_SLICE_CONSUMABLE))
+    );
+
     public static final DeferredItem<SpawnEggItem> SPLINTERING_SPAWN = ITEMS.registerItem("splintering_spawn",
             (properties -> new SpawnEggItem(properties.spawnEgg(BirchEntities.SPLINTERING.get()))));
     public static final DeferredItem<SpawnEggItem> NESTHEAD_SPAWN = ITEMS.registerItem("nesthead_spawn",
@@ -279,4 +291,5 @@ public class BirchItems {
     public static final DeferredItem<Item> HOTBAR_LOCKER = ITEMS.registerItem("hotbar_locker", (HotbarLockingTestWand::new));
     public static final DeferredItem<Item> WAND_OF_BONE_PAIN = ITEMS.registerItem("wand_of_bone_pain", (WandOfBonePain::new));
     public static final DeferredItem<Item> HEALTH_TOKEN_INSPECTOR = ITEMS.registerItem("health_token_inspector", (HealthTokenInspectionWand::new));
+    public static final DeferredItem<Item> HEALTH_UI_WAND = ITEMS.registerItem("health_ui_wand", (HealthMenuWand::new));
 }

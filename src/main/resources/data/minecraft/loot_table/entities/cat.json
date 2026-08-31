@@ -10,7 +10,7 @@
             {
               "condition": "minecraft:match_tool",
               "predicate": {
-                "items": "#forge:tools/knives"
+                "items": "#birch_n_bees:knife_harvesting"
               }
             }
           ],

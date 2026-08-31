@@ -5,18 +5,26 @@
       "trigger": "minecraft:entity_hurt_player",
       "conditions": {
         "damage": {
-          "source_entity": {
-            "type": "birch_n_bees:nesthead"
+          "type": {
+            "source_entity": {
+              "minecraft:entity_type": "birch_n_bees:nesthead"
+            }
           }
         }
       }
     },
-    "damage": {
+    "attack": {
       "trigger": "minecraft:player_hurt_entity",
       "conditions": {
-        "entity": {
-          "type": "birch_n_bees:nesthead"
-        }
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "birch_n_bees:nesthead"
+            }
+          }
+        ]
       }
     }
   },
@@ -39,7 +47,7 @@
   "requirements": [
     [
       "hurt",
-      "damage"
+      "attack"
     ]
   ],
   "sends_telemetry_event": true

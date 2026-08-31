@@ -151,7 +151,7 @@ public class NestHeadEntity extends Zombie implements GeoEntity {
     public boolean doHurtTarget(@NotNull ServerLevel server, @NotNull Entity target) {
         boolean flag = super.doHurtTarget(server, target);
         if (flag && target instanceof LivingEntity living) {
-            if (!living.hasEffect(MobEffects.SLOWNESS)) living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1));
+            if (!living.hasEffect(MobEffects.SLOWNESS)) living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1));
         }
         return flag;
     }

@@ -2,6 +2,8 @@ package mod.pilot.birch_n_bees.systems.extended_health;
 
 import mod.pilot.birch_n_bees.Config;
 import mod.pilot.birch_n_bees.mixins.FoodDataAccessor;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.types.StarvationAilment;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -51,7 +53,7 @@ public class RevampedFoodData extends FoodData {
                     player.heal(1);
                     accessor.setExhaustionLevel(exhaustion -= Math.min(exhaustion, 6.0f));
                     accessor.setTickTimer(timer = 0);
-                }
+                } else accessor.setTickTimer(timer);
             }
         }
         if (foodLevel <= 0){
@@ -59,10 +61,14 @@ public class RevampedFoodData extends FoodData {
                 if (difficulty.getId() > 1 || player.getHealth() > 1f){
                     player.hurtServer(level, player.damageSources().starve(), 1.0F);
                 }
+                if (token.getAilment(AilmentManager.STARVATION) == null){
+                    token.addAilment(AilmentManager.STARVATION.constructDefaultServerInstance());
+                    HealthToken.sync(player);
+                }
                 //ToDo: properly set up starvation ailment (and then debug... duh)
                 accessor.setTickTimer(timer = 0);
-            }
-        } else accessor.setTickTimer(timer = 0);
+            } else accessor.setTickTimer(timer);
+        }
     }
 
     public static void initConfig(Config.Server config){

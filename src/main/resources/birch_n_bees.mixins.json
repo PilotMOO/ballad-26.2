@@ -15,13 +15,13 @@
     "common.InventoryMixin",
     "common.ItemUseMixin",
     "common.PlayerCanUseEquipmentSlotMixin",
-    "common.PlayerInventoryInterceptor",
+    "common.PlayerSurvivalMechanicsInterceptor",
     "common.ServerPlayerMixin"
   ],
   "client": [
     "client.AbstractClientPlayerMixin",
     "client.ClientPacketInjector",
-    "common.OffhandContainerSwapRestrictionMixin"
+    "client.OffhandContainerSwapRestrictionMixin"
   ],
   "minVersion": "0.8"
 }

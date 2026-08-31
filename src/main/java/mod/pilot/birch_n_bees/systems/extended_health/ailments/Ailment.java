@@ -22,9 +22,9 @@ public abstract class Ailment {
 
     public abstract AilmentInstance<?> buildInstance(boolean client, byte severity, int timeUntilCured);
 
-    public abstract void onApplicationClient(AilmentInstance.Client instance, AbstractClientPlayer player, HealthToken token);
+    public void onApplicationClient(AilmentInstance.Client instance, AbstractClientPlayer player, HealthToken token){}
     public abstract void onApplicationServer(AilmentInstance.Server instance, ServerPlayer player, HealthToken token);
-    public abstract void alieveSideEffectsClient(AilmentInstance.Client instance, AbstractClientPlayer player, HealthToken token);
+    public void alieveSideEffectsClient(AilmentInstance.Client instance, AbstractClientPlayer player, HealthToken token){}
     public abstract void alieveSideEffectsServer(AilmentInstance.Server instance, ServerPlayer player, HealthToken token);
 
     public AilmentInstance<?> deserializeSidedInstance(boolean client, String prepend, ValueInput input){

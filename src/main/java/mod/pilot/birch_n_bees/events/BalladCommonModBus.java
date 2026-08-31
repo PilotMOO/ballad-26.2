@@ -41,7 +41,7 @@ public class BalladCommonModBus {
                 DynamicInventoryToken.TokenReapplyRequest.CODEC,
                 DynamicInventoryToken::receiveReapplyRequestOnServer
         );
-        registrar.playToClient(
+        /*registrar.playToClient(
                 HealthToken.RequestClientCure.PACKET_TYPE,
                 HealthToken.RequestClientCure.CODEC,
                 HealthToken.RequestClientCure::handle
@@ -50,6 +50,6 @@ public class BalladCommonModBus {
                 HealthToken.SyncLimb.PACKET_TYPE,
                 HealthToken.SyncLimb.CODEC,
                 HealthToken.SyncLimb::handle
-        );
+        );*/
     }
 }

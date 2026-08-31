@@ -5,8 +5,10 @@
       "trigger": "minecraft:entity_hurt_player",
       "conditions": {
         "damage": {
-          "source_entity": {
-            "type": "minecraft:bee"
+          "type": {
+            "source_entity": {
+              "minecraft:entity_type": "minecraft:bee"
+            }
           }
         }
       }

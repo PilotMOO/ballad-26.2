@@ -35,14 +35,14 @@ public class WildflowerSatchelItem extends BundleItem {
         float chance = 0f;
         boolean sprinting = owner.isSprinting();
         if (Math.abs(owner.getDeltaMovement().y) > 0.5){
-            chance = 0.2f;
-            if (sprinting) chance *= 2f;
+            chance = 0.025f;
+            if (sprinting) chance *= 4f;
         } else if (sprinting && owner.tickCount % 20 == 0) chance = 0.025f;
 
         if (chance != 0f){
             RandomSource random = owner.getRandom();
             float rand = random.nextFloat();
-            if (chance < rand)return;
+            if (chance < rand) return;
 
             BundleContents contents = itemStack.getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
             if (contents.isEmpty()) return;

@@ -109,21 +109,25 @@ public class BalladGameEvents {
         BlockState bState = level.getBlockState(bPos);
         if (event.getItemStack().isEmpty() && bState.is(Blocks.BEE_NEST)){
             BeehiveBlockEntity hive = (BeehiveBlockEntity)level.getBlockEntity(bPos);
-            if (hive != null && bState.getValue(HONEY_LEVEL) >= 3){
+            int honey = bState.getValue(HONEY_LEVEL);
+            if (hive != null && honey >= 4){
                 if (!hive.isSedated()) hive.emptyAllLivingFromHive(event.getEntity(), bState, BeehiveBlockEntity.BeeReleaseStatus.EMERGENCY);
                 level.setBlock(bPos, bState.setValue(HONEY_LEVEL, 0), 3);
-                Block.popResource(level, bPos, new ItemStack(Items.HONEYCOMB));
+                ItemStack stack = new ItemStack(Items.HONEYCOMB);
+                if (honey == 5 && level.getRandom().nextBoolean()) stack.setCount(2);
+                Block.popResource(level, bPos, stack);
             }
         }
     }
 
     @SubscribeEvent
     public static void gatherBark(PlayerInteractEvent.RightClickBlock event){
+        if (event.isCanceled()) return;
         Level level = event.getLevel();
         BlockPos bPos = event.getPos();
         BlockState bState = level.getBlockState(bPos);
         if (event.getItemStack().is(ItemTags.AXES) && bState.is(Blocks.BIRCH_LOG)
-                && !level.isClientSide() && level.getRandom().nextBoolean()){
+                && !level.isClientSide() && level.getRandom().nextDouble() < 0.75d){
             popBirch.add(new Pair<>(bPos, event.getFace()));
         }
     }
@@ -243,11 +247,11 @@ public class BalladGameEvents {
     @SubscribeEvent
     public static void playerPretick(PlayerTickEvent.Pre event){
         Player player = event.getEntity();
-        if (HealthToken.has(player)){
+        /*if (HealthToken.has(player)){
             HealthToken token = HealthToken.get(player);
             if (player instanceof ServerPlayer sPlayer) token.tickAilmentInstanceServer(sPlayer);
             else if (player instanceof AbstractClientPlayer cPlayer) token.tickAilmentInstanceClient(cPlayer);
-        }
+        }*/
 
         ItemStack item = player.getMainHandItem();
         if (BirchDataHelper.contraband(item) && player.level() instanceof ServerLevel server){
@@ -378,11 +382,14 @@ public class BalladGameEvents {
     public static void onPlayerHurt(LivingDamageEvent.Post event){
         if (event.getEntity() instanceof ServerPlayer player /*&& player.level() instanceof ServerLevel server*/){
             ServerLevel server = player.level();
+            float damage = event.getInflictedDamage();
+            RandomSource random = player.getRandom();
             for (ItemStack item : player.getInventory()){
                 if (item.is(BirchItems.WILDFLOWER_SATCHEL)){
                     BundleContents contents = item.get(DataComponents.BUNDLE_CONTENTS);
                     if (contents != null && !contents.isEmpty()){
-                        int toDrop = Math.min(64, (int)Math.floor(event.getInflictedDamage() * player.getRandom().nextInt(4)));
+                        if (damage > 2.5f || random.nextBoolean()) continue;
+                        int toDrop = Math.min(64, (int)Math.floor(damage * random.nextInt(3)));
                         BundleContents.Mutable mutable = new BundleContents.Mutable(contents);
                         boolean cycleFlag = true;
                         int countTracker = contents.size();
@@ -411,7 +418,7 @@ public class BalladGameEvents {
                 }
             }
 
-            LimbManager.limbDamageHook(event);
+            //LimbManager.limbDamageHook(event);
         }
     }
 }

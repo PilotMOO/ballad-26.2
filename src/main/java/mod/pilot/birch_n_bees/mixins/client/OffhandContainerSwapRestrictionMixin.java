@@ -1,4 +1,4 @@
-package mod.pilot.birch_n_bees.mixins.common;
+package mod.pilot.birch_n_bees.mixins.client;
 
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
 import net.minecraft.client.Minecraft;

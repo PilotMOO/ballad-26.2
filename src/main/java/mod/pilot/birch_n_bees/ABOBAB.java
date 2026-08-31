@@ -7,6 +7,7 @@ import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
+import mod.pilot.birch_n_bees.screens.BirchMenuTypes;
 import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
 import mod.pilot.birch_n_bees.systems.extended_health.RevampedFoodData;
 import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
@@ -35,6 +36,7 @@ public class ABOBAB {
         RevampedFoodData.initConfig(Config.SERVER);
 
         BirchAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
+        BirchMenuTypes.MENU_TYPES.register(modEventBus);
         BirchBlocks.BLOCKS.register(modEventBus);
         BirchBlocks.BLOCK_ENTITIES.register(modEventBus);
         BirchDataComponents.DATA_COMPONENTS.register(modEventBus);

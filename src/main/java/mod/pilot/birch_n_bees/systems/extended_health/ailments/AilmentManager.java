@@ -1,6 +1,7 @@
 package mod.pilot.birch_n_bees.systems.extended_health.ailments;
 
 import mod.pilot.birch_n_bees.systems.extended_health.ailments.types.OhOuchMyBones;
+import mod.pilot.birch_n_bees.systems.extended_health.ailments.types.StarvationAilment;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
@@ -51,7 +52,9 @@ public class AilmentManager {
         System.out.println("Hi from [registerNativeAilments] !!!!");
 
         OH_OUCH_MY_BONES = event.registerAilment(OhOuchMyBones::new);
+        STARVATION = event.registerAilment(StarvationAilment::new);
     }
 
     public static OhOuchMyBones OH_OUCH_MY_BONES;
+    public static StarvationAilment STARVATION;
 }

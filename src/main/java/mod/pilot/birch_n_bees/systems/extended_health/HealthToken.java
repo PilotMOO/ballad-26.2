@@ -40,6 +40,10 @@ public class HealthToken implements ValueIOSerializable {
         if (ATTACHMENT == null) ATTACHMENT = BirchAttachmentTypes.HEALTH_TOKEN_ATTACHMENT.get();
         return player.hasData(ATTACHMENT);
     }
+    public static void sync(Player player){
+        if (ATTACHMENT == null) ATTACHMENT = BirchAttachmentTypes.HEALTH_TOKEN_ATTACHMENT.get();
+        player.syncData(ATTACHMENT);
+    }
 
 
     public HealthToken(@Nullable Player player){
@@ -51,8 +55,10 @@ public class HealthToken implements ValueIOSerializable {
     public HealthToken(ArrayList<AilmentInstance<?>> ailments, Body<?> body){
         this.instances = ailments;
         this.body = body;
+        passiveRegen = true; healingEfficiency = 0;
     }
 
+    //ToDo: rewrite ailments to store and work per-limb instead of in a centralized list
     public ArrayList<AilmentInstance<?>> instances;
     public @Nullable AilmentInstance<?> getAilment(Ailment ailment){
         for (AilmentInstance<?> instance : instances){
@@ -330,7 +336,9 @@ public class HealthToken implements ValueIOSerializable {
     @Override
     public String toString() {
         return "HealthToken{" +
-                "instances=" + instances +
+                "can passively regen? " + passiveRegen +
+                " healing efficiency: " + healingEfficiency +
+                " instances=" + instances +
                 ", body=" + body +
                 '}';
     }

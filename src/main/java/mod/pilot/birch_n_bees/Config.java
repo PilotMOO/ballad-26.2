@@ -52,7 +52,7 @@ public class Config
             easyHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is EASY: ",
                     0.5d, 0d, Double.MAX_VALUE);
             easyStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is EASY: ",
-                    600, 0, Integer.MAX_VALUE);
+                    300, 0, Integer.MAX_VALUE);
             builder.pop();
             builder.push("Normal Mode");
             normalHungerRegenSpeedFast = builder.defineInRange("How quickly, in ticks, players heal when fully saturated when difficulty is NORMAL: ",
@@ -64,7 +64,7 @@ public class Config
             normalHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is NORMAL: ",
                     1d, 0d, Double.MAX_VALUE);
             normalStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is NORMAL: ",
-                    400, 0, Integer.MAX_VALUE);
+                    200, 0, Integer.MAX_VALUE);
             builder.pop();
             builder.push("Hard Mode");
             hardHungerRegenSpeedFast = builder.defineInRange("How quickly, in ticks, players heal when fully saturated when difficulty is HARD: ",
@@ -76,7 +76,7 @@ public class Config
             hardHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is HARD: ",
                     2d, 0d, Double.MAX_VALUE);
             hardStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is HARD: ",
-                    300, 0, Integer.MAX_VALUE);
+                    150, 0, Integer.MAX_VALUE);
             builder.pop();
             builder.pop();
 

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "birch_n_bees:smashed_pumpkin"
+  ],
+  "result": {
+    "count": 2,
+    "id": "minecraft:pumpkin_seeds"
+  }
+}

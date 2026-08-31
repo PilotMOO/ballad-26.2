@@ -5,6 +5,7 @@ import mod.pilot.birch_n_bees.systems.extended_health.IHealthTokenSerializable;
 import mod.pilot.birch_n_bees.systems.extended_health.Serializer;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -152,6 +153,16 @@ public abstract sealed class AilmentInstance<P extends Player> implements IHealt
     public static non-sealed class Client extends AilmentInstance<AbstractClientPlayer>{
         public Client(Ailment parentType, byte severity) {
             super(parentType, true, severity, -1);
+        }
+
+        public String ailmentTranslatableRoot(){
+            return type.ID.getNamespace() + ".ailment." + type.ID.getPath();
+        }
+        public Component getAilmentTitle(){
+            return Component.translatable(ailmentTranslatableRoot() + ".title");
+        }
+        public Component getAilmentDescription(){
+            return Component.translatable(ailmentTranslatableRoot() + ".description");
         }
 
         @Override
