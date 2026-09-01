@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 
+@Deprecated
 public class Leg {
     public static final Identifier
             LEFT_LEG = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "left_leg"),

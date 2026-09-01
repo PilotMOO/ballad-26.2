@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Deprecated
 public class LimbManager {
     private static final int NATIVE_LIMB_COUNT = 6,
             NATIVE_ONLY_DAMAGES_COUNT = 4;

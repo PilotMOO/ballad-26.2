@@ -9,6 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public class BirchTags {
     public static class Blocks{
@@ -17,6 +18,8 @@ public class BirchTags {
         }
 
         public static final TagKey<Block> WARN_IF_INCORRECT_TOOL_KNIFE = tag("warn_if_incorrect_tool_knife");
+
+        public static final TagKey<Block> COOKS_NEARBY_ITEMS = tag("cooks_nearby_items.json");
     }
 
     public static class Items{
@@ -33,6 +36,8 @@ public class BirchTags {
         public static final TagKey<Item> COBBLE_TIER_1 = tag("cobble_tier_1");
         public static final TagKey<Item> COBBLE_TIER_2 = tag("cobble_tier_2");
         public static final TagKey<Item> COBBLE_TIER_3 = tag("cobble_tier_3");
+
+        public static final TagKey<Item> FOOD_POISONING = tag("food_poisoning");
 
         public static final TagKey<Item> KNIFE_HARVESTING = tag("knife_harvesting");
 
@@ -52,5 +57,13 @@ public class BirchTags {
         public static final TagKey<DamageType> ONLY_DAMAGES_TORSO = tag("only_damages_torso");
         public static final TagKey<DamageType> ONLY_DAMAGES_ARMS = tag("only_damages_arms");
         public static final TagKey<DamageType> ONLY_DAMAGES_LEGS = tag("only_damages_legs");
+    }
+
+    public static class Fluids{
+        private static TagKey<Fluid> tag(String name){
+            return TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, name));
+        }
+
+        public static final TagKey<Fluid> COOKS_NEARBY_ITEMS_FLUID = tag("cooks_nearby_items_fluid");
     }
 }

@@ -2,6 +2,15 @@ package mod.pilot.birch_n_bees.systems.extended_health.ailments;
 
 import net.minecraft.resources.Identifier;
 
+/**
+ * Ignore this whole thing, it was originally going to be used as an interface to localizing ailments
+ * to a specific limb, but I wanted to actually rewrite the limbs to store their own ailments
+ * instead of using a master list
+ *
+ * <p>the entire system got scrapped anyway so its not like it matters. If you want to steal stuff from this
+ * system, dont bother with this.</p>
+ */
+@Deprecated
 public interface LocalizedAilmentInstance {
     Identifier limbID();
 

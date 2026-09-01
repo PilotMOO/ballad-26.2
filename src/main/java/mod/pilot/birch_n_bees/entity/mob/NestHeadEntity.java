@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -40,6 +41,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +162,13 @@ public class NestHeadEntity extends Zombie implements GeoEntity {
     protected void randomizeReinforcementsChance() {
         //I don't want to program reinforcement mechanics but if I leave this method untouched it will cause an error
     }
+
+    @Override
+    public void setBaby(boolean baby) {
+        //No babies for you.
+    }
+
+    @Override protected boolean convertsInWater() {return false;}
 
     public boolean isMoving(){
         Vec3 delta = getDeltaMovement();

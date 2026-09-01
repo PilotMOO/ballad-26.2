@@ -1,9 +1,7 @@
-package mod.pilot.birch_n_bees.systems.extended_health;
+package mod.pilot.birch_n_bees.systems;
 
 import mod.pilot.birch_n_bees.Config;
 import mod.pilot.birch_n_bees.mixins.FoodDataAccessor;
-import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
-import mod.pilot.birch_n_bees.systems.extended_health.ailments.types.StarvationAilment;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -39,16 +37,16 @@ public class RevampedFoodData extends FoodData {
         }
 
         int timer = accessor.getTickTimer();
-        HealthToken token = HealthToken.get(player);
-        boolean regen = token.passiveRegen && level.getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION);
+        //HealthToken token = HealthToken.get(player);
+        boolean regen = /*token.passiveRegen &&*/ level.getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION);
         if (regen && player.isHurt()){
             int regenSpeed = -1;
             if (foodLevel == 20 && saturation > 0) regenSpeed = getRegenSpeedFast(difficulty);
             else if (foodLevel >= getPartiallySatiatedThreshold(difficulty)) regenSpeed = getRegenSpeed(difficulty);
             if (regenSpeed != -1){
-                int healingEff = token.healingEfficiency;
+                /*int healingEff = token.healingEfficiency;
                 if (healingEff < 0) healingEff = (int)(healingEff * getDeficiencyScalar(difficulty));
-                regenSpeed -= healingEff;
+                regenSpeed -= healingEff;*/
                 if (++timer >= regenSpeed){
                     player.heal(1);
                     accessor.setExhaustionLevel(exhaustion -= Math.min(exhaustion, 6.0f));
@@ -61,11 +59,10 @@ public class RevampedFoodData extends FoodData {
                 if (difficulty.getId() > 1 || player.getHealth() > 1f){
                     player.hurtServer(level, player.damageSources().starve(), 1.0F);
                 }
-                if (token.getAilment(AilmentManager.STARVATION) == null){
+                /*if (token.getAilment(AilmentManager.STARVATION) == null){
                     token.addAilment(AilmentManager.STARVATION.constructDefaultServerInstance());
                     HealthToken.sync(player);
-                }
-                //ToDo: properly set up starvation ailment (and then debug... duh)
+                }*/
                 accessor.setTickTimer(timer = 0);
             } else accessor.setTickTimer(timer);
         }
@@ -77,18 +74,21 @@ public class RevampedFoodData extends FoodData {
         partiallySatiated_EASY = config.easyPartiallySatiatedThreshold.get();
         deficiencyScalar_EASY = config.easyHealingDeficiencyScalar.get();
         starvationSpeed_EASY = config.easyStarvationSpeed.get();
+        foodPoisoning_EASY = config.easyFoodPoisoningChance.get();
 
         regenSpeedFast_NORMAL = config.normalHungerRegenSpeedFast.get();
         regenSpeed_NORMAL = config.normalHungerRegenSpeed.get();
         partiallySatiated_NORMAL = config.normalPartiallySatiatedThreshold.get();
         deficiencyScalar_NORMAL = config.normalHealingDeficiencyScalar.get();
         starvationSpeed_NORMAL = config.normalStarvationSpeed.get();
+        foodPoisoning_NORMAL = config.normalFoodPoisoningChance.get();
 
         regenSpeedFast_HARD = config.hardHungerRegenSpeedFast.get();
         regenSpeed_HARD = config.hardHungerRegenSpeed.get();
         partiallySatiated_HARD = config.hardPartiallySatiatedThreshold.get();
         deficiencyScalar_HARD = config.hardHealingDeficiencyScalar.get();
         starvationSpeed_HARD = config.hardStarvationSpeed.get();
+        foodPoisoning_HARD = config.hardFoodPoisoningChance.get();
     }
 
     public static int getRegenSpeedFast(Difficulty difficulty){
@@ -131,22 +131,33 @@ public class RevampedFoodData extends FoodData {
             case HARD -> starvationSpeed_HARD;
         };
     }
+    public static double getFoodPoisoningChance(Difficulty difficulty){
+        return switch (difficulty){
+            case PEACEFUL -> -1;
+            case EASY -> foodPoisoning_EASY;
+            case NORMAL -> foodPoisoning_NORMAL;
+            case HARD -> foodPoisoning_HARD;
+        };
+    }
 
     public static int regenSpeedFast_EASY;
     public static int regenSpeed_EASY;
     public static int partiallySatiated_EASY;
     public static double deficiencyScalar_EASY;
     public static int starvationSpeed_EASY;
+    public static double foodPoisoning_EASY;
 
     public static int regenSpeedFast_NORMAL;
     public static int regenSpeed_NORMAL;
     public static int partiallySatiated_NORMAL;
     public static double deficiencyScalar_NORMAL;
     public static int starvationSpeed_NORMAL;
+    public static double foodPoisoning_NORMAL;
 
     public static int regenSpeedFast_HARD;
     public static int regenSpeed_HARD;
     public static int partiallySatiated_HARD;
     public static double deficiencyScalar_HARD;
     public static int starvationSpeed_HARD;
+    public static double foodPoisoning_HARD;
 }

@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.authlib.GameProfile;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventory;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicPlayerEquipment;
-import mod.pilot.birch_n_bees.systems.extended_health.RevampedFoodData;
+import mod.pilot.birch_n_bees.systems.RevampedFoodData;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

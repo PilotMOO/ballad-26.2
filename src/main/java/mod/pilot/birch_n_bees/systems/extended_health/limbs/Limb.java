@@ -17,6 +17,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+@Deprecated
 public abstract sealed class Limb<P extends Player> implements IHealthTokenSerializable<P, Limb<P>> permits Limb.Client, Limb.Server {
     public final Identifier ID;
 

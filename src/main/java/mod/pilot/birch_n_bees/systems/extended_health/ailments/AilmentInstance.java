@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
  *          being {@link AbstractClientPlayer} via {@link Client},
  *          and {@link ServerPlayer} via {@link Server}
  */
+@Deprecated
 public abstract sealed class AilmentInstance<P extends Player> implements IHealthTokenSerializable<P, AilmentInstance<P>>
         permits AilmentInstance.Client, AilmentInstance.Server {
     protected AilmentInstance(Ailment parentType, boolean clientSide, byte severity, int timeUntilCured){

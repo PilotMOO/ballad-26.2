@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 
+@Deprecated
 public class Torso {
     public static final Identifier TORSO = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "torso");
     private static final double THIRTY_DEG_IN_RAD = 0.523599d;

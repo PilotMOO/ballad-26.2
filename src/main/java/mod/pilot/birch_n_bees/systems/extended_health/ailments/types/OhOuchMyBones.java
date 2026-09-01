@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+@Deprecated
 public class OhOuchMyBones extends Ailment {
     public OhOuchMyBones() {
         super(Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "oh_ouch_my_bones"));

@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
  * <p>Refer to the {@code DefaultSerializer} within the related superclasses if your object does not use custom data.</p>
  * @param <O> the type of {@link IHealthTokenSerializable} this serializer handles
  */
+@Deprecated
 public abstract class Serializer<P extends Player, O extends IHealthTokenSerializable<P, O>>{
     /**
      * Writes all the relevant data of the first argument to the supplied {@link ValueOutput} argument for serialization.

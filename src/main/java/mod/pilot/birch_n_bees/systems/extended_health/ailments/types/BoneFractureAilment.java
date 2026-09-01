@@ -10,8 +10,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 
+@Deprecated
 public class BoneFractureAilment extends Ailment {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "bone_fracture");
     public BoneFractureAilment() {super(ID);}

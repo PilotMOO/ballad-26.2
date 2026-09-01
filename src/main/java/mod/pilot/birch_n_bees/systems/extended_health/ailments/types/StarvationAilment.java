@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
+@Deprecated
 public class StarvationAilment extends Ailment {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(ABOBAB.MOD_ID, "starvation");
     public StarvationAilment() {super(ID);}

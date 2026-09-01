@@ -141,6 +141,8 @@
   "birch_n_bees.message.contraband": "§l§4[CONTRABAND SPOTTED: REQUESTING TERMINATION]",
   "birch_n_bees.message.unlawful_animal_killing": "§4SLAUGHTER OF ANIMALS BY AN IMPURE IS STRICTLY FORBIDDEN.",
 
+  "birch_n_bees.tooltip.food_poisoning": "§4Not safe to eat...",
+
   "birch_n_bees.ailment.oh_ouch_my_bones.title": "Oh Ouch My §4Bones",
   "birch_n_bees.ailment.oh_ouch_my_bones.description": "My bones hurt.",
   "birch_n_bees.ailment.starvation.title": "§2Starvation",
@@ -156,7 +158,7 @@
   "advancements.ballad.welcome.description": "§7This achievement page will act as a form of guide. Try to follow this to the best of your abilities, else you might get stuck... \nInstalling JEI is HEAVILY recommended\n\nPinky promise I won't try to get you killed ;)",
   "advancements.ballad.go_wood.title": "It's Minecraft. Go Punch a Tree!",
   "advancements.ballad.go_wood.description": "§7Attempt to mine some wood. Go on, it's perfectly fine and safe. You won't die or anything.",
-  "advancements.ballad.broken_promise.title": "I lied.",
+  "advancements.ballad.broken_promise.title": "I Lied.",
   "advancements.ballad.broken_promise.description": "§7First rule of the birch forest: If someone says they are going to help you, they are not going to help you.\nSecond rule: bees are not your friend.",
   "advancements.ballad.axe_todo.title": "How to (Actually) Progress",
   "advancements.ballad.axe_todo.description": "§7Ok, but do you actually want to progress? Fine, I'll tell you. Mining wood isn't that simple, you'll need a proper tool... I got an idea. Go gather a few items for me, will ya?",

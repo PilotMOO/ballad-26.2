@@ -492,14 +492,14 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
             return setWithContext(index, element);
         }
         @Override public void add(int index, ItemStack element) {
-            items.add(getEffectiveIndex(index), element);
+            item.add(getEffectiveIndex(index), element);
         }
         @Override public @NonNull ItemStack remove(int index) {
-            return items.remove(getEffectiveIndex(index));
+            return item.remove(getEffectiveIndex(index));
         }
 
         @Override public int size() {return lockedSize;}
-        @Override public void clear() {items.clear();}
+        @Override public void clear() {item.clear();}
 
         @Override
         public @NonNull Iterator<ItemStack> iterator() {

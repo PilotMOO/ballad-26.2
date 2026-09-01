@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
+@Deprecated
 public class AilmentManager {
     private static final int NATIVE_AILMENT_COUNT = 1;
     public static void init(IEventBus bus){

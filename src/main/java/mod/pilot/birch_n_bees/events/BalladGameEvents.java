@@ -8,10 +8,8 @@ import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.ai.HostileFishGoal;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.systems.dynamic_player_inventory.DynamicInventoryToken;
-import mod.pilot.birch_n_bees.systems.extended_health.HealthToken;
-import mod.pilot.birch_n_bees.systems.extended_health.limbs.LimbManager;
+import mod.pilot.birch_n_bees.systems.RevampedFoodData;
 import mod.pilot.birch_n_bees.util.BirchTags;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -24,13 +22,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.fish.Salmon;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -49,9 +48,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingSwapItemsEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
@@ -245,6 +244,36 @@ public class BalladGameEvents {
     }
 
     @SubscribeEvent
+    public static void punishFoodPoisoning(LivingEntityUseItemEvent.Finish event){
+        LivingEntity entity = event.getEntity();
+        if (entity.level().isClientSide()) return;
+        ItemStack stack = event.getItem();
+        if (stack.is(BirchTags.Items.FOOD_POISONING)){
+            Difficulty difficulty = entity.level().getDifficulty();
+            double chance = RevampedFoodData.getFoodPoisoningChance(difficulty);
+            if (chance > entity.level().getRandom().nextDouble()){
+                int diffID = difficulty.getId();
+                int duration = 200 * (diffID + 1);
+                if (diffID > 1)
+                    entity.addEffect(new MobEffectInstance(MobEffects.POISON,duration / 2, 0));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER,
+                        duration, (diffID > 2 ? 1 : 0)
+                ));
+                entity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, duration / 3, 0));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, duration / 2, 0));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void injectTooltips(ItemTooltipEvent event){
+        ItemStack stack = event.getItemStack();
+        if (stack.is(BirchTags.Items.FOOD_POISONING)){
+            event.getToolTip().add(Component.translatable("birch_n_bees.tooltip.food_poisoning"));
+        }
+    }
+
+    @SubscribeEvent
     public static void playerPretick(PlayerTickEvent.Pre event){
         Player player = event.getEntity();
         /*if (HealthToken.has(player)){
@@ -292,7 +321,7 @@ public class BalladGameEvents {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void unlawfulKilling(LivingDeathEvent event){
         if (event.getEntity() instanceof Bee) return;
         if (event.getEntity() instanceof Animal animal
@@ -304,7 +333,7 @@ public class BalladGameEvents {
 
             BirchDataHelper.popKillerBees(server, animal.position(), 5, player);
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void nightWatch(ServerTickEvent.Post event){

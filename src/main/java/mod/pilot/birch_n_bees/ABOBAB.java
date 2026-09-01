@@ -8,10 +8,8 @@ import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.screens.BirchMenuTypes;
-import mod.pilot.birch_n_bees.systems.HotBrickWatcher;
-import mod.pilot.birch_n_bees.systems.extended_health.RevampedFoodData;
-import mod.pilot.birch_n_bees.systems.extended_health.ailments.AilmentManager;
-import mod.pilot.birch_n_bees.systems.extended_health.limbs.LimbManager;
+import mod.pilot.birch_n_bees.systems.InWorldCookingManager;
+import mod.pilot.birch_n_bees.systems.RevampedFoodData;
 import mod.pilot.birch_n_bees.util.BirchAttachmentTypes;
 import mod.pilot.birch_n_bees.util.BirchBiomeModification;
 import mod.pilot.birch_n_bees.util.BirchDataComponents;
@@ -32,7 +30,6 @@ public class ABOBAB {
     {
         modContainer.registerConfig(ModConfig.Type.STARTUP, Config.SERVER_SPEC, "ballad_config.toml");
         configLoaded = true;
-        HotBrickWatcher.init(Config.SERVER.brickCookTime.get());
         RevampedFoodData.initConfig(Config.SERVER);
 
         BirchAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
@@ -46,8 +43,11 @@ public class ABOBAB {
         BirchEntities.ENTITIES.register(modEventBus);
         BirchCriteriaRegistries.TRIGGERS.register(modEventBus);
 
-        AilmentManager.init(modEventBus);
-        LimbManager.init(modEventBus);
+        //ToDo: test reworked cooking thingy
+        InWorldCookingManager.init(modEventBus);
+
+        /*AilmentManager.init(modEventBus);
+        LimbManager.init(modEventBus);*/
 
         final DeferredRegister<MapCodec<? extends BiomeModifier>> biomeModifiers =
                 DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MOD_ID);

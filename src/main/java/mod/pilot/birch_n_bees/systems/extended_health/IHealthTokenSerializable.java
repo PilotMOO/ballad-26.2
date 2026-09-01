@@ -21,6 +21,7 @@ import org.jspecify.annotations.Nullable;
  *           Otherwise, some helper methods WILL throw errors, as it expects {@code this} to be an instance of {@link O}
  */
 @SuppressWarnings("unchecked")
+@Deprecated
 public interface IHealthTokenSerializable<P extends Player, O extends IHealthTokenSerializable<P, O>> {
     /**Helper method to serialize this instance to save to file*/
     default void serialize(String prepend, ValueOutput output){

@@ -38,22 +38,22 @@ public abstract class InventoryMixin implements Container, Nameable/*, IPlayerIn
 
 /*    @ModifyReturnValue(method = "getFreeSlot", at = @At("RETURN"))
     private int applyResizeContext_getFreeSlot(int original){
-        if (original == -1 || !(items instanceof LockableInventoryItemStackList lockable)) return -1;
+        if (original == -1 || !(item instanceof LockableInventoryItemStackList lockable)) return -1;
         else return lockable.getEffectiveIndex(original);
     }
     @ModifyReturnValue(method = "findSlotMatchingItem", at = @At("RETURN"))
     private int applyResizeContext_findSlotMatchingItem(int original){
-        if (original == -1 || !(items instanceof LockableInventoryItemStackList lockable)) return -1;
+        if (original == -1 || !(item instanceof LockableInventoryItemStackList lockable)) return -1;
         else return lockable.getEffectiveIndex(original);
     }
     @ModifyReturnValue(method = "findSlotMatchingCraftingIngredient", at = @At("RETURN"))
     private int applyResizeContext_findSlotMatchingCraftingIngredients(int original){
-        if (original == -1 || !(items instanceof LockableInventoryItemStackList lockable)) return -1;
+        if (original == -1 || !(item instanceof LockableInventoryItemStackList lockable)) return -1;
         else return lockable.getEffectiveIndex(original);
     }
     @ModifyReturnValue(method = "getSlotWithRemainingSpace", at = @At("RETURN"))
     private int applyResizeContext_getSlotWithRemainingSpace(int original){
-        if (original == -1 || !(items instanceof LockableInventoryItemStackList lockable)) return -1;
+        if (original == -1 || !(item instanceof LockableInventoryItemStackList lockable)) return -1;
         else if (original == 40){
             if (DynamicInventoryToken.get(player).offhand) return 40;
             else return -1;
@@ -63,7 +63,7 @@ public abstract class InventoryMixin implements Container, Nameable/*, IPlayerIn
 
     /*@Override
     public void ballad$resizeHotbar(int size) {
-        if (items instanceof LockableInventoryItemStackList lockable) {
+        if (item instanceof LockableInventoryItemStackList lockable) {
             int old = lockable.hotbarLimit;
             lockable.resizeHotbar(size);
             if (lockable.hotbarLimit < old){
@@ -75,7 +75,7 @@ public abstract class InventoryMixin implements Container, Nameable/*, IPlayerIn
     }
     @Override
     public void ballad$resizeInventory(int size) {
-        if (items instanceof LockableInventoryItemStackList lockable) {
+        if (item instanceof LockableInventoryItemStackList lockable) {
             int old = lockable.inventoryLimit;
             lockable.resizeInventory(size);
             if (lockable.inventoryLimit < old) {
@@ -99,7 +99,7 @@ public abstract class InventoryMixin implements Container, Nameable/*, IPlayerIn
 
 
     @Unique private void ballad$dropAndRemoveItem(int index){
-        if (items instanceof LockableInventoryItemStackList lockable) {
+        if (item instanceof LockableInventoryItemStackList lockable) {
             ItemStack item = lockable.list.get(index);
             player.drop(item, true, false);
             lockable.list.set(index, ItemStack.EMPTY);

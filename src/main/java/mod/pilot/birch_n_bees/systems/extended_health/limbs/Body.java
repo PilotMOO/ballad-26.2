@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
+@Deprecated
 public abstract sealed class Body<P extends Player> permits Body.Client, Body.Server {
     public Body(Limb<P>[] limbs, boolean client){
         this.limbs = limbs;

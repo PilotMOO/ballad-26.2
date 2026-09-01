@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jspecify.annotations.Nullable;
 
+@Deprecated
 public abstract class Ailment {
     public final Serializer<AbstractClientPlayer, AilmentInstance<AbstractClientPlayer>> CLIENT_SERIALIZER;
     public final Serializer<ServerPlayer, AilmentInstance<ServerPlayer>> SERVER_SERIALIZER;

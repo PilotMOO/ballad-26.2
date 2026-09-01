@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class HealthToken implements ValueIOSerializable {
     public static AttachmentType<HealthToken> ATTACHMENT;
     public static HealthToken get(Player player){
