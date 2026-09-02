@@ -27,8 +27,9 @@ public class RevampedFoodData extends FoodData {
 
         float saturation = accessor.getSaturationLevel();
         int foodLevel = accessor.getFoodLevel();
-        if (exhaustion > 4.0F) {
-            accessor.setExhaustionLevel(exhaustion -= 4);
+        float healExhaust = difficulty.getId() / 2f;
+        if (exhaustion > 6.0F - healExhaust) {
+            accessor.setExhaustionLevel(exhaustion -= healExhaust);
             if (saturation > 0.0F) {
                 accessor.setSaturationLevel(Math.max(--saturation, 0.0F));
             } else if (difficulty != Difficulty.PEACEFUL) {

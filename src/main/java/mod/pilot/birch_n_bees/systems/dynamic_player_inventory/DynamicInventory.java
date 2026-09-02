@@ -130,7 +130,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     }
     @Override
     public void addAndPickItem(@NonNull ItemStack itemStack) {
-        this.setSelectedSlot(this.getSuitableHotbarSlot()); //ToDo! Override suitable hotbar method to prevent improper indexes...
+        this.setSelectedSlot(this.getSuitableHotbarSlot());
         if (!(getSelectedItem().isEmpty())) {
             int freeSlot = this.getFreeSlot();
             if (freeSlot != -1) {
@@ -375,10 +375,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     public void save(ValueOutput.TypedOutputList<ItemStackWithSlot> output) {
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = getWithoutContext(i);
-            if (!item.isEmpty()) {
-                System.out.println("shitting MYself... index " + i + ", stack " + item);
-                output.add(new ItemStackWithSlot(i, item));
-            }
+            if (!item.isEmpty()) output.add(new ItemStackWithSlot(i, item));
         }
     }
     @Override
@@ -386,10 +383,8 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         this.items.clear();
 
         for (ItemStackWithSlot item : input) {
-            if (item.isValidInContainer(this.items.size())) {
-                System.out.println("shitting yourself... index " + item.slot() + ", stack " + item.stack());
-                setWithoutContext(item.slot(), item.stack());
-            }
+            if (item.isValidInContainer(this.items.size())) setWithoutContext(item.slot(), item.stack());
+
         }
     }
 

@@ -35,6 +35,14 @@
   "item.birch_n_bees.raw_sugar": "Raw Sugar",
   "item.birch_n_bees.raw_sugar.description": "§7An unrefined, sticky mass of raw cane sugar. The drying process was uneven and poor; half of it by weight is residual water, not the actual sugar crystals...",
 
+  "item.birch_n_bees.charred_beef": "Charred Beef",
+  "item.birch_n_bees.charred_chicken": "Charred Chicken",
+  "item.birch_n_bees.charred_mutton": "Charred Mutton",
+  "item.birch_n_bees.charred_porkchop": "Charred Porkchop",
+  "item.birch_n_bees.charred_rabbit": "Charred Rabbit",
+  "item.birch_n_bees.charred_cod": "Charred Cod",
+  "item.birch_n_bees.charred_salmon": "Charred Salmranha",
+
   "item.birch_n_bees.smashed_pumpkin": "Smashed Pumpkin",
   "item.birch_n_bees.pumpkin_slice": "Pumpkin Slice",
 
@@ -139,7 +147,6 @@
   "birch_n_bees.message.incorrect_tool_knife_warning": "§7You need a §6knife §7to harvest this! §6[Shift] §4to break §7if you are certain.",
 
   "birch_n_bees.message.contraband": "§l§4[CONTRABAND SPOTTED: REQUESTING TERMINATION]",
-  "birch_n_bees.message.unlawful_animal_killing": "§4SLAUGHTER OF ANIMALS BY AN IMPURE IS STRICTLY FORBIDDEN.",
 
   "birch_n_bees.tooltip.food_poisoning": "§4Not safe to eat...",
 

@@ -54,7 +54,7 @@ public class Config
             easyHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is EASY: ",
                     0.5d, 0d, Double.MAX_VALUE);
             easyStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is EASY: ",
-                    300, 0, Integer.MAX_VALUE);
+                    1000, 0, Integer.MAX_VALUE);
             easyFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is EASY: ",
                     0.4d, 0, 1);
             builder.pop();
@@ -68,9 +68,9 @@ public class Config
             normalHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is NORMAL: ",
                     1d, 0d, Double.MAX_VALUE);
             normalStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is NORMAL: ",
-                    200, 0, Integer.MAX_VALUE);
+                    900, 0, Integer.MAX_VALUE);
             normalFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is NORMAL: ",
-                    0.7d, 0, 1);
+                    0.6d, 0d, 1d);
             builder.pop();
             builder.push("Hard Mode");
             hardHungerRegenSpeedFast = builder.defineInRange("How quickly, in ticks, players heal when fully saturated when difficulty is HARD: ",
@@ -82,13 +82,13 @@ public class Config
             hardHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is HARD: ",
                     2d, 0d, Double.MAX_VALUE);
             hardStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is HARD: ",
-                    150, 0, Integer.MAX_VALUE);
+                    750, 0, Integer.MAX_VALUE);
             hardFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is HARD: ",
-                    0.9d, 0, 1);
+                    0.9d, 0d, 1d);
             builder.pop();
             builder.pop();
 
-            builder.push("Misc");
+            builder.push("Miscellaneous");
             enableDefaultInventory = builder.define("Set the default inventory size to vanilla?", false);
             builder.pop();
 

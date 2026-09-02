@@ -215,17 +215,41 @@ public class BirchItems {
 
     public static final DeferredItem<BlockItem> WILDFLOWER_BASKET = ITEMS.registerSimpleBlockItem(BirchBlocks.WILDFLOWER_BASKET);
 
-    public static final DeferredItem<BlockItem> PREPARED_SUGARCANE = ITEMS.registerSimpleBlockItem(BirchBlocks.PREPARED_SUGARCANE);
-    public static final DeferredItem<Item> RAW_SUGAR = ITEMS.registerItem("raw_sugar",
-            (properties) -> new Item(properties){
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                            @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder,
-                                            @NotNull TooltipFlag flag) {
-                    tooltipAdder.accept(Component.translatable("item.birch_n_bees.raw_sugar.description"));
-                    super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-                }
-            });
+    public static final DeferredItem<Item> CHARRED_BEEF = ITEMS.registerItem("charred_beef",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_MEAT_FOOD, BirchFoodProperties.CHARRED_MEAT_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_CHICKEN = ITEMS.registerItem("charred_chicken",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_MEAT_FOOD, BirchFoodProperties.CHARRED_MEAT_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_MUTTON = ITEMS.registerItem("charred_mutton",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_MEAT_FOOD, BirchFoodProperties.CHARRED_MEAT_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_PORKCHOP = ITEMS.registerItem("charred_porkchop",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_MEAT_FOOD, BirchFoodProperties.CHARRED_MEAT_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_RABBIT = ITEMS.registerItem("charred_rabbit",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_MEAT_FOOD, BirchFoodProperties.CHARRED_MEAT_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_COD = ITEMS.registerItem("charred_cod",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_FISH_FOOD, BirchFoodProperties.CHARRED_FISH_CONSUMABLE)
+            ));
+    public static final DeferredItem<Item> CHARRED_SALMON = ITEMS.registerItem("charred_salmon",
+            (properties) -> new Item(
+                    properties.stacksTo(8)
+                            .food(BirchFoodProperties.CHARRED_FISH_FOOD, BirchFoodProperties.CHARRED_FISH_CONSUMABLE)
+            ));
 
     public static final DeferredItem<Item> SMASHED_PUMPKIN = ITEMS.registerItem("smashed_pumpkin",
             (properties) -> new Item(
@@ -237,6 +261,18 @@ public class BirchItems {
                     properties.stacksTo(16)
                             .food(BirchFoodProperties.PUMPKIN_SLICE_FOOD, BirchFoodProperties.PUMPKIN_SLICE_CONSUMABLE))
     );
+
+    public static final DeferredItem<BlockItem> PREPARED_SUGARCANE = ITEMS.registerSimpleBlockItem(BirchBlocks.PREPARED_SUGARCANE);
+    public static final DeferredItem<Item> RAW_SUGAR = ITEMS.registerItem("raw_sugar",
+            (properties) -> new Item(properties){
+                @Override
+                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+                                            @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder,
+                                            @NotNull TooltipFlag flag) {
+                    tooltipAdder.accept(Component.translatable("item.birch_n_bees.raw_sugar.description"));
+                    super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+                }
+            });
 
     public static final DeferredItem<SpawnEggItem> SPLINTERING_SPAWN = ITEMS.registerItem("splintering_spawn",
             (properties -> new SpawnEggItem(properties.spawnEgg(BirchEntities.SPLINTERING.get()))));

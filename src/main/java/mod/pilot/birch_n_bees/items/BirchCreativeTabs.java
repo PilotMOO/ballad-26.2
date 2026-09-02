@@ -29,6 +29,21 @@ public class BirchCreativeTabs {
                         register.accept(BirchItems.WILDFLOWER_SATCHEL.get());
                         register.accept(BirchItems.WILDFLOWER_BASKET.get());
 
+
+                        register.accept(BirchItems.PREPARED_SUGARCANE.get());
+                        register.accept(BirchItems.RAW_SUGAR.get());
+
+                        register.accept(BirchItems.CHARRED_BEEF.get());
+                        register.accept(BirchItems.CHARRED_CHICKEN.get());
+                        register.accept(BirchItems.CHARRED_MUTTON.get());
+                        register.accept(BirchItems.CHARRED_PORKCHOP.get());
+                        register.accept(BirchItems.CHARRED_RABBIT.get());
+                        register.accept(BirchItems.CHARRED_COD.get());
+                        register.accept(BirchItems.CHARRED_SALMON.get());
+
+                        register.accept(BirchItems.SMASHED_PUMPKIN.get());
+                        register.accept(BirchItems.PUMPKIN_SLICE.get());
+
                         register.accept(BirchItems.CLAY_BRICK.get());
 
                         register.accept(BirchItems.STONE_PEBBLE.get());
@@ -44,13 +59,6 @@ public class BirchCreativeTabs {
                         register.accept(BirchItems.COBBLED_TUFF.get());
 
                         register.accept(BirchItems.STICKY_PLANKS.get());
-
-
-                        register.accept(BirchItems.PREPARED_SUGARCANE.get());
-                        register.accept(BirchItems.RAW_SUGAR.get());
-
-                        register.accept(BirchItems.SMASHED_PUMPKIN.get());
-                        register.accept(BirchItems.PUMPKIN_SLICE.get());
 
                         register.accept(BirchItems.HONEY_TOOL_BASE.get());
                         register.accept(BirchItems.HONEY_AXE.get());

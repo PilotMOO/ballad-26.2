@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,6 +20,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -31,7 +31,6 @@ public class InWorldCookingManager {
         registeredRecipes = new CookingPair[0];
         registeredComplexRecipes = new CookingPair.Complex[0];
         bus.addListener(InWorldCookingManager::registerNativeRecipes);
-        bus.addListener(InWorldCookingManager::itemEntityTick);
         bus.post(new RegisterCookingPairsEvent());
     }
 
@@ -65,6 +64,21 @@ public class InWorldCookingManager {
     private static CookingPair[] registeredRecipes;
     private static CookingPair.Complex[] registeredComplexRecipes;
     static int count = 0, countComplex = 0;
+
+    private static @Nullable CookingPair getCookingPair(ItemEntity stack){
+        for (CookingPair pair : registeredRecipes) {
+            if (pair.validate(stack.getItem())) {
+                return pair;
+            }
+        }
+        for (CookingPair.Complex complex : registeredComplexRecipes) {
+            if (complex.validate(stack)) {
+                return complex;
+            }
+        }
+        return null;
+    }
+
     private static void register(CookingPair pair){
         if (count >= registeredRecipes.length){
             CookingPair[] newArray = new CookingPair[count + 1];
@@ -94,27 +108,51 @@ public class InWorldCookingManager {
     private static void registerNativeRecipes(RegisterCookingPairsEvent event){
         event.register(
                 () -> new ItemStack(BirchItems.CLAY_BRICK.get()),
-                1000,
+                4800,
                 () -> new ItemStack(Items.BRICK));
+        event.register(
+                () -> new ItemStack(Items.BEEF),
+                2400,
+                () -> new ItemStack(BirchItems.CHARRED_BEEF.get()));
+        event.register(
+                () -> new ItemStack(Items.CHICKEN),
+                2400,
+                () -> new ItemStack(BirchItems.CHARRED_CHICKEN.get()));
+        event.register(
+                () -> new ItemStack(Items.MUTTON),
+                2400,
+                () -> new ItemStack(BirchItems.CHARRED_MUTTON.get()));
+        event.register(
+                () -> new ItemStack(Items.PORKCHOP),
+                2400,
+                () -> new ItemStack(BirchItems.CHARRED_PORKCHOP.get()));
+        event.register(
+                () -> new ItemStack(Items.RABBIT),
+                2400,
+                () -> new ItemStack(BirchItems.CHARRED_RABBIT.get()));
+        event.register(
+                () -> new ItemStack(Items.COD),
+                2000,
+                () -> new ItemStack(BirchItems.CHARRED_COD.get()));
+        event.register(
+                () -> new ItemStack(Items.SALMON),
+                2000,
+                () -> new ItemStack(BirchItems.CHARRED_SALMON.get()));
     }
 
     public static void validateThenCook(ItemEntity entity){
+        //System.out.println("validating cookie thingy");
         ItemStack stack = entity.getItem();
-        CookingPair pair = null;
-        for (CookingPair pair1 : registeredRecipes){
-            if (pair1.validate(stack)){
-                pair = pair1; break;
-            }
-        }
-        if (pair == null) for (CookingPair.Complex complex : registeredComplexRecipes) {
-            if (complex.validate(entity)) {
-                pair = complex;
-                break;
-            }
-        }
-        if (pair == null) return;
-
         int cookTime = entity.getData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT);
+        if (cookTime == -1) return;
+        if (cookTime == 0) {
+            if (getCookingPair(entity) == null) {
+                //ToDo: rewrite this to invalidate the item stack ONLY if the item doesnt match the
+                // expected item type
+                entity.setData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT, 0);
+                return;
+            }
+        }
 
         boolean flag = false;
         if (cookTime != 0 && entity.tickCount % 20 != 0) flag = true;
@@ -141,13 +179,18 @@ public class InWorldCookingManager {
             }
         }
         if (flag){
+            CookingPair pair = getCookingPair(entity);
+            if (pair == null){
+                entity.setData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT, 0);
+                return;
+            }
             if (++cookTime >= pair.cookTime){
                 int recipeCost = pair.original.get().count();
                 ItemStack pairResult = pair.result.get();
-                int count = 0;
+                int entityStackCount = entity.getItem().count(), count = 0;
                 do {
                     count += pairResult.count();
-                } while (stack.count() >= recipeCost);
+                } while ((entityStackCount -= recipeCost) >= recipeCost);
 
                 Level level = entity.level();
                 int maxStack = pairResult.getMaxStackSize();
@@ -158,6 +201,8 @@ public class InWorldCookingManager {
                     ItemEntity newEntity = new ItemEntity(level, pos.x, pos.y, pos.z,
                             result, delta.x, delta.y, delta.z);
                     level.addFreshEntity(newEntity);
+                    newEntity.lifespan *= 2;
+                    //entity.discard();
                 } else while (count > 0){
                     int cappedCount = Math.min(maxStack, count);
                     ItemStack result = pairResult.copyWithCount(cappedCount);
@@ -166,19 +211,22 @@ public class InWorldCookingManager {
                     ItemEntity newEntity = new ItemEntity(level, pos.x, pos.y, pos.z,
                             result, delta.x, delta.y, delta.z);
                     level.addFreshEntity(newEntity);
+                    newEntity.lifespan *= 2;
                     count -= cappedCount;
                 }
+                if (entityStackCount == 0) entity.discard();
                 smokeLarge(entity, (ServerLevel)level);
+                entity.setData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT, -1);
                 entity.playSound(SoundEvents.FIRE_EXTINGUISH);
-                entity.discard();
             } else{
                 entity.setData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT, cookTime);
+                entity.lifespan++;
                 if (entity.tickCount % 30 == 0) {
                     smoke(entity, (ServerLevel)entity.level());
-                    entity.playSound(SoundEvents.CAMPFIRE_CRACKLE);
+                    entity.playSound(SoundEvents.FURNACE_FIRE_CRACKLE);
                 }
             }
-        }
+        } //else entity.setData(BirchAttachmentTypes.ITEM_STACK_COOK_TIME_ATTACHMENT, Math.min(0, cookTime - 4));
     }
 
     private static void smoke(ItemEntity entity, ServerLevel server) {
@@ -190,7 +238,9 @@ public class InWorldCookingManager {
         server.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.x, pos.y, pos.z, 4, 0, 0.5, 0, 0.2f);
     }
 
+    @SubscribeEvent
     public static void itemEntityTick(EntityTickEvent.Post event){
-        if (event.getEntity() instanceof ItemEntity entity) validateThenCook(entity);
+        if (event.getEntity() instanceof ItemEntity entity && !entity.level().isClientSide())
+            validateThenCook(entity);
     }
 }

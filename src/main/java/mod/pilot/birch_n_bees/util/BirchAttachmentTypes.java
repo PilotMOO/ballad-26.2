@@ -24,6 +24,7 @@ public class BirchAttachmentTypes {
             ATTACHMENT_TYPES.register("inventory_token_attachment",
                     () -> AttachmentType.serializable(DynamicInventoryToken::new)
                             .sync(new DynamicInventoryToken.Syncer())
+                            .copyOnDeath()
                             .build());
 
     public static final Supplier<AttachmentType<Integer>> ITEM_STACK_COOK_TIME_ATTACHMENT =

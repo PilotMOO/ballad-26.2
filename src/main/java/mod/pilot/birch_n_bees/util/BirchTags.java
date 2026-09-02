@@ -19,7 +19,7 @@ public class BirchTags {
 
         public static final TagKey<Block> WARN_IF_INCORRECT_TOOL_KNIFE = tag("warn_if_incorrect_tool_knife");
 
-        public static final TagKey<Block> COOKS_NEARBY_ITEMS = tag("cooks_nearby_items.json");
+        public static final TagKey<Block> COOKS_NEARBY_ITEMS = tag("cooks_nearby_items");
     }
 
     public static class Items{
