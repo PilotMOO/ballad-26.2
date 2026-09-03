@@ -37,7 +37,7 @@ public class WildflowerSatchelItem extends BundleItem {
         if (Math.abs(owner.getDeltaMovement().y) > 0.5){
             chance = 0.025f;
             if (sprinting) chance *= 4f;
-        } else if (sprinting && owner.tickCount % 20 == 0) chance = 0.025f;
+        } else if (sprinting && owner.tickCount % 20 == 0) chance = 0.1f;
 
         if (chance != 0f){
             RandomSource random = owner.getRandom();

@@ -22,9 +22,9 @@ public class Config
         public final ModConfigSpec.ConfigValue<Integer> normalPartiallySatiatedThreshold;
         public final ModConfigSpec.ConfigValue<Integer> hardPartiallySatiatedThreshold;
 
-        public final ModConfigSpec.ConfigValue<Double> easyHealingDeficiencyScalar;
+        /*public final ModConfigSpec.ConfigValue<Double> easyHealingDeficiencyScalar;
         public final ModConfigSpec.ConfigValue<Double> normalHealingDeficiencyScalar;
-        public final ModConfigSpec.ConfigValue<Double> hardHealingDeficiencyScalar;
+        public final ModConfigSpec.ConfigValue<Double> hardHealingDeficiencyScalar;*/
 
         public final ModConfigSpec.ConfigValue<Integer> easyStarvationSpeed;
         public final ModConfigSpec.ConfigValue<Integer> normalStarvationSpeed;
@@ -51,10 +51,10 @@ public class Config
                     600, 0, Integer.MAX_VALUE);
             easyPartiallySatiatedThreshold = builder.defineInRange("The threshold at which players are partially satiated, enabling passive regeneration when difficulty is EASY: ",
                     10, 0, 20);
-            easyHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is EASY: ",
-                    0.5d, 0d, Double.MAX_VALUE);
+            /*easyHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is EASY: ",
+                    0.5d, 0d, Double.MAX_VALUE);*/
             easyStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is EASY: ",
-                    1000, 0, Integer.MAX_VALUE);
+                    900, 0, Integer.MAX_VALUE);
             easyFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is EASY: ",
                     0.4d, 0, 1);
             builder.pop();
@@ -65,10 +65,10 @@ public class Config
                     1200, 0, Integer.MAX_VALUE);
             normalPartiallySatiatedThreshold = builder.defineInRange("The threshold at which players are partially satiated, enabling passive regeneration when difficulty is NORMAL: ",
                     14, 0, 20);
-            normalHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is NORMAL: ",
-                    1d, 0d, Double.MAX_VALUE);
+            /*normalHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is NORMAL: ",
+                    1d, 0d, Double.MAX_VALUE);*/
             normalStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is NORMAL: ",
-                    900, 0, Integer.MAX_VALUE);
+                    600, 0, Integer.MAX_VALUE);
             normalFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is NORMAL: ",
                     0.6d, 0d, 1d);
             builder.pop();
@@ -79,10 +79,10 @@ public class Config
                     1500, 0, Integer.MAX_VALUE);
             hardPartiallySatiatedThreshold = builder.defineInRange("The threshold at which players are partially satiated, enabling passive regeneration when difficulty is HARD: ",
                     18, 0, 20);
-            hardHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is HARD: ",
-                    2d, 0d, Double.MAX_VALUE);
+            /*hardHealingDeficiencyScalar = builder.defineInRange("How impactful (multiplicatively) regeneration speed is affected by ailments when difficulty is HARD: ",
+                    2d, 0d, Double.MAX_VALUE);*/
             hardStarvationSpeed = builder.defineInRange("How quickly, in ticks, players passively gain exhaustion when difficulty is HARD: ",
-                    750, 0, Integer.MAX_VALUE);
+                    450, 0, Integer.MAX_VALUE);
             hardFoodPoisoningChance = builder.defineInRange("The probability that consuming specific food item will poison you when the difficulty is HARD: ",
                     0.9d, 0d, 1d);
             builder.pop();

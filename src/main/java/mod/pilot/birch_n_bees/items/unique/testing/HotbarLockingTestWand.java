@@ -28,7 +28,7 @@ public class HotbarLockingTestWand extends Item {
                 token.armor[3] = true;
             } else {
                 token.hotbarSlots = 9;
-                token.inventorySlots = 0;
+                token.inventorySlots = 1;
                 token.offhand = false;
 
                 token.armor[0] = true;

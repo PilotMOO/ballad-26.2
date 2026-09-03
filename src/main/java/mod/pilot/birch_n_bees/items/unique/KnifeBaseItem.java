@@ -96,7 +96,7 @@ public class KnifeBaseItem extends Item {
                 if (stack.is(Items.SUGAR_CANE)) return new ItemStack(BirchItems.PREPARED_SUGARCANE.get());
                 if (stack.is(BirchItems.WILDFLOWER_TWINE)) return new ItemStack(BirchItems.STRIPPED_WILDFLOWER_TWINE.get());
                 if (stack.is(Items.PUMPKIN)) {
-                    return new ItemStack(BirchItems.PUMPKIN_SLICE.get(), 6);
+                    return new ItemStack(BirchItems.PUMPKIN_SLICE.get(), 3);
                 }
                 return null;
             }

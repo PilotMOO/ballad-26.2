@@ -83,9 +83,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
 
     /*REWRITTEN METHODS*/
     public int selected; //Up-porting the selected object because fuck you why the hell is it private
-    @Override public int getSelectedSlot() {
-        return this.selected;
-    }
+    @Override public int getSelectedSlot() {return this.selected;}
     @Override public void setSelectedSlot(int selected) {
         if (selected < -1 || selected >= 9) {
             throw new IllegalArgumentException("Invalid selected slot");
@@ -455,7 +453,12 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     @Override public boolean contains(@NonNull TagKey<Item> tag) {return super.contains(tag);}
     @Override public boolean contains(@NonNull Predicate<ItemStack> predicate) {return super.contains(predicate);}
 
-    @Override public void replaceWith(Inventory other) {super.replaceWith(other);}
+    @Override public void replaceWith(Inventory other) {
+        System.out.println("replace called! other inv " + other);
+        System.out.println("this inv " + this);
+        super.replaceWith(other);
+        System.out.println("after replace: " + this);
+    }
     @Override public void clearContent() {super.clearContent();}
 
     @Override
@@ -546,6 +549,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
     //IPlayerInventoryResizable Implementation
     @Override
     public void ballad$resizeHotbar(int size) {
+        System.out.println("Resize called, dyn inv is " + this);
         int old = hotbarLimit;
         resizeHotbar(size);
         if (hotbarLimit < old){
@@ -553,6 +557,7 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
             if (player instanceof ServerPlayer sp) {
                 ClientboundSetPlayerInventoryPacket[] packets = new ClientboundSetPlayerInventoryPacket[9 - hotbarLimit];
                 for (int i = hotbarLimit + 1; i < 9; i++) {
+                    System.out.println("throwing out item in hotbar index " + i + "!");
                     ballad$dropAndRemoveItem(i, true);
                     packets[i - (hotbarLimit + 1)] = createInventoryUpdatePacket(i);
                 }
@@ -573,10 +578,10 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         int old = inventoryLimit;
         resizeInventory(size);
         if (inventoryLimit < old && player instanceof ServerPlayer sp) {
-            ClientboundSetPlayerInventoryPacket[] packets = new ClientboundSetPlayerInventoryPacket[36 - (inventoryLimit + 9)];
-            for (int i = inventoryLimit + 9; i < 36; i++) {
+            ClientboundSetPlayerInventoryPacket[] packets = new ClientboundSetPlayerInventoryPacket[27 - (inventoryLimit)];
+            for (int i = inventoryLimit + 10; i < 36; i++) {
                 ballad$dropAndRemoveItem(i, false);
-                packets[i - 8] = createInventoryUpdatePacket(i);
+                packets[i - 9] = createInventoryUpdatePacket(i);
             }
             for (ClientboundSetPlayerInventoryPacket packet : packets){
                 if (packet != null) sp.connection.send(packet);
@@ -601,5 +606,18 @@ public class DynamicInventory extends Inventory implements IPlayerInventoryResiz
         ItemStack item = getWithoutContext(index);
         player.drop(item, !tossFromHand, tossFromHand);
         setWithoutContext(index, ItemStack.EMPTY);
+    }
+
+    @Override
+    public String toString() {
+        return "DynamicInventory{" +
+                "equipment=" + equipment +
+                ", items=" + items +
+                ", wrapper=" + wrapper +
+                ", hotbarLimit=" + hotbarLimit +
+                ", inventoryLimit=" + inventoryLimit +
+                ", lockedSize=" + lockedSize +
+                ", selected=" + selected +
+                '}';
     }
 }

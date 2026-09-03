@@ -106,7 +106,7 @@ public class BalladGameEvents {
         Level level = event.getLevel();
         BlockPos bPos = event.getPos();
         BlockState bState = level.getBlockState(bPos);
-        if (event.getItemStack().isEmpty() && bState.is(Blocks.BEE_NEST)){
+        if (/*event.getItemStack().isEmpty() &&*/ bState.is(Blocks.BEE_NEST)){
             BeehiveBlockEntity hive = (BeehiveBlockEntity)level.getBlockEntity(bPos);
             int honey = bState.getValue(HONEY_LEVEL);
             if (hive != null && honey >= 4){

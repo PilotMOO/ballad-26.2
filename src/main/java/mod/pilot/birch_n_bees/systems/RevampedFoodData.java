@@ -29,7 +29,7 @@ public class RevampedFoodData extends FoodData {
         int foodLevel = accessor.getFoodLevel();
         float healExhaust = difficulty.getId() / 2f;
         if (exhaustion > 6.0F - healExhaust) {
-            accessor.setExhaustionLevel(exhaustion -= healExhaust);
+            accessor.setExhaustionLevel(exhaustion -= (6.0F - healExhaust));
             if (saturation > 0.0F) {
                 accessor.setSaturationLevel(Math.max(--saturation, 0.0F));
             } else if (difficulty != Difficulty.PEACEFUL) {
@@ -56,7 +56,7 @@ public class RevampedFoodData extends FoodData {
             }
         }
         if (foodLevel <= 0){
-            if (++timer >= 80){
+            if (++timer >= 240 - (difficulty.getId() * 40)){
                 if (difficulty.getId() > 1 || player.getHealth() > 1f){
                     player.hurtServer(level, player.damageSources().starve(), 1.0F);
                 }
@@ -73,21 +73,21 @@ public class RevampedFoodData extends FoodData {
         regenSpeedFast_EASY = config.easyHungerRegenSpeedFast.get();
         regenSpeed_EASY = config.easyHungerRegenSpeed.get();
         partiallySatiated_EASY = config.easyPartiallySatiatedThreshold.get();
-        deficiencyScalar_EASY = config.easyHealingDeficiencyScalar.get();
+        //deficiencyScalar_EASY = config.easyHealingDeficiencyScalar.get();
         starvationSpeed_EASY = config.easyStarvationSpeed.get();
         foodPoisoning_EASY = config.easyFoodPoisoningChance.get();
 
         regenSpeedFast_NORMAL = config.normalHungerRegenSpeedFast.get();
         regenSpeed_NORMAL = config.normalHungerRegenSpeed.get();
         partiallySatiated_NORMAL = config.normalPartiallySatiatedThreshold.get();
-        deficiencyScalar_NORMAL = config.normalHealingDeficiencyScalar.get();
+        //deficiencyScalar_NORMAL = config.normalHealingDeficiencyScalar.get();
         starvationSpeed_NORMAL = config.normalStarvationSpeed.get();
         foodPoisoning_NORMAL = config.normalFoodPoisoningChance.get();
 
         regenSpeedFast_HARD = config.hardHungerRegenSpeedFast.get();
         regenSpeed_HARD = config.hardHungerRegenSpeed.get();
         partiallySatiated_HARD = config.hardPartiallySatiatedThreshold.get();
-        deficiencyScalar_HARD = config.hardHealingDeficiencyScalar.get();
+        //deficiencyScalar_HARD = config.hardHealingDeficiencyScalar.get();
         starvationSpeed_HARD = config.hardStarvationSpeed.get();
         foodPoisoning_HARD = config.hardFoodPoisoningChance.get();
     }
@@ -116,14 +116,14 @@ public class RevampedFoodData extends FoodData {
             case HARD -> partiallySatiated_HARD;
         };
     }
-    public static double getDeficiencyScalar(Difficulty difficulty){
+    /*public static double getDeficiencyScalar(Difficulty difficulty){
         return switch (difficulty){
             case PEACEFUL -> -1;
             case EASY -> deficiencyScalar_EASY;
             case NORMAL -> deficiencyScalar_NORMAL;
             case HARD -> deficiencyScalar_HARD;
         };
-    }
+    }*/
     public static int getStarvationSpeed(Difficulty difficulty){
         return switch (difficulty){
             case PEACEFUL -> -1;
@@ -144,21 +144,21 @@ public class RevampedFoodData extends FoodData {
     public static int regenSpeedFast_EASY;
     public static int regenSpeed_EASY;
     public static int partiallySatiated_EASY;
-    public static double deficiencyScalar_EASY;
+    //public static double deficiencyScalar_EASY;
     public static int starvationSpeed_EASY;
     public static double foodPoisoning_EASY;
 
     public static int regenSpeedFast_NORMAL;
     public static int regenSpeed_NORMAL;
     public static int partiallySatiated_NORMAL;
-    public static double deficiencyScalar_NORMAL;
+    //public static double deficiencyScalar_NORMAL;
     public static int starvationSpeed_NORMAL;
     public static double foodPoisoning_NORMAL;
 
     public static int regenSpeedFast_HARD;
     public static int regenSpeed_HARD;
     public static int partiallySatiated_HARD;
-    public static double deficiencyScalar_HARD;
+    //public static double deficiencyScalar_HARD;
     public static int starvationSpeed_HARD;
     public static double foodPoisoning_HARD;
 }

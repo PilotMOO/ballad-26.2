@@ -26,4 +26,9 @@ public abstract class ServerPlayerMixin extends Player {
         System.out.println("applying the shits from the server");
         DynamicInventoryToken.applyInFull(this);
     }
+
+    @Inject(method = "transferInventoryXpAndScore", at = @At("HEAD"))
+    private void refreshDynamicInventoryOnRespawn(Player oldPlayer, CallbackInfo ci){
+        DynamicInventoryToken.applyOnlyToInventory(this);
+    }
 }
