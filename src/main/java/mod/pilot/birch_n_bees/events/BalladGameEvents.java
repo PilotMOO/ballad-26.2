@@ -31,7 +31,10 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.bee.Bee;
+import net.minecraft.world.entity.animal.fish.AbstractFish;
+import net.minecraft.world.entity.animal.fish.Cod;
 import net.minecraft.world.entity.animal.fish.Salmon;
+import net.minecraft.world.entity.animal.fish.TropicalFish;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -74,10 +77,16 @@ public class BalladGameEvents {
             if (entity instanceof Bee bee){
                 bee.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(bee, Player.class, true));
             }
-            else if (entity instanceof Salmon salmon){
-                salmon.goalSelector.addGoal(1, new HostileFishGoal(salmon,
+            else if (entity instanceof AbstractFish fish){
+                if (fish instanceof Salmon) fish.goalSelector.addGoal(1, new HostileFishGoal(fish,
                         2f, 48d, 0d, 0.3d, 20,
-                        HostileFishGoal.SALMON_HOSTILE_PREDICATE));
+                        HostileFishGoal.FISH_HOSTILE_PREDICATE));
+                if (fish instanceof TropicalFish) fish.goalSelector.addGoal(1, new HostileFishGoal(fish,
+                        1f, 16f, 0d, 0.2d, 10,
+                        HostileFishGoal.FISH_HOSTILE_PREDICATE));
+                if (fish instanceof Cod) fish.goalSelector.addGoal(1, new HostileFishGoal(fish,
+                        1.5f, 32d, 0d, 0.35d, 30,
+                        HostileFishGoal.FISH_HOSTILE_PREDICATE));
             }
         }
     }

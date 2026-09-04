@@ -105,14 +105,16 @@
 
   "block.birch_n_bees.sticky_planks": "Sticky Planks",
 
-  "block.birch_n_bees.prepared_sugarcane": "Prepared Sugar Cane",
-
-  "block.birch_n_bees.wildflower_basket": "Wildflower Basket",
-
   "block.birch_n_bees.cobbled_andesite": "Cobbled Andesite",
   "block.birch_n_bees.cobbled_diorite": "Cobbled Diorite",
   "block.birch_n_bees.cobbled_granite": "Cobbled Granite",
   "block.birch_n_bees.cobbled_tuff": "Cobbled Tuff",
+
+  "block.birch_n_bees.mourning_glory": "Mourning Glory Vine",
+
+  "block.birch_n_bees.prepared_sugarcane": "Prepared Sugar Cane",
+
+  "block.birch_n_bees.wildflower_basket": "Wildflower Basket",
 
   "item.birch_n_bees.splintering_spawn": "Spawn Splintering",
   "item.birch_n_bees.nesthead_spawn": "Spawn Nesthead",

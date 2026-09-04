@@ -5,6 +5,7 @@ import mod.pilot.birch_n_bees.achievements.BirchCriteriaRegistries;
 import mod.pilot.birch_n_bees.blocks.BirchBlocks;
 import mod.pilot.birch_n_bees.effects.BirchEffects;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
+import mod.pilot.birch_n_bees.entity.mob.BloomingRemainsEntity;
 import mod.pilot.birch_n_bees.items.BirchCreativeTabs;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import mod.pilot.birch_n_bees.screens.BirchMenuTypes;
@@ -43,8 +44,8 @@ public class ABOBAB {
         BirchEntities.ENTITIES.register(modEventBus);
         BirchCriteriaRegistries.TRIGGERS.register(modEventBus);
 
-        //ToDo: test reworked cooking thingy
         InWorldCookingManager.init(modEventBus);
+        BloomingRemainsEntity.FlowerManager.init(Config.SERVER);
 
         /*AilmentManager.init(modEventBus);
         LimbManager.init(modEventBus);*/

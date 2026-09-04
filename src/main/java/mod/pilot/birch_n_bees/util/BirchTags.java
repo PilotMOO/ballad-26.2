@@ -41,6 +41,8 @@ public class BirchTags {
 
         public static final TagKey<Item> KNIFE_HARVESTING = tag("knife_harvesting");
 
+        public static final TagKey<Item> ANGERS_FISH = tag("angers_fish");
+
         public static final TagKey<Item> CAUSES_FOV_ZOOM = tag("causes_fov_zoom");
 
         public static final TagKey<Item> TOOL_RENDERSTATE_FOR_BASKET = tag("tool_renderstate_for_basket");

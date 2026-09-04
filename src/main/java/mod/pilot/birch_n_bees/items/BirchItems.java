@@ -213,6 +213,8 @@ public class BirchItems {
     public static final DeferredItem<BlockItem> COBBLED_GRANITE = ITEMS.registerSimpleBlockItem(BirchBlocks.COBBLED_GRANITE);
     public static final DeferredItem<BlockItem> COBBLED_TUFF = ITEMS.registerSimpleBlockItem(BirchBlocks.COBBLED_TUFF);
 
+    public static final DeferredItem<BlockItem> MOURNING_GLORY = ITEMS.registerSimpleBlockItem(BirchBlocks.MOURNING_GLORY);
+
     public static final DeferredItem<BlockItem> WILDFLOWER_BASKET = ITEMS.registerSimpleBlockItem(BirchBlocks.WILDFLOWER_BASKET);
 
     public static final DeferredItem<Item> CHARRED_BEEF = ITEMS.registerItem("charred_beef",

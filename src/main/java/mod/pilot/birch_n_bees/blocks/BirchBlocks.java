@@ -2,13 +2,18 @@ package mod.pilot.birch_n_bees.blocks;
 
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.blocks.block_entities.WildflowerBasketBlockEntity;
+import mod.pilot.birch_n_bees.blocks.unique.MourningGloryBlock;
 import mod.pilot.birch_n_bees.blocks.unique.PreparedSugarCaneBlock;
 import mod.pilot.birch_n_bees.blocks.unique.WildflowerBasketBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GlowLichenBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +35,18 @@ public class BirchBlocks {
 
     public static final DeferredBlock<PreparedSugarCaneBlock> PREPARED_SUGARCANE = BLOCKS.registerBlock("prepared_sugarcane",
             PreparedSugarCaneBlock::new);
+
+    public static final DeferredBlock<MourningGloryBlock> MOURNING_GLORY = BLOCKS.registerBlock("mourning_glory",
+            (properties) -> new MourningGloryBlock(
+                    properties.destroyTime(0.5f)
+                            .emissiveRendering(MourningGloryBlock::hasAnyFace)
+                            .lightLevel(MourningGloryBlock.emission(2))
+                            .mapColor(MapColor.COLOR_MAGENTA)
+                            .noCollision()
+                            .sound(SoundType.GLOW_LICHEN)
+                            .ignitedByLava()
+                            .pushReaction(PushReaction.DESTROY)
+            ));
 
     public static final DeferredBlock<WildflowerBasketBlock> WILDFLOWER_BASKET = BLOCKS.registerBlock("wildflower_basket",
             WildflowerBasketBlock::new);

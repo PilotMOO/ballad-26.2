@@ -1,7 +1,11 @@
 package mod.pilot.birch_n_bees;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Config
 {
@@ -34,7 +38,11 @@ public class Config
         public final ModConfigSpec.ConfigValue<Double> normalFoodPoisoningChance;
         public final ModConfigSpec.ConfigValue<Double> hardFoodPoisoningChance;
 
+        public final ModConfigSpec.ConfigValue<Boolean> throwErrorWhenFailedParse;
+
         public final ModConfigSpec.ConfigValue<Boolean> enableDefaultInventory;
+
+        public final ModConfigSpec.ConfigValue<List<? extends String>> bloomingRemainsFlowers;
 
         public Server(ModConfigSpec.Builder builder){
             builder.push("Ballad Config");
@@ -89,7 +97,28 @@ public class Config
             builder.pop();
 
             builder.push("Miscellaneous");
+            throwErrorWhenFailedParse = builder.define("Throw an error when the config fails to parse a string into a usable value? Useful for when debugging config changes",
+                    false);
+
             enableDefaultInventory = builder.define("Set the default inventory size to vanilla?", false);
+            bloomingRemainsFlowers = builder.defineList(
+                    "Flowers (more broadly, blocks) that may render on top of Blooming Remains: ",
+                    List.of("minecraft:dandelion",
+                            "minecraft:poppy",
+                            "minecraft:blue_orchid",
+                            "minecraft:allium",
+                            "minecraft:azure_bluet",
+                            "minecraft:red_tulip",
+                            "minecraft:orange_tulip",
+                            "minecraft:white_tulip",
+                            "minecraft:pink_tulip",
+                            "minecraft:oxeye_daisy",
+                            "minecraft:cornflower",
+                            "minecraft:lily_of_the_valley",
+                            "minecraft:golden_dandelion"),
+                    () -> "MOD_ID:BLOCK_ID",
+                    (s -> s instanceof String)
+            );
             builder.pop();
 
             builder.pop();

@@ -1,6 +1,7 @@
 package mod.pilot.birch_n_bees.entity.ai;
 
 import mod.pilot.birch_n_bees.achievements.BirchCriteriaRegistries;
+import mod.pilot.birch_n_bees.util.BirchTags;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,10 +16,13 @@ import java.util.function.Predicate;
 public class HostileFishGoal extends HostileMeleeGoal {
     public static final Predicate<LivingEntity> WATER_HOSTILE_PREDICATE =
             (target) -> target instanceof Player player
-                    && player.canBeSeenAsEnemy() && player.isInWaterOrRain();
-    public static final Predicate<LivingEntity> SALMON_HOSTILE_PREDICATE =
+                    && player.canBeSeenAsEnemy() && player.isInWater();
+    public static final Predicate<LivingEntity> FISH_HOSTILE_PREDICATE =
             (target) -> target instanceof Player player
-                    && player.canBeSeenAsEnemy() && (player.isInWaterOrRain() || player.getMainHandItem().getItem() == Items.SALMON);
+                    && player.canBeSeenAsEnemy()
+                    && (player.isInWaterOrRain()
+                    || player.getMainHandItem().is(BirchTags.Items.ANGERS_FISH)
+                    || player.getOffhandItem().is(BirchTags.Items.ANGERS_FISH));
 
     public HostileFishGoal(Mob mob) {
         super(mob, WATER_HOSTILE_PREDICATE);
@@ -63,6 +67,7 @@ public class HostileFishGoal extends HostileMeleeGoal {
     protected boolean attemptHit(LivingEntity target) {
         boolean flag = super.attemptHit(target);
         if (flag){
+            mob.playSound(SoundEvents.GENERIC_EAT.value(), 1f, 1.5f);
             if (mob instanceof Salmon && target instanceof Player p) {
                 BirchCriteriaRegistries.SALMON.get().trigger(p);
             }

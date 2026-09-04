@@ -7,13 +7,16 @@ import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.util.GeckoLibUtil;
+import mod.pilot.birch_n_bees.Config;
 import mod.pilot.birch_n_bees.entity.projectiles.OvergrownArrowEntity;
 import mod.pilot.birch_n_bees.items.BirchItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,10 +25,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -47,6 +47,9 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -54,6 +57,9 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity {
     public BloomingRemainsEntity(EntityType<? extends AbstractSkeleton> p_32133_, Level p_32134_) {
@@ -76,6 +82,7 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
     private static final int POLLEN_COOLDOWN_MAX = 240;
     private static final EntityDataAccessor<Boolean> SCARED = SynchedEntityData.defineId(BloomingRemainsEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> POLLEN_COOLDOWN = SynchedEntityData.defineId(BloomingRemainsEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FLOWER_TYPE = SynchedEntityData.defineId(BloomingRemainsEntity.class, EntityDataSerializers.INT);
     public boolean isScared(){return entityData.get(SCARED);}
     public void setScared(boolean flag) {
     entityData.set(SCARED, flag);
@@ -88,12 +95,20 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
         int cooldown = getPollenCooldown();
         if (cooldown > 0) setPollenCooldown(cooldown-1);
     }
+    public int getFlowerTypeRaw(){return entityData.get(FLOWER_TYPE);}
+    public void setFlowerType(int i){
+        entityData.set(FLOWER_TYPE,i);
+    }
+    public BlockState getFlowerBlockState(){
+        return FlowerManager.getBlockStateForValue(getFlowerTypeRaw());
+    }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putBoolean("scared", isScared());
         output.putInt("pollen", getPollenCooldown());
+        output.putInt("flower_type", getFlowerTypeRaw());
     }
 
     @Override
@@ -101,6 +116,7 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
         super.readAdditionalSaveData(input);
         setScared(input.getBooleanOr("scared", false));
         setPollenCooldown(input.getInt("pollen").orElse(0));
+        setFlowerType(input.getIntOr("flower_type",-1));
     }
 
     @Override
@@ -108,6 +124,7 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
         super.defineSynchedData(builder);
         builder.define(SCARED, false);
         builder.define(POLLEN_COOLDOWN, 0);
+        builder.define(FLOWER_TYPE, -1);
     }
 
     public int hurtTimestamp = -81;
@@ -189,7 +206,6 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
     @Override protected int getHardAttackInterval() {return 15;}
 
 
-    //We ***MIGHT*** have to recode this to respect the overgrown bow's projectile...
     @Override
     public void performRangedAttack(@NotNull LivingEntity target, float distanceFactor) {
         ItemStack weapon = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> item instanceof BowItem));
@@ -278,6 +294,12 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
     }
 
     @Override
+    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @org.jspecify.annotations.Nullable SpawnGroupData groupData) {
+        setFlowerType(random.nextInt(FlowerManager.VALID_COUNT + 1));
+        return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
+    }
+
+    @Override
     protected void dropCustomDeathLoot(ServerLevel p_348683_, DamageSource p_21385_, boolean p_21387_) {
         super.dropCustomDeathLoot(p_348683_, p_21385_, p_21387_);
     }
@@ -331,5 +353,53 @@ public class BloomingRemainsEntity extends AbstractSkeleton implements GeoEntity
     @Override
     public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    public static class FlowerManager{
+        public static BlockState DEFAULT_BLOCK_STATE_FALLBACK;
+        public static BlockState getBlockStateForValue(int value){
+            if (value > VALID_COUNT || value == -1) return DEFAULT_BLOCK_STATE_FALLBACK;
+            else return bStates[value];
+        }
+
+        private static final org.slf4j.Logger log = LoggerFactory.getLogger(FlowerManager.class);
+        public static int VALID_COUNT;
+        public static BlockState[] bStates;
+
+        public static void init(Config.Server config){
+            DEFAULT_BLOCK_STATE_FALLBACK = Blocks.POPPY.defaultBlockState();
+            List<? extends String> values = config.bloomingRemainsFlowers.get();
+            boolean crashIfInvalid = config.throwErrorWhenFailedParse.get(), invalidParse = false;
+
+            int entryCount = values.size();
+            bStates = new BlockState[entryCount];
+            VALID_COUNT = -1;
+            for (int i = 0; i < entryCount; i++){
+                String value = values.get(i);
+                Identifier id;
+                try {
+                    id = Identifier.parse(value);
+                } catch (Exception e){
+                    log.warn("OOPS! Invalid Identifier spotted! Check you're using proper syntax... Invalid String: {}", value);
+                    invalidParse = true;
+                    continue;
+                }
+                Block block;
+                try {
+                    block = BuiltInRegistries.BLOCK.getValue(id);
+                } catch (Exception e){
+                    log.warn("OOPS! Failed to retrieve block from registry! It's possible that this block just doesn't exist, your value could be misspelt... Identifier: {}", id);
+                    invalidParse = true;
+                    continue;
+                }
+                bStates[++VALID_COUNT] = block.defaultBlockState();
+            }
+
+            log.warn("Testing for failed parsing...");
+            if (invalidParse){
+                log.error("!!!CONFIG FAILED TO PARSE ALL VALUES!!!");
+                if (crashIfInvalid) throw new RuntimeException("The config had an INVALID config value which failed to parse properly. See log for details.");
+            } else log.info("All values parsed successfully! :3");
+        }
     }
 }
