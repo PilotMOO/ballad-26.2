@@ -130,7 +130,7 @@ public class BloomingRemainsRenderer<R extends LivingEntityRenderState & GeoRend
                                         }
                                     }),
                                 () -> GeckoLibConstants.LOGGER.error(
-                                        "Unable to find bone for ItemArmorGeoLayer: {}, skipping",
+                                        "Unable to find bone for BloomingRemainsFlowerLayer: {}, skipping",
                                         flowerData.boneName()));
             }
         }

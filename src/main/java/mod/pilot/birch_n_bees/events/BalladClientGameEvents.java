@@ -71,7 +71,7 @@ public class BalladClientGameEvents {
 
             Minecraft mc = Minecraft.getInstance();
             Player player = mc.player;
-            if (player != null){
+            if (player != null && !player.isSpectator()){
                 DynamicInventory inventory = (DynamicInventory)player.getInventory();
                 DynamicInventoryToken token = DynamicInventoryToken.get(player);
                 if (token.hotbarSlots > 0){

@@ -1,7 +1,9 @@
 package mod.pilot.birch_n_bees.blocks;
 
 import mod.pilot.birch_n_bees.ABOBAB;
+import mod.pilot.birch_n_bees.blocks.block_entities.HivekilnBlockEntity;
 import mod.pilot.birch_n_bees.blocks.block_entities.WildflowerBasketBlockEntity;
+import mod.pilot.birch_n_bees.blocks.unique.HivekilnBlock;
 import mod.pilot.birch_n_bees.blocks.unique.MourningGloryBlock;
 import mod.pilot.birch_n_bees.blocks.unique.PreparedSugarCaneBlock;
 import mod.pilot.birch_n_bees.blocks.unique.WildflowerBasketBlock;
@@ -50,6 +52,8 @@ public class BirchBlocks {
 
     public static final DeferredBlock<WildflowerBasketBlock> WILDFLOWER_BASKET = BLOCKS.registerBlock("wildflower_basket",
             WildflowerBasketBlock::new);
+    public static final DeferredBlock<HivekilnBlock> HIVEKILN = BLOCKS.registerBlock("hivekiln",
+            HivekilnBlock::new);
 
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -58,4 +62,8 @@ public class BirchBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WildflowerBasketBlockEntity>> WILDFLOWER_BASKET_ENTITY =
             BLOCK_ENTITIES.register("wildflower_basket_entity",
                     () -> new BlockEntityType<>(WildflowerBasketBlockEntity::new, WILDFLOWER_BASKET.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HivekilnBlockEntity>> HIVEKILN_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("hivekiln_block_entity",
+                    () -> new BlockEntityType<>(HivekilnBlockEntity::new, HIVEKILN.get()));
 }

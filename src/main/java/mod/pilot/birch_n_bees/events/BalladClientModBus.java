@@ -2,6 +2,7 @@ package mod.pilot.birch_n_bees.events;
 
 import mod.pilot.birch_n_bees.ABOBAB;
 import mod.pilot.birch_n_bees.blocks.BirchBlocks;
+import mod.pilot.birch_n_bees.blocks.block_entities.client.HivekilnRenderer;
 import mod.pilot.birch_n_bees.blocks.block_entities.client.WildflowerBasketRenderer;
 import mod.pilot.birch_n_bees.entity.BirchEntities;
 import mod.pilot.birch_n_bees.entity.mob.client.*;
@@ -32,6 +33,7 @@ public class BalladClientModBus {
 
 
         event.registerBlockEntityRenderer(BirchBlocks.WILDFLOWER_BASKET_ENTITY.get(), WildflowerBasketRenderer::new);
+        event.registerBlockEntityRenderer(BirchBlocks.HIVEKILN_BLOCK_ENTITY.get(), HivekilnRenderer::new);
     }
 
     @SubscribeEvent
