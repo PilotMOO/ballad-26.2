@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -22,6 +23,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,10 +33,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 public class HivekilnBlock extends HorizontalDirectionalBlock implements EntityBlock, SimpleWaterloggedBlock {
     public static MapCodec<HivekilnBlock> SHRIMPLE_CODEC = simpleCodec(HivekilnBlock::new);
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
-    //ToDo: rewrite this to use NOT an integer property, or at least a smaller one
-    // because why the FUCK does it generate a huge ass list of all possible values???
-    // what the genuine fuck is wrong with you???
-    public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, 4800);
+    public static final int MAX_FUEL = 48;
+    public static final IntegerProperty FUEL = IntegerProperty.create("fuel", 0, MAX_FUEL);
 
     @Override
     protected @NonNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
@@ -55,13 +57,11 @@ public class HivekilnBlock extends HorizontalDirectionalBlock implements EntityB
 
     //ACTUAL LOGIC
 
-
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level,
                                           BlockPos pos, Player player, InteractionHand hand,
                                           BlockHitResult hitResult) {
         if (/*!level.isClientSide() &&*/ player.isSecondaryUseActive()) {
-            System.out.println("hor, hor hor oar");
             level.setBlock(pos, state.setValue(OPEN, !state.getValue(OPEN)), 3);
             return InteractionResult.SUCCESS_SERVER;
         }
@@ -69,6 +69,7 @@ public class HivekilnBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     //BLOCK ENTITY AND MISC LOGIC
+
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new HivekilnBlockEntity(blockPos, blockState);
@@ -86,5 +87,20 @@ public class HivekilnBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    public static final VoxelShape SHAPE = Shapes.box(-0.0625, 0.0D, -0.0625,
+            1.0625, 1.0625, 1.0625);
+    @Override
+    protected @NonNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+    @Override
+    protected @NonNull VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return SHAPE;
+    }
+    @Override
+    protected @NonNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 }

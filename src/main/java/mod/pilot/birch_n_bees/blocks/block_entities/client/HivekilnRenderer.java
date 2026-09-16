@@ -41,7 +41,7 @@ public class HivekilnRenderer<R extends BlockEntityRenderState> extends GeoBlock
                     fuelLayerBone.skipRender(true).skipChildrenRender(true);
                 }
                 else{
-                    int fuelLevel = (fuel + 1600) / 1600;
+                    int fuelLevel = (fuel + 15) / 16;
                     BoneSnapshot level2 = snapshots.get("level2").orElse(null);
                     BoneSnapshot level3 = snapshots.get("level3").orElse(null);
                     if (fuelLevel < 3){
