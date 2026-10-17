@@ -18,12 +18,12 @@ public class BirchCreativeTabs {
                     .displayItems((something, register) ->{
                         register.accept(BirchItems.BIRCH_BARK.get());
                         register.accept(BirchItems.SOGGY_BIRCH_BARK.get());
+                        register.accept(BirchItems.SPLINTERS.get());
+                        register.accept(BirchItems.BUNDLE_OF_SPLINTERS.get());
                         register.accept(BirchItems.WILDFLOWER_TWINE.get());
                         register.accept(BirchItems.STRIPPED_WILDFLOWER_TWINE.get());
                         register.accept(BirchItems.WILDTHREAD_BUILDABLE.get());
                         register.accept(BirchItems.WILDTHREAD.get());
-                        register.accept(BirchItems.SPLINTERS.get());
-                        register.accept(BirchItems.BUNDLE_OF_SPLINTERS.get());
                         register.accept(BirchItems.WILDFLOWER_WICKER_BUILDABLE.get());
                         register.accept(BirchItems.WILDFLOWER_WICKER.get());
                         register.accept(BirchItems.WILDFLOWER_SATCHEL.get());

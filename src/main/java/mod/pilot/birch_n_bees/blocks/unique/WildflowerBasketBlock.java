@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -30,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 
 public class WildflowerBasketBlock extends HorizontalDirectionalBlock implements EntityBlock, SimpleWaterloggedBlock {
     public static MapCodec<WildflowerBasketBlock> SHRIMPLE_CODEC = simpleCodec(WildflowerBasketBlock::new);
-    public static BooleanProperty HAS_ITEM = BooleanProperty.create("has_item");
 
     @Override
     protected @NonNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
@@ -40,12 +38,11 @@ public class WildflowerBasketBlock extends HorizontalDirectionalBlock implements
     public WildflowerBasketBlock(Properties properties) {
         super(properties.destroyTime(0.5f).sound(SoundType.MOSS));
         registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH)
-                .setValue(BlockStateProperties.WATERLOGGED, false)
-                .setValue(HAS_ITEM, Boolean.FALSE));
+                .setValue(BlockStateProperties.WATERLOGGED, false));
     }
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, BlockStateProperties.WATERLOGGED, HAS_ITEM);
+        builder.add(FACING, BlockStateProperties.WATERLOGGED);
     }
     @Override
     public @Nullable BlockEntity newBlockEntity(@NonNull BlockPos blockPos, @NonNull BlockState blockState) {

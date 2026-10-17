@@ -47,6 +47,8 @@ public class WildflowerBasketRenderer
         state.random = blockEntity.getLevel().getRandom();
     }
 
+    //TODO: Fix tool rendering being fucky with different rotations for the basket
+
     @Override
     public void submit(@NonNull WildflowerBasketRenderState state, @NonNull PoseStack poseStack,
                        @NonNull SubmitNodeCollector submitNodeCollector, @NonNull CameraRenderState cameraRenderState) {

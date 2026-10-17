@@ -12,28 +12,56 @@ import mod.pilot.birch_n_bees.blocks.block_entities.HivekilnBlockEntity;
 import mod.pilot.birch_n_bees.blocks.unique.HivekilnBlock;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public class HivekilnRenderer<R extends BlockEntityRenderState> extends GeoBlockRenderer<HivekilnBlockEntity, R> {
+public class HivekilnRenderer extends GeoBlockRenderer<HivekilnBlockEntity, HivekilnRenderer.RenderState> {
     public static final DataTicket<Integer> FUEL = DataTicket.create("hivekiln_fuel", new TypeToken<>() {});
 
+    public final ItemModelResolver itemModelResolver;
     public HivekilnRenderer(BlockEntityRendererProvider.Context context) {
         super(context, new Model());
+        itemModelResolver = context.itemModelResolver();
     }
 
     @Override
     public void addRenderData(@NonNull HivekilnBlockEntity animatable, @Nullable Void relatedObject,
-                              R renderState, float partialTick) {
+                              RenderState renderState, float partialTick) {
+        BlockEntityRenderState.extractBase(animatable, renderState, null);
+        renderState.itemRenderState = new ItemStackRenderState();
+        itemModelResolver.updateForTopItem(renderState.itemRenderState,
+                (renderState.itemStack = animatable.heldStack), ItemDisplayContext.FIXED,
+                animatable.getLevel(), null, (renderState.seed = (int)animatable.getBlockPos().asLong()));
+        renderState.facing = animatable.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
+        renderState.random = animatable.getLevel().getRandom();
         BlockState bState = animatable.getLevel().getBlockState(animatable.getBlockPos());
         if (bState.is(BirchBlocks.HIVEKILN)) renderState.addGeckolibData(FUEL, bState.getValue(HivekilnBlock.FUEL));
     }
+    public static class RenderState extends BlockEntityRenderState{
+        public ItemStackRenderState itemRenderState;
+        public ItemStack itemStack;
+        public Direction facing;
+        int seed;
+        RandomSource random;
+        public RenderState() {
+            itemRenderState = new ItemStackRenderState();
+            itemStack = ItemStack.EMPTY;
+            facing = Direction.NORTH;
+        }
+    }
 
     @Override
-    public void adjustModelBonesForRender(RenderPassInfo<R> renderPassInfo, BoneSnapshots snapshots) {
-        R renderState = renderPassInfo.renderState();
+    public void adjustModelBonesForRender(RenderPassInfo<RenderState> renderPassInfo, BoneSnapshots snapshots) {
+        RenderState renderState = renderPassInfo.renderState();
         if (renderState.hasGeckolibData(FUEL)) {
             final int fuel = renderState.getGeckolibData(FUEL);
             snapshots.get("fuel_pile").ifPresent((fuelLayerBone) ->{

@@ -95,7 +95,7 @@ public class InWorldCookingManager {
         }
         registeredComplexRecipes[countComplex++] = pair;
     }
-    public static class RegisterCookingPairsEvent extends Event implements IModBusEvent {
+    public static class RegisterCookingPairsEvent extends Event implements IModBusEvent{
         public void register(Supplier<ItemStack> original, int cookTime, Supplier<ItemStack> result){
             InWorldCookingManager.register(new CookingPair(original, cookTime, result));
         }
